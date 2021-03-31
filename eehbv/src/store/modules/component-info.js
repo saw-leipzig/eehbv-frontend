@@ -1,24 +1,25 @@
+import Vue from 'vue'
 import axios from "axios";
 
-const host = 'http://localhost:8080';
+//const host = 'http://localhost:8080';
 
 const state = {
-    components: {},
-    componentInfos: {}
+    componentTypes: [],
+    componentInfos: []
 };
 
 const getters = {
-    components: state => state.components,
+    componentTypes: state => state.componentTypes,
     componentInfos: state => state.componentInfos
 };
 
 const actions = {
     initComponents: ({commit}) => {
-        axios.get(host + '/api/components').
+        axios.get('/api/components').
             then((response) => {
                 commit('SET_COMPONENTS', response.data._embedded.components);
         });
-        axios.get(host + '/api/componentInfoes').
+        axios.get('/api/componentInfoes').
             then((response) => {
                 commit('SET_COMPONENT_INFOS', response.data._embedded.componentInfoes);
         });
@@ -26,12 +27,11 @@ const actions = {
 };
 
 const mutations = {
-    'SET_COMPONENTS' (state, components) {
-        state.components = components;
-        console.log(state.components[0].view_name);
+    'SET_COMPONENTS' (state, componentTypes) {
+        Vue.set(state, 'componentTypes', [...componentTypes]);
     },
     'SET_COMPONENT_INFOS' (state, infos) {
-        state.componentInfos = infos;
+        Vue.set(state, 'componentInfos', [...infos]);
     }
 };
 

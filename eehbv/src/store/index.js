@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import components from './modules/components'
+import componentInfo from './modules/component-info'
 
 Vue.use(Vuex)
 
@@ -12,6 +12,6 @@ export default new Vuex.Store({
   actions: {
   },
   modules: {
-    components
+    componentInfo
   }
 })

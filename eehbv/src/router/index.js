@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import MachineComponents from "../views/pages/MachineComponents";
+import ComponentOverview from "@/components/ComponentOverview";
 
 Vue.use(VueRouter)
 
@@ -15,6 +16,12 @@ const routes = [
     path: '/components',
     name: 'Component',
     component: MachineComponents
+  },
+  {
+    path: '/components/:type',
+    name: 'ComponentOverview',
+    component: ComponentOverview,
+    props: true
   },
   {
     path: '/about',
