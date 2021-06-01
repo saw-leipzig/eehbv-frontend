@@ -23,7 +23,12 @@
                 <v-container>
                   <v-row>
                     <v-col v-for="detail in details" cols="12" sm="6" md="4">
-                      <v-text-field v-model="editedItem[detail.column_name]" :label="detail.view_name"></v-text-field>
+                      <v-checkbox v-if="detail.type === 'BOOL'" v-model="editedItem[detail.column_name]" :label="detail.view_name"></v-checkbox>
+                      <v-text-field v-else
+                          v-model="editedItem[detail.column_name]"
+                          :label="detail.view_name"
+                          :type="detail.type === 'INT' || detail.type === 'DOUBLE' ? 'number' : 'text'"
+                      ></v-text-field>
                     </v-col>
                   </v-row>
                 </v-container>
