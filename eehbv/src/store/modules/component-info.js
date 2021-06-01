@@ -4,35 +4,35 @@ import axios from "axios";
 //const host = 'http://localhost:8080';
 
 const state = {
-    componentTypes: [],
-    componentInfos: []
+    componentTypes: []/*,
+    componentInfos: []*/
 };
 
 const getters = {
-    componentTypes: state => state.componentTypes,
-    componentInfos: state => state.componentInfos
+    componentTypes: state => state.componentTypes/*,
+    componentInfos: state => state.componentInfos*/
 };
 
 const actions = {
     initComponents: ({commit}) => {
-        axios.get('/api/components').
+        axios.get('/api/v1/component-types').
             then((response) => {
-                commit('SET_COMPONENTS', response.data._embedded.components);
+                commit('SET_COMPONENTS', response.data.componentTypes);
         });
-        axios.get('/api/componentInfoes').
+/*        axios.get('/api/componentInfoes').
             then((response) => {
                 commit('SET_COMPONENT_INFOS', response.data._embedded.componentInfoes);
-        });
+        });*/
     }
 };
 
 const mutations = {
     'SET_COMPONENTS' (state, componentTypes) {
         Vue.set(state, 'componentTypes', [...componentTypes]);
-    },
+    }/*,
     'SET_COMPONENT_INFOS' (state, infos) {
         Vue.set(state, 'componentInfos', [...infos]);
-    }
+    }*/
 };
 
 export default {

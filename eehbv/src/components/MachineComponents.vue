@@ -20,7 +20,7 @@
       tables: []
     }),
     computed: {
-      ...mapGetters(['componentTypes', 'componentInfos'])
+      ...mapGetters(['componentTypes'/*, 'componentInfos'*/])
     },
     methods: {
       log: function () {

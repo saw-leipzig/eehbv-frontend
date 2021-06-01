@@ -4,7 +4,6 @@
     <br/>
     <v-data-table :headers="headers" :items="componentData" :items-per-page="10">
 
-      <!--<component-toolbar v-slot:top></component-toolbar>-->
       <template v-slot:top>
         <v-toolbar flat>
           <v-toolbar-title>{{ comp.view_name }}</v-toolbar-title>
@@ -22,7 +21,7 @@
               <v-card-text>
                 <v-container>
                   <v-row>
-                    <v-col v-for="detail in details" cols="12" sm="6" md="4">
+                    <v-col v-for="detail in comp.infos" cols="12" sm="6" md="4">
                       <v-checkbox v-if="detail.type === 'BOOL'" v-model="editedItem[detail.column_name]" :label="detail.view_name"></v-checkbox>
                       <v-text-field v-else
                           v-model="editedItem[detail.column_name]"
@@ -84,7 +83,7 @@ import ComponentToolbar from "@/components/ComponentToolbar";
 
 export default {
   name: "ComponentOverview",
-  components: {ComponentToolbar, ComponentButton},
+  components: {ComponentButton},
 
   data: () => ({
     dialog: false,
@@ -95,7 +94,7 @@ export default {
     defaultItem: {
     },
     componentData: [],
-    details: []
+    //details: []
   }),
 
   props: {
@@ -107,7 +106,7 @@ export default {
 
   computed: {
     headers: function () {
-      return [...this.details.map(d => {
+      return [...this.comp.infos.map(d => {
         return {
           text: d.view_name,
           align: 'start',
@@ -138,13 +137,8 @@ export default {
 
   methods: {
     initialize() {
-      let urlParts = this.comp._links.details.href.split('/');
-      this.$http.get('/' + urlParts.slice(3).join('/')).
-              then((response) => {
-                  this.details = [...response.data._embedded.componentInfoes.sort((a, b) => a.position - b.position)];
-          });
       let defItem = {};
-      for (let detail in this.details) {
+      for (let detail in this.comp.infos) {
         defItem[detail.column_name] =
             detail.type === 'DOUBLE' || detail.type === 'INT' ?
                 0
@@ -158,14 +152,10 @@ export default {
       this.refreshData();
     },
     refreshData() {
-      this.$http.get('/api/' + this.$route.params.type).
+      this.$http.get('/api/v1/components/' + this.$route.params.type).
               then((response) => {
-                  this.componentData = [...response.data._embedded[this.$route.params.type]];
+                  this.componentData = [...response.data.components];
           });
-    },
-    getSelfUrl(item) {
-      let urlParts = item._links.self.href.split('/');
-      return '/' + urlParts.slice(3).join('/')
     },
     editItem(item) {
       this.editedIndex = this.componentData.indexOf(item);
@@ -178,8 +168,7 @@ export default {
       this.dialogDelete = true
     },
     deleteItemConfirm() {
-      let apiUrl = this.getSelfUrl(this.editedItem);
-      this.$http.delete(apiUrl).
+      this.$http.delete('/api/v1/components/' + this.$route.params.type + '/' + this.editedItem.id).
               then((response) => {
                   this.refreshData();
           });
@@ -201,13 +190,12 @@ export default {
     },
     save() {
       if (this.editedIndex > -1) {
-        let apiUrl = this.getSelfUrl(this.editedItem);
-        this.$http.put(apiUrl, this.editedItem).
+        this.$http.put('/api/v1/components/' + this.$route.params.type + '/' + this.editedItem.id, this.editedItem).
                 then((response) => {
                     this.refreshData();
             });
       } else {
-          this.$http.post('/api/' + this.$route.params.type, this.editedItem).
+          this.$http.post('/api/v1/components/' + this.$route.params.type, this.editedItem).
               then((response) => {
                   this.refreshData();
           });
