@@ -2,7 +2,11 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import MachineComponents from "../views/pages/MachineComponents";
-import ComponentOverview from "@/components/ComponentOverview";
+import Processes from "../views/pages/Processes";
+import ComponentOverview from "../components/ComponentOverview";
+import ProcessOverview from "../components/ProcessOverview";
+import VariantPicklist from "../components/VariantPicklist";
+import Restrictions from "../components/Restrictions";
 
 Vue.use(VueRouter)
 
@@ -21,6 +25,29 @@ const routes = [
     path: '/components/:type',
     name: 'ComponentOverview',
     component: ComponentOverview,
+    props: true
+  },
+  {
+    path: '/processes',
+    name: 'Process',
+    component: Processes
+  },
+  {
+    path: '/processes/:type',
+    name: 'ProcessOverview',
+    component: ProcessOverview,
+    props: true
+  },
+  {
+    path: '/processes/:type/pick_variants',
+    name: 'VariantPicklist',
+    component: VariantPicklist,
+    props: true
+  },
+  {
+    path: '/processes/:type/restrictions',
+    name: 'Restrictions',
+    component: Restrictions,
     props: true
   },
   {
