@@ -13,7 +13,7 @@
             <v-card-title>Variantenauswahl</v-card-title>
             <v-card-actions>
               <v-btn :to="{ name: 'VariantPicklist', params: { type: process.api_name, process: process, variants: variants } }">Pickliste</v-btn>
-              <v-btn :to="{ name: 'VariantPicklist', params: { type: process.api_name, process: process, variants: variants } }">Fragen</v-btn>
+              <v-btn :to="{ name: 'VariantQuestionSelection', params: { type: process.api_name, process: process, variants: variants } }">Fragen</v-btn>
             </v-card-actions>
           </v-card>
 

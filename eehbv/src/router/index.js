@@ -7,6 +7,7 @@ import ComponentOverview from "../components/ComponentOverview";
 import ProcessOverview from "../components/ProcessOverview";
 import VariantPicklist from "../components/VariantPicklist";
 import Restrictions from "../components/Restrictions";
+import VariantQuestionSelection from "../components/VariantQuestionSelection";
 
 Vue.use(VueRouter)
 
@@ -42,6 +43,12 @@ const routes = [
     path: '/processes/:type/pick_variants',
     name: 'VariantPicklist',
     component: VariantPicklist,
+    props: true
+  },
+  {
+    path: '/processes/:type/query_variants',
+    name: 'VariantQuestionSelection',
+    component: VariantQuestionSelection,
     props: true
   },
   {

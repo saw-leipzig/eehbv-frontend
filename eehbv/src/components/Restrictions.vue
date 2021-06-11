@@ -9,9 +9,15 @@
         <v-card>
           <v-card-title>Varianten</v-card-title>
           <v-card-text>
-            <v-list>
-              <v-list-item v-for="variant in variants" :key="variant.id" v-if="variant_selection.includes(variant.id)">{{variant.name}}</v-list-item>
-            </v-list>
+            <v-container>
+              <v-row>
+                <v-col cols="12" v-for="variant in variants" :key="variant.id" v-if="variant_selection.includes(variant.id)">
+                  <v-card>
+                    <v-card-title>{{variant.name}}</v-card-title>
+                  </v-card>
+                </v-col>
+              </v-row>
+            </v-container>
           </v-card-text>
         </v-card>
       </v-col>
