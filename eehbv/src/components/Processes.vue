@@ -11,26 +11,26 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
+import {mapGetters} from 'vuex';
 
-  export default {
-    name: "Processes",
+export default {
+  name: "Processes",
 
-    data: () => ({
-      tables: []
-    }),
-    computed: {
-      ...mapGetters(['processes'])
-    },
-    methods: {
-      log: function () {
-        console.log(this.$store.state);
-      }
-    },
-    created() {
-      this.$store.dispatch('initProcesses');
+  data: () => ({
+    tables: []
+  }),
+  computed: {
+    ...mapGetters(['processes'])
+  },
+  methods: {
+    log: function () {
+      console.log(this.$store.state);
     }
+  },
+  created() {
+    this.$store.dispatch('initProcesses');
   }
+}
 </script>
 
 <style scoped>

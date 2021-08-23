@@ -4,6 +4,7 @@
       <v-col cols="6"><h2>{{process.view_name}}</h2></v-col>
 
       <v-col cols="6">
+<!--
         <v-dialog v-model="dialog" width="400">
           <template v-slot:activator="{ on, attrs }">
             <v-btn v-bind="attrs" v-on="on">Optimierung definieren</v-btn>
@@ -18,6 +19,8 @@
           </v-card>
 
         </v-dialog>
+        -->
+        <v-btn :to="{ name: 'Optimization', params: { type: process.api_name, process: process, variants: variants } }">Optimierung definieren</v-btn>
       </v-col>
     </v-row>
 
@@ -55,6 +58,9 @@ export default {
   },
 
   created() {
+    if (!this.process) {
+      this.$router.push({ name: 'Process' });
+    }
     this.initialize();
   },
 

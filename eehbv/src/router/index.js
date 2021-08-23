@@ -5,9 +5,7 @@ import MachineComponents from "../views/pages/MachineComponents";
 import Processes from "../views/pages/Processes";
 import ComponentOverview from "../components/ComponentOverview";
 import ProcessOverview from "../components/ProcessOverview";
-import VariantPicklist from "../components/VariantPicklist";
-import Restrictions from "../components/Restrictions";
-import VariantQuestionSelection from "../components/VariantQuestionSelection";
+import Optimization from "../components/Optimization";
 
 Vue.use(VueRouter)
 
@@ -40,21 +38,9 @@ const routes = [
     props: true
   },
   {
-    path: '/processes/:type/pick_variants',
-    name: 'VariantPicklist',
-    component: VariantPicklist,
-    props: true
-  },
-  {
-    path: '/processes/:type/query_variants',
-    name: 'VariantQuestionSelection',
-    component: VariantQuestionSelection,
-    props: true
-  },
-  {
-    path: '/processes/:type/restrictions',
-    name: 'Restrictions',
-    component: Restrictions,
+    path: '/processes/:type/define_optimization',
+    name: 'Optimization',
+    component: Optimization,
     props: true
   },
   {
