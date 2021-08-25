@@ -6,6 +6,7 @@ import Processes from "../views/pages/Processes";
 import ComponentOverview from "../components/ComponentOverview";
 import ProcessOverview from "../components/ProcessOverview";
 import Optimization from "../components/Optimization";
+import ComponentCreation from "../components/ComponentCreation";
 
 Vue.use(VueRouter)
 
@@ -19,6 +20,11 @@ const routes = [
     path: '/components',
     name: 'Component',
     component: MachineComponents
+  },
+  {
+    path: '/components/create',
+    name: 'ComponentCreation',
+    component: ComponentCreation
   },
   {
     path: '/components/:type',

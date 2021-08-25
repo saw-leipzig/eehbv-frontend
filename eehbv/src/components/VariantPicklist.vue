@@ -22,7 +22,7 @@
       </v-col>
     </v-card>
 
-    <v-btn color="primary" @click="$emit('continue', selection)">
+    <v-btn color="green" @click="$emit('continue', selection)" :disabled="selection.length < 1">
       Weiter
     </v-btn>
 

@@ -48,7 +48,7 @@
       </v-row>
     </v-card>
 
-    <v-btn color="primary" @click="$emit('continue')">
+    <v-btn color="green" @click="$emit('continue')">
       Weiter
     </v-btn>
 

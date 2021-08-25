@@ -9,7 +9,7 @@
           <v-toolbar-title>{{ comp.view_name }}</v-toolbar-title>
           <v-divider class="mx-4" inset vertical ></v-divider>
           <v-spacer></v-spacer>
-          <v-dialog v-model="dialog" max-width="500px">
+          <v-dialog v-model="dialog" max-width="600px">
             <template v-slot:activator="{ on, attrs }">
               <v-btn color="green" dark class="mb-2" v-bind="attrs" v-on="on">Neuer Eintrag</v-btn>
             </template>
@@ -22,10 +22,10 @@
                 <v-container>
                   <v-row>
                     <v-col v-for="detail in comp.infos" cols="12" sm="6" md="4">
-                      <v-checkbox v-if="detail.type === 'BOOL'" v-model="editedItem[detail.column_name]" :label="detail.view_name"></v-checkbox>
+                      <v-checkbox v-if="detail.type === 'BOOL'" v-model="editedItem[detail.column_name]" :label="entryLabel(detail)"></v-checkbox>
                       <v-text-field v-else
                           v-model="editedItem[detail.column_name]"
-                          :label="detail.view_name"
+                          :label="entryLabel(detail)"
                           :type="detail.type === 'INT' || detail.type === 'DOUBLE' ? 'number' : 'text'"
                       ></v-text-field>
                     </v-col>
@@ -36,10 +36,10 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="green darken-1" text @click="close">
-                  Cancel
+                  Abbrechen
                 </v-btn>
                 <v-btn color="green darken-1" text @click="save">
-                  Save
+                  Speichern
                 </v-btn>
               </v-card-actions>
             </v-card>
@@ -105,10 +105,10 @@ export default {
   },
 
   computed: {
-    headers: function () {
+    headers () {
       return [...this.comp.infos.map(d => {
         return {
-          text: d.view_name,
+          text: this.entryLabel(d),
           align: 'start',
           sortable:true,
           value: d.column_name
@@ -151,6 +151,9 @@ export default {
       this.editedItem = Object.assign({}, this.defaultItem);
       this.refreshData();
     },
+    entryLabel(detail) {
+      return detail.view_name + (detail.unit !== null ? ' [' + detail.unit + ']' : '');
+    },
     refreshData() {
       this.$http.get('/api/v1/components/' + this.$route.params.type).
               then((response) => {
@@ -160,12 +163,12 @@ export default {
     editItem(item) {
       this.editedIndex = this.componentData.indexOf(item);
       this.editedItem = Object.assign({}, item);
-      this.dialog = true
+      this.dialog = true;
     },
     deleteItem(item) {
       this.editedIndex = this.componentData.indexOf(item);
       this.editedItem = Object.assign({}, item);
-      this.dialogDelete = true
+      this.dialogDelete = true;
     },
     deleteItemConfirm() {
       this.$http.delete('/api/v1/components/' + this.$route.params.type + '/' + this.editedItem.id).

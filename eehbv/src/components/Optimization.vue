@@ -8,26 +8,26 @@
       <v-col cols="12">
         <v-stepper v-model="def_step">
           <v-stepper-header>
-            <v-stepper-step :complete="def_step > 1" step="1">
+            <v-stepper-step :complete="def_step > 1" color="green" step="1">
               Prozessparameter
             </v-stepper-step>
 
             <v-divider></v-divider>
 
-            <v-stepper-step :complete="def_step > 2" step="2">
+            <v-stepper-step :complete="def_step > 2" color="green" step="2">
               Variantenauswahl
             </v-stepper-step>
 
             <v-divider></v-divider>
 
-            <v-stepper-step step="3">
+            <v-stepper-step step="3" color="green">
               Nebenbedingungen
             </v-stepper-step>
           </v-stepper-header>
 
           <v-stepper-items>
             <v-stepper-content step="1">
-              <optimization-parameters @continue="continueOne" @abort="abort"></optimization-parameters>
+              <optimization-parameters v-model="parameters" :process="process" :info-texts="infoTexts" @continue="continueOne" @abort="abort"></optimization-parameters>
             </v-stepper-content>
 
             <v-stepper-content step="2">
@@ -57,6 +57,7 @@ export default {
     return {
       def_step: 1,
       variant_select_type: 0,
+      parameters: [],
       selection: []
     }
   },
@@ -67,6 +68,10 @@ export default {
       required: true
     },
     variants: {
+      type: Array,
+      required: true
+    },
+    infoTexts: {
       type: Array,
       required: true
     }
