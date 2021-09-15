@@ -21,7 +21,7 @@
               <v-card-text>
                 <v-container>
                   <v-row>
-                    <v-col v-for="detail in comp.infos" cols="12" sm="6" md="4">
+                    <v-col v-for="detail in comp.infos" :key="detail.position" cols="12" sm="6" md="4">
                       <v-checkbox v-if="detail.type === 'BOOL'" v-model="editedItem[detail.column_name]" :label="entryLabel(detail)"></v-checkbox>
                       <v-text-field v-else
                           v-model="editedItem[detail.column_name]"
@@ -155,7 +155,7 @@ export default {
       return detail.view_name + (detail.unit !== null ? ' [' + detail.unit + ']' : '');
     },
     refreshData() {
-      this.$http.get('/api/v1/components/' + this.$route.params.type).
+      this.$http.get('components/' + this.$route.params.type).
               then((response) => {
                   this.componentData = [...response.data.components];
           });
@@ -171,7 +171,7 @@ export default {
       this.dialogDelete = true;
     },
     deleteItemConfirm() {
-      this.$http.delete('/api/v1/components/' + this.$route.params.type + '/' + this.editedItem.id).
+      this.$http.delete('components/' + this.$route.params.type + '/' + this.editedItem.id).
               then((response) => {
                   this.refreshData();
           });
@@ -193,12 +193,12 @@ export default {
     },
     save() {
       if (this.editedIndex > -1) {
-        this.$http.put('/api/v1/components/' + this.$route.params.type + '/' + this.editedItem.id, this.editedItem).
+        this.$http.put('components/' + this.$route.params.type + '/' + this.editedItem.id, this.editedItem).
                 then((response) => {
                     this.refreshData();
             });
       } else {
-          this.$http.post('/api/v1/components/' + this.$route.params.type, this.editedItem).
+          this.$http.post('components/' + this.$route.params.type, this.editedItem).
               then((response) => {
                   this.refreshData();
           });

@@ -7,6 +7,7 @@ import ComponentOverview from "../components/ComponentOverview";
 import ProcessOverview from "../components/ProcessOverview";
 import Optimization from "../components/Optimization";
 import ComponentCreation from "../components/ComponentCreation";
+import OptimizationResult from "../components/OptimizationResult";
 
 Vue.use(VueRouter)
 
@@ -47,6 +48,12 @@ const routes = [
     path: '/processes/:type/define_optimization',
     name: 'Optimization',
     component: Optimization,
+    props: true
+  },
+  {
+    path: '/processes/:type/optimization_result',
+    name: 'OptimizationResult',
+    component: OptimizationResult,
     props: true
   },
   {

@@ -1,8 +1,6 @@
 import Vue from 'vue'
 import axios from "axios";
 
-//const host = 'http://localhost:8080';
-
 const state = {
     componentTypes: []/*,
     componentInfos: []*/
@@ -15,7 +13,7 @@ const getters = {
 
 const actions = {
     initComponents: ({commit}) => {
-        axios.get('/api/v1/component-types').
+        axios.get('component-types').
             then((response) => {
                 commit('SET_COMPONENTS', response.data.componentTypes);
         });

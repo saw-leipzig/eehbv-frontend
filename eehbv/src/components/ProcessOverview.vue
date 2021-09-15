@@ -67,11 +67,11 @@ export default {
 
   methods: {
     initialize() {
-      this.$http.get('/api/v1/processes/' + this.process.id + '/variants').
+      this.$http.get('processes/' + this.process.id + '/variants').
               then((response) => {
                   this.variants = [...response.data.variants];
           });
-      this.$http.get('/api/v1/processes/' + this.process.id + '/info_texts').
+      this.$http.get('processes/' + this.process.id + '/info_texts').
               then((response) => {
                   this.infoTexts = [...response.data.info_texts];
           });

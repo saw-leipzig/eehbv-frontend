@@ -47,7 +47,7 @@ export default {
 
   methods: {
     initialize() {
-      this.$http.get('/api/v1/processes/' + this.process.id + '/questions').
+      this.$http.get('processes/' + this.process.id + '/questions').
               then((response) => {
                   this.questions = response.data;
                   this.askedQuestions.push(this.questions);

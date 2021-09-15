@@ -11,7 +11,7 @@ const getters = {
 
 const actions = {
     initProcesses: ({commit}) => {
-        axios.get('/api/v1/processes').
+        axios.get('processes').
             then((response) => {
                 commit('SET_PROCESSES', response.data.processes);
         });

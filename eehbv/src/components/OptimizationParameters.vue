@@ -18,7 +18,7 @@
                     </v-col>
                   </v-row>
                   <v-row>
-                    <v-col v-for="param in process.parameters" cols="12" sm="6" md="4">
+                    <v-col v-for="param in process.parameters" :key="param.name" cols="12" sm="6" md="4">
                       {{param.name + ' = ' + item[param.variable_name] + ' ' + param.unit}}
                     </v-col>
                   </v-row>
@@ -35,14 +35,16 @@
         </v-btn>
       </v-card-actions>
 
-      <v-overlay :opacity="0.9" :value="infoOverlay">
+      <v-overlay :opacity="0.9" :value="infoOverlay" z-index="3000">
         <v-container>
-          <p>Ein Satz von Prozessparametern definiert ein Nutzungsprofil des Prozesses.</p>
-          <p>Legen Sie mindenstens einen Satz von Prozessparametern mit einem Anteil größer 0 an.</p>
+          <p>Ein Satz von <strong>Prozessparametern</strong> definiert ein Nutzungsprofil des Prozesses.</p>
+          <p>Legen Sie mindestens einen Satz von Prozessparametern mit einem Anteil größer 0 an.</p>
           <p>Soll der Prozess mit unterschiedlichen Profilen betrieben werden,
-            gibt der Anteil jeweils die relative Häufigkeit an, mit der dieses Profil voraussichtlich genutzt werden wird.</p>
-          <p>Die Summe der Anteile muss nicht 1 oder 100 ergeben.</p>
-          <p>{{infoText}}</p>
+            gibt der Anteil jeweils die relative Häufigkeit an, mit der dieses Profil voraussichtlich genutzt werden
+            wird.</p>
+          <p>Die Summe der Anteile muss nicht 1 oder 100 ergeben sondern wird auf 100% normalisiert.</p>
+          <p>Prozessparameter, die für einzelne Varianten irrelevant sind, können beliebige Werte haben.</p>
+          <div>{{ infoText }}</div>
         </v-container>
         <v-btn color="orange lighten-2" @click="infoOverlay = false">Schließen</v-btn>
       </v-overlay>
@@ -61,11 +63,12 @@
                     v-model="editedItem['portion']"
                     label="Anteil"
                     type="number"
+                    :rules="[rules.greaterZero]"
                 ></v-text-field>
               </v-col>
             </v-row>
             <v-row>
-              <v-col v-for="param in process.parameters" cols="12" sm="6" md="4">
+              <v-col v-for="param in process.parameters" :key="param.name" cols="12" sm="6" md="4">
                 <v-text-field
                     v-model="editedItem[param.variable_name]"
                     :label="param.name + ' [' + param.unit + ']'"
@@ -132,7 +135,10 @@ export default {
     },
     defaultItem: {
     },
-    infoOverlay: false
+    infoOverlay: false,
+    rules: {
+      greaterZero: value => value > 0 || 'positiver Wert'
+    }
   }),
 
   props: {
