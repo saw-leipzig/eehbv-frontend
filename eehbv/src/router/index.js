@@ -51,7 +51,7 @@ const routes = [
     props: true
   },
   {
-    path: '/processes/:type/optimization_result',
+    path: '/processes/:type/optimization_result/:timestamp',
     name: 'OptimizationResult',
     component: OptimizationResult,
     props: true

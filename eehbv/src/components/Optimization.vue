@@ -95,8 +95,37 @@ export default {
       this.def_step = 3;
     },
     continueThree() {
-      this.def_step = 1;
-      // ToDo: post problem definition and load result...
+      let requestData = {
+        process: {
+          id: this.process.id,
+          api_name: this.process.api_name,
+          view_name: this.process.view_name
+        },
+        process_parameters: this.parameters,
+        variants_conditions: []
+      };
+      this.$http.post('problems/' + this.process.id, requestData).
+          then((response) => {
+            if (response.status < 400) {
+              this.$router.push({
+                name: 'OptimizationResult',
+                params: {type: this.process.api_name, timestamp: response.data, request: requestData}
+              });
+            } else {
+              this.$router.push({
+                name: 'OptimizationResult',
+                params: {type: this.process.api_name, timestamp: response.data, result: response.statusText, request: requestData}
+              });
+            }
+          }
+      ).catch((error) => {
+        let msg = error.response ? `<p>${error.response.status}</p><p>${error.response.data}</p>` :
+            (error.request ? error.request : error.message);
+        this.$router.push({
+          name: 'OptimizationResult',
+          params: {type: this.process.api_name, timestamp: 'ERROR', result: msg, request: requestData}
+        });
+      });
     }
   }
 }
