@@ -36,7 +36,7 @@
             </v-stepper-content>
 
             <v-stepper-content step="3">
-              <restrictions :process="process" :variants="variants" :variant_selection="selection" @continue="continueThree" @abort="abort"></restrictions>
+              <restrictions :parameters="process.parameters" :variants="variants" :variant_selection="selection" @continue="continueThree" @abort="abort"></restrictions>
             </v-stepper-content>
           </v-stepper-items>
         </v-stepper>
@@ -58,7 +58,8 @@ export default {
       def_step: 1,
       variant_select_type: 0,
       parameters: [],
-      selection: []
+      selection: [],
+      variants_conditions: []
     }
   },
 
@@ -94,7 +95,10 @@ export default {
       }
       this.def_step = 3;
     },
-    continueThree() {
+    continueThree(param) {
+      if (param) {
+        this.variants_conditions = [...param];
+      }
       let requestData = {
         process: {
           id: this.process.id,
@@ -102,7 +106,7 @@ export default {
           view_name: this.process.view_name
         },
         process_parameters: this.parameters,
-        variants_conditions: []
+        variants_conditions: this.variants_conditions
       };
       this.$http.post('problems/' + this.process.id, requestData).
           then((response) => {

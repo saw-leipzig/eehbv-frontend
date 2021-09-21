@@ -105,7 +105,7 @@ export default {
   },
 
   computed: {
-    headers () {
+    headers() {
       return [...this.comp.infos.map(d => {
         return {
           text: this.entryLabel(d),
@@ -117,7 +117,7 @@ export default {
         { text: 'Aktionen', value: 'actions', sortable: false }
       ];
     },
-    formTitle () {
+    formTitle() {
       return this.editedIndex === -1 ? 'Neuer Eintrag' : 'Eintrag bearbeiten'
     }
   },

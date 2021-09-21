@@ -25,7 +25,7 @@ export default {
     tables: []
   }),
   computed: {
-    ...mapGetters(['componentTypes'/*, 'componentInfos'*/])
+    ...mapGetters(['componentTypes'])
   },
   methods: {
     log: function () {
@@ -33,7 +33,9 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('initComponents');
+    if (this.componentTypes.length < 1) {
+      this.$store.dispatch('initComponents');
+    }
   }
 }
 </script>

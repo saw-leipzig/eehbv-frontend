@@ -20,7 +20,7 @@ export default {
     tables: []
   }),
   computed: {
-    ...mapGetters(['processes'])
+    ...mapGetters(['processes', 'componentTypes'])
   },
   methods: {
     log: function () {
@@ -29,6 +29,9 @@ export default {
   },
   created() {
     this.$store.dispatch('initProcesses');
+    if (this.componentTypes.length < 1) {
+      this.$store.dispatch('initComponents');
+    }
   }
 }
 </script>

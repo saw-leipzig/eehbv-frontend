@@ -110,8 +110,8 @@
       <v-card>
         <v-card-title>Variantenauswahl</v-card-title>
         <v-card-actions>
-          <v-btn @click="continueOne(0);">Pickliste</v-btn>
-          <v-btn @click="continueOne(1);">Fragen</v-btn>
+          <v-btn @click="continueOne(0)">Pickliste</v-btn>
+          <v-btn @click="continueOne(1)">Fragen</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

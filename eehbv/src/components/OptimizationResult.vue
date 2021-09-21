@@ -1,6 +1,14 @@
 <template>
   <v-container>
     <v-row>
+      <v-col cols="6"><h2>Übersicht Optimierungsergebnis</h2></v-col>
+
+      <v-col cols="6">
+        <v-btn :to="{ name: 'Process' }">Prozessliste</v-btn>
+      </v-col>
+    </v-row>
+
+    <v-row>
       <v-col cols="12">
         <v-card>
           <v-card-title>Optimierungsanfrage</v-card-title>
@@ -19,6 +27,7 @@
               <v-progress-circular indeterminate color="green" size="70" width="7"></v-progress-circular>
             </div>
             <div v-else>{{result}}</div>
+<!--            <div v-else v-html="result"></div>-->
           </v-card-text>
         </v-card>
       </v-col>
@@ -37,6 +46,10 @@ export default {
   },
 
   props: {
+    type: {
+      type: String,
+      required: true
+    },
     request: {
       type: Object,
       required: false
@@ -69,7 +82,7 @@ export default {
   },
 
   created() {
-    // ToDo: replace polling with Websocket
+    // ToDo: replace polling with server-sent Events or WebSocket
     this.polling = setInterval(this.checkResult, 5000);
   }
 }
