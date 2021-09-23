@@ -45,17 +45,7 @@
             </v-card>
           </v-dialog>
 
-          <v-dialog v-model="dialogDelete" max-width="400px">
-            <v-card>
-              <v-card-title class="headline">Sind Sie sicher, dass Sie diesen Eintrag löschen wollen?</v-card-title>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="green darken-1" text @click="closeDelete">Abbrechen</v-btn>
-                <v-btn color="green darken-1" text @click="deleteItemConfirm">OK</v-btn>
-                <v-spacer></v-spacer>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
+          <DialogDelete v-model="dialogDelete" @abort="closeDelete" @delete="deleteItemConfirm"></DialogDelete>
 
         </v-toolbar>
       </template>
@@ -80,10 +70,11 @@
 <script>
 import ComponentButton from "@/components/ComponentButton";
 import ComponentToolbar from "@/components/ComponentToolbar";
+import DialogDelete from "./DialogDelete";
 
 export default {
   name: "ComponentOverview",
-  components: {ComponentButton},
+  components: {DialogDelete, ComponentButton},
 
   data: () => ({
     dialog: false,

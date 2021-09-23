@@ -20,17 +20,17 @@ export default {
   data() {
     return {
       basicFunctions: [
-        { formula: 'exp(', view: 'exp' },
-        { formula: 'sqrt(', view: 'sqrt' },
-        { formula: 'log(', view: 'log' },
-        { formula: 'ln(', view: 'ln' },
-        { formula: 'abs(', view: 'abs' }
+        { formula: 'exp(', view: 'exp', state: 'O' },
+        { formula: 'sqrt(', view: 'sqrt', state: 'O' },
+        { formula: 'log(', view: 'log', state: 'O' },
+        { formula: 'ln(', view: 'ln', state: 'O' },
+        { formula: 'abs(', view: 'abs', state: 'O' }
       ],
       trigonometricFunctions: [
-        { formula: 'sin(', view: 'sin' },
-        { formula: 'cos(', view: 'cos' },
-        { formula: 'tan(', view: 'tan' },
-        { formula: 'cot(', view: 'cot' }
+        { formula: 'sin(', view: 'sin', state: 'O' },
+        { formula: 'cos(', view: 'cos', state: 'O' },
+        { formula: 'tan(', view: 'tan', state: 'O' },
+        { formula: 'cot(', view: 'cot', state: 'O' }
       ]
     }
   },

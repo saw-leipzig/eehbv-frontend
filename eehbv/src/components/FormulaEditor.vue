@@ -21,7 +21,7 @@
         <v-col cols="2"><v-btn icon :disabled="disabledB" @click="addBasic('/')"><v-icon>mdi-division</v-icon></v-btn></v-col>
       </v-row>
       <v-row>
-        <v-col cols="2"><ParameterButton :disabled="disabledV" :params="parameters"></ParameterButton></v-col>
+        <v-col cols="2"><ParameterButton :disabled="disabledV" :params="parameters" @click="addParameter"></ParameterButton></v-col>
         <v-col cols="2"><v-btn :disabled="disabledS" icon @click="addSquare"><v-icon>mdi-format-superscript</v-icon></v-btn></v-col>
         <v-col cols="2"><v-btn :disabled="disabledS" icon @click="addExp">x^y</v-btn></v-col>
         <v-col cols="2"><FunctionButton :disabled="disabledF" @click="addFunc"></FunctionButton></v-col>
@@ -62,9 +62,7 @@ export default {
   components: {ParameterButton, FunctionButton, ParenthesesButton, ComparatorButton},
   data() {
     return {
-      conditions: [],
-      number: 0,
-      state: []
+      number: 0
     }
   },
 
@@ -89,24 +87,27 @@ export default {
 
   computed: {
     disabledV() {
-      return this.disabledInequality || this.state.at(-1) === 'V';
+      return this.disabledInequality || this.lastState === 'V';
     },
     disabledS() {
-      return this.disabledStart || this.state.at(-1) === 'O' || this.state.at(-1) === 'B';
+      return this.disabledStart ||
+          this.lastState === 'O' || this.lastState === 'B';
     },
     disabledF() {
-      return this.disabledInequality || this.state.at(-1) === 'C' || this.state.at(-1) === 'V';
+      return this.disabledInequality ||
+          this.lastState === 'C' || this.lastState === 'V';
     },
     disabledB() {
-      return this.disabledStart || this.state.at(-1) === 'B' || this.state.at(-1) === 'O';
+      return this.disabledStart ||
+          this.lastState === 'B' || this.lastState === 'O';
     },
     disabledC() {
-      return this.state.at(-1) === 'O' ||
-          this.state.at(-1) === 'B' ||
-          (this.state.filter(s => s === 'O').length <= this.state.filter(s => s === 'C').length);
+      return this.lastState === 'O' ||
+          this.lastState === 'B' ||
+          (this.value.filter(s => s.state === 'O').length <= this.value.filter(s => s.state === 'C').length);
     },
     disabledO() {
-      return this.state.at(-1) === 'V';
+      return this.lastState === 'V';
     },
     comparator() {
       return this.value.length > 0 ? this.value[0].formula : '?';
@@ -118,17 +119,19 @@ export default {
       return (this.value.length < (this.inequality ? 2 : 1));
     },
     disabledSave() {
-      return this.disabledStart || this.state.at(-1) === 'B' ||
-          (this.state.filter(s => s === 'O').length !== this.state.filter(s => s === 'C').length);
+      return this.disabledStart || this.lastState === 'B' ||
+          (this.value.filter(s => s.state === 'O').length !== this.value.filter(s => s.state === 'C').length);
     },
     formula() {
       return this.value.filter((v, p) => p > (this.inequality ? 0 : -1)).map(v => v.formula).join(' ');
+    },
+    lastState() {
+      return this.value.length === 0 ? '' : this.value[this.value.length-1].state;
     }
   },
 
   methods: {
     close(save) {
-      this.state.splice(0);
       this.$emit('closeDialog', save);
     },
     comparatorChanged(val) {
@@ -139,43 +142,34 @@ export default {
       }
     },
     addConst(val) {
-      this.value.push({ formula: val, view: val});
-      this.state.push('V');
+      this.value.push({ formula: val, view: val, state: 'V'});
     },
     addBasic(operator) {
-      this.value.push({ formula: operator, view: operator});
-      this.state.push('B');
+      this.value.push({ formula: operator, view: operator, state: 'B'});
     },
     addParenthesis(p) {
       this.value.push(p);
-      this.state.push(p.formula === '(' ? 'O' : 'C')
     },
     addFunc(func) {
       this.value.push(func);
-      this.state.push('O');
     },
     addSquare() {
-      this.value.push({ formula: '^2', view: '^2'});
-      this.state.push('V');
+      this.value.push({ formula: '^2', view: '^2', state: 'V'});
     },
     addExp() {
-      this.value.push({ formula: '^(', view: '^('});
-      this.state.push('O');
+      this.value.push({ formula: '^(', view: '^(', state: 'O'});
     },
     addNumber() {
-      this.value.push({ formula: this.number, view: this.number});
+      this.value.push({ formula: this.number, view: this.number, state: 'V'});
       this.number = 0;
-      this.state.push('V');
     },
     addParameter(p) {
       this.value.push(p);
-      this.state.push('V');
     },
     del() {
       if (this.value.length > this.inequality ? 2 : 1) {
         this.value.splice(-1);
       }
-      this.state.splice(-1);
     }
   }
 }

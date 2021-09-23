@@ -21,8 +21,8 @@ export default {
   data() {
     return {
       parentheses: [
-        { formula: '(', view: '(' },
-        { formula: ')', view: ')' }
+        { formula: '(', view: '(', state: 'O' },
+        { formula: ')', view: ')', state: 'C' }
       ]
     }
   },

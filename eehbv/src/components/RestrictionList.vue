@@ -16,7 +16,7 @@
     </v-container>
 
     <v-dialog v-model="editDialog" max-width="600px">
-      <FormulaEditor :title="title" :parameters="params" :inequality="true" v-model="currentCondition" @closeDialog="closeEdit"></FormulaEditor>
+      <FormulaEditor :title="title" v-model="currentCondition" :parameters="params" :inequality="true" @closeDialog="closeEdit"></FormulaEditor>
     </v-dialog>
   </div>
 </template>
@@ -27,8 +27,14 @@ import {mapGetters} from "vuex";
 export default {
   name: "RestrictionList",
   components: {FormulaEditor},
+
+  model: {
+    prop: 'conditions',
+    event: 'input'
+  },
+
   data: () => ({
-    conditions: [],
+    //conditions: [],
     currentCondition: [],
     currentIndex: -1,
     editDialog: false,
@@ -36,6 +42,10 @@ export default {
   }),
 
   props: {
+    conditions: {
+      type: Array,
+      required: true
+    },
     variant: {
       type: Object,
       required: true
@@ -75,7 +85,6 @@ export default {
       return '0 ' + condition.map(p => p.formula).join(' ');
     },
     closeEdit(val) {
-      console.log(val);
       if (val) {
         let item = JSON.parse(JSON.stringify(this.currentCondition));
         if (this.currentIndex > -1) {

@@ -21,11 +21,11 @@ export default {
   data() {
     return {
       comparators: [
-        { formula: '<', view: 'LT' },
-        { formula: '<=', view: 'LE' },
-        { formula: '=', view: 'EQ' },
-        { formula: '>=', view: 'GE' },
-        { formula: '>', view: 'GT' }
+        { formula: '<', view: 'LT', state: '' },
+        { formula: '<=', view: 'LE', state: '' },
+        { formula: '=', view: 'EQ', state: '' },
+        { formula: '>=', view: 'GE', state: '' },
+        { formula: '>', view: 'GT', state: '' }
       ]
     }
   },

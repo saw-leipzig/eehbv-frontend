@@ -1,42 +1,131 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col cols="4">
-        Name
-      </v-col>
-      <v-col cols="4">
-        API-Pfad
-      </v-col>
-      <v-col cols="4">
-        Aggregat
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12">
-        <v-btn @click="save">Speichern</v-btn>
-        <v-btn text :to="{ name: 'Component' }">Abbrechen</v-btn>
-      </v-col>
-    </v-row>
-  </v-container>
+  <div>
+    <v-card>
+      <v-card-title class="headline">Neue Komponente</v-card-title>
+      <v-card-text>
+        <v-row>
+          <v-col cols="4">
+            <v-text-field v-model="component_type.view_name" label="Name" counter="40"></v-text-field>
+          </v-col>
+          <v-col cols="4">
+            <v-text-field v-model="component_type.api_name" label="API-Pfad" counter="20"></v-text-field>
+          </v-col>
+          <v-col cols="4">
+            <v-slider></v-slider> <!--Aggregat-->
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12">
+            <v-card>
+              <v-card-title>Spalten</v-card-title>
+              <v-card-text>
+                <v-row v-for="column in component_type.columns" :key="c.position">
+                  <v-col cols="3">{{column.view_name}}</v-col>
+                  <v-col cols="3">{{column.column_name}}</v-col>
+                  <v-col cols="3">{{column.unit}}</v-col>
+                  <v-col cols="3" v-if="c.position > 2">
+                    <v-icon small class="mr-2" @click="editColumn(index)">mdi-pencil</v-icon>
+                    <v-icon small @click="deleteColumn(index)">mdi-delete</v-icon>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+              <v-card-actions>
+                <v-btn color="green" @click="editColumn(-1)">
+                  <icon>mdi-plus</icon>
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="green darken-1" @click="save" :disabled="disabledSave">Speichern</v-btn>
+        <v-btn color="green darken-1" text :to="{ name: 'Component' }">Abbrechen</v-btn>
+      </v-card-actions>
+    </v-card>
+
+    <DialogCardEditor v-model="dialogEditColumn" @save="saveColumn" @close="closeEditColumn">
+      <v-row>
+        <v-col cols="3"><v-text-field v-model="currentColumn.view_name" label="Name" counter="40"></v-text-field></v-col>
+        <v-col cols="3"><v-text-field v-model="currentColumn.column_name" label="Datenbank-Spalte" counter="30"></v-text-field></v-col>
+        <v-col cols="3"><v-text-field v-model="currentColumn.unit" label="Einheit" counter="20"></v-text-field></v-col>
+        <v-col cols="3"><v-select :items="typeItems" v-model="currentColumn.type" label="Datentyp"></v-select></v-col>
+      </v-row>
+    </DialogCardEditor>
+
+    <DialogDelete v-model="dialogDeleteColumn" @abort="closeDeleteColumn" @delete="deleteColumnConfirm"></DialogDelete>
+  </div>
 </template>
 
 <script>
+import DialogCardEditor from "./DialogCardEditor";
+import DialogDelete from "./DialogDelete";
 export default {
   name: "ComponentCreation",
-
+  components: {DialogDelete, DialogCardEditor},
   data: () => ({
     component_type: {
       table_name: '',
       view_name: '',
       api_name: '',
       is_aggregate: false,
-      columns: []
-    }
+      columns: [
+          { column_name: 'name', view_name: 'Modell', type: 'VARCHAR', position: 1, unit: null },
+          { column_name: 'manufacturer', view_name: 'Hersteller', type: 'VARCHAR', position: 2, unit: null }
+      ]
+    },
+    currentColumn: {},
+    currentColumnIndex: -1,
+    dialogEditColumn: false,
+    dialogDeleteColumn: false,
+    typeItems: [
+      { text: 'VARCHAR', value: 'VARCHAR' },
+      { text: 'DOUBLE', value: 'DOUBLE' },
+      { text: 'BOOL', value: 'BOOL' },
+    ]
   }),
+
+  computed: {
+    disabledSave() {
+      return this.component_type.table_name === '' || this.component_type.view_name === '' ||
+          this.component_type.api_name === '' || this.component_type.columns.length < 1;
+    }
+  },
 
   methods: {
     save() {
-      //
+      // ToDo: splice name & manufacturer in columns
+    },
+    editColumn(index) {
+      this.currentColumn = Object.assign({},
+          this.currentColumnIndex < 0 ?
+              { column_name: '', view_name: '', type: '', position, unit: '' } :
+              this.component_type.columns[index]);
+      this.currentColumnIndex = index;
+      this.dialogEditColumn = true;
+    },
+    saveColumn() {
+      if (this.currentColumnIndex < 0) {
+        this.component_type.columns.push(this.currentColumn);
+      } else {
+        this.component_type.columns.splice(this.currentColumnIndex, 1, this.currentColumn);
+      }
+      this.closeEditColumn();
+    },
+    closeEditColumn() {
+      this.dialogEditColumn = false;
+    },
+    deleteColumn(index) {
+      this.currentColumnIndex = index;
+      this.dialogDeleteColumn = true;
+    },
+    deleteColumnConfirm() {
+      this.component_type.columns.splice(this.currentColumnIndex, 1);
+      this.closeDeleteColumn();
+    },
+    closeDeleteColumn() {
+      this.dialogDeleteColumn = false;
     }
   }
 }

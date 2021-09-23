@@ -7,6 +7,7 @@ import ComponentOverview from "../components/ComponentOverview";
 import ProcessOverview from "../components/ProcessOverview";
 import Optimization from "../components/Optimization";
 import ComponentCreation from "../components/ComponentCreation";
+import ProcessCreation from "../components/ProcessCreation";
 import OptimizationResult from "../components/OptimizationResult";
 
 Vue.use(VueRouter)
@@ -37,6 +38,11 @@ const routes = [
     path: '/processes',
     name: 'Process',
     component: Processes
+  },
+  {
+    path: '/processes/create',
+    name: 'ProcessCreation',
+    component: ProcessCreation
   },
   {
     path: '/processes/:type',

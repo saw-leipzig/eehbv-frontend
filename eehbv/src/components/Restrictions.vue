@@ -8,24 +8,24 @@
             <v-card-text>
               <v-container>
 
-                <v-row v-for="variant in variants" :key="variant.id"
-                         v-if="variant_selection.includes(variant.id)">
-                  <v-col cols="12">
-                    <v-card>
-                      <v-card-title>{{ variant.name }}</v-card-title>
-                      <v-card-text>
-                        <RestrictionList :variant="variant" :parameters="parameters"></RestrictionList>
-                      </v-card-text>
-                    </v-card>
-                  </v-col>
-                </v-row>
-
                 <v-row v-if="variant_selection.length > 1">
                   <v-col cols="12">
                     <v-card>
                       <v-card-title>Für alle Varianten</v-card-title>
                       <v-card-text>
-                        <RestrictionList :variant="variantCommonComp" :parameters="parameters"></RestrictionList>
+                        <RestrictionList :variant="variantCommonComp" :parameters="parameters" v-model="variants_conditions[0].conditions"></RestrictionList>
+                      </v-card-text>
+                    </v-card>
+                  </v-col>
+                </v-row>
+
+                <v-row v-for="(variant, index) in variants" :key="variant.id"
+                         v-if="variant_selection.includes(variant.id)">
+                  <v-col cols="12">
+                    <v-card>
+                      <v-card-title>{{ variant.name }}</v-card-title>
+                      <v-card-text>
+                        <RestrictionList :variant="variant" :parameters="parameters" v-model="variants_conditions[index + 1].conditions"></RestrictionList>
                       </v-card-text>
                     </v-card>
                   </v-col>
@@ -75,8 +75,17 @@ export default {
     }
   },
 
+  created() {
+    for (let v of this.variants) {
+      this.variants_conditions.push({
+        id: 0,
+        name: '',
+        conditions: []
+      });
+    }
+  },
+
   computed: {
-    ...mapGetters(['componentTypes']),
     variantCommonComp() {   // return all components whose variable_name is in all variants' components
       // ToDo: TEST!
       let vcc ={
@@ -99,29 +108,27 @@ export default {
   },
 
   watch: {
-    variant_selection: function (newVal, oldVal) {
+    variant_selection() {
       this.resetConditions();
     }
   },
 
   methods: {
     continueThree() {
-      let v_c = this.variants_conditions.filter((v, i) => i > 0).map(v => {
-        v.conditions.push(...this.variants_conditions[0].conditions);
-        return v;
-      });
+      let v_c = [];
+      let all_cond = this.variants_conditions[0].conditions.map(a => a.map(ac => ac.formula));
+      this.variants_conditions.filter((v, i) => i > 0).forEach(v =>
+          v_c.push({ id: v.id, name: v.name,
+            conditions: v.conditions.map(c => c.map(cc => cc.formula)).concat(all_cond)})
+      );
       this.$emit('continue', v_c);
     },
     resetConditions() {
-      this.variants_conditions.splice(0);
-      this.variants_conditions.push({ conditions: [] });
-      this.variant_selection.forEach(v => {
+      this.variants_conditions.splice(this.variant_selection.length + 1);
+      this.variant_selection.forEach((v,i) => {
         let variant = this.variants.find(va => va.id === v);
-        this.variants_conditions.push({
-          id: v,
-          name: variant.name,
-          conditions: []
-        });
+        this.variants_conditions[i + 1].id = v;
+        this.variants_conditions[i + 1].name = variant.name;
       });
     }
   }

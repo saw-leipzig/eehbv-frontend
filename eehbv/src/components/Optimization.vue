@@ -97,7 +97,7 @@ export default {
     },
     continueThree(param) {
       if (param) {
-        this.variants_conditions = [...param];
+        this.variants_conditions = [...param];  // ??? keep
       }
       let requestData = {
         process: {
@@ -106,7 +106,7 @@ export default {
           view_name: this.process.view_name
         },
         process_parameters: this.parameters,
-        variants_conditions: this.variants_conditions
+        variants_conditions: param
       };
       this.$http.post('problems/' + this.process.id, requestData).
           then((response) => {
