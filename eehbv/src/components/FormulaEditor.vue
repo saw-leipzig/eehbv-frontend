@@ -9,6 +9,11 @@
           <ComparatorButton :comparator="comparator" @changed="comparatorChanged"></ComparatorButton>
         </v-col>
       </v-row>
+      <v-row v-else>
+        <v-col cols="12">
+          {{signature}}
+        </v-col>
+      </v-row>
       <v-row>
         <v-col cols="12">{{formula}}</v-col>
       </v-row>
@@ -82,32 +87,37 @@ export default {
     parameters: {
       type: Array,
       required: true
+    },
+    signature: {
+      type: String,
+      required: false,
+      default: ''
     }
   },
 
   computed: {
     disabledV() {
-      return this.disabledInequality || this.lastState === 'V';
+      return this.disabledInequality || this.lastIsValue || this.lastIsCloseParenthesis;
     },
     disabledS() {
       return this.disabledStart ||
-          this.lastState === 'O' || this.lastState === 'B';
+          this.lastIsOpenParenthesis || this.lastIsBasicOperator;
     },
     disabledF() {
       return this.disabledInequality ||
-          this.lastState === 'C' || this.lastState === 'V';
+          this.lastIsCloseParenthesis || this.lastIsValue;
     },
     disabledB() {
       return this.disabledStart ||
-          this.lastState === 'B' || this.lastState === 'O';
+          this.lastIsBasicOperator || this.lastIsOpenParenthesis;
     },
     disabledC() {
-      return this.lastState === 'O' ||
-          this.lastState === 'B' ||
+      return this.lastIsOpenParenthesis ||
+          this.lastIsBasicOperator ||
           (this.value.filter(s => s.state === 'O').length <= this.value.filter(s => s.state === 'C').length);
     },
     disabledO() {
-      return this.lastState === 'V';
+      return this.lastIsValue;
     },
     comparator() {
       return this.value.length > 0 ? this.value[0].formula : '?';
@@ -119,7 +129,7 @@ export default {
       return (this.value.length < (this.inequality ? 2 : 1));
     },
     disabledSave() {
-      return this.disabledStart || this.lastState === 'B' ||
+      return this.disabledStart || this.lastIsBasicOperator ||
           (this.value.filter(s => s.state === 'O').length !== this.value.filter(s => s.state === 'C').length);
     },
     formula() {
@@ -127,6 +137,18 @@ export default {
     },
     lastState() {
       return this.value.length === 0 ? '' : this.value[this.value.length-1].state;
+    },
+    lastIsValue() {
+      return this.lastState === 'V';
+    },
+    lastIsOpenParenthesis() {
+      return this.lastState === 'O';
+    },
+    lastIsCloseParenthesis() {
+      return this.lastState === 'C';
+    },
+    lastIsBasicOperator() {
+      return this.lastState === 'B';
     }
   },
 

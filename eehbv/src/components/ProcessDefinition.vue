@@ -3,13 +3,13 @@
     <v-container>
       <v-row>
         <v-col cols="4">
-          <v-text-field label="name" v-model="value.view_name" counter="40"></v-text-field>
+          <v-text-field label="Name" v-model="value.view_name" counter="40"></v-text-field>
         </v-col>
         <v-col cols="4">
           <v-text-field label="API-Name" v-model="value.api_name" counter="40" :rules="api_name_rules"></v-text-field>
         </v-col>
         <v-col cols="4">
-          <v-select :items="selectionOptions" label="Variantenfrageschema"></v-select>
+          <v-select :items="selectionOptions" v-model="value.variant_tree" label="Variantenfrageschema"></v-select>
         </v-col>
       </v-row>
       <v-row>
@@ -20,7 +20,7 @@
               <v-row v-for="(param, index) in value.process_parameters" :key="index">
                 <v-col cols="3">Name: {{param.name}}</v-col>
                 <v-col cols="3">Einheit: {{param.unit}}</v-col>
-                <v-col cols="3">Variablenname: {{param.view_name}}</v-col>
+                <v-col cols="3">Variablenname: {{param.variable_name}}</v-col>
                 <v-col cols="3">
                   <v-icon small class="mr-2" @click="editParam(index)">mdi-pencil</v-icon>
                   <v-icon small @click="deleteParam(index)">mdi-delete</v-icon>
@@ -36,7 +36,7 @@
       </v-row>
     </v-container>
 
-    <DialogCardEditor v-model="dialogEditParam" max-width="600px" @save="saveParam" @close="closeEditParam">
+    <DialogCardEditor v-model="dialogEditParam" max-width="600px" :title="parameterEditTitle" @save="saveParam" @close="closeEditParam">
       <v-row>
         <v-col cols="4"><v-text-field label="Name" v-model="editedParam.name" counter="40"></v-text-field></v-col>
         <v-col cols="4"><v-text-field label="Einheit" v-model="editedParam.unit" counter="40"></v-text-field></v-col>
@@ -59,8 +59,8 @@ export default {
     dialogEditParam: false,
     dialogDeleteParam: false,
     selectionOptions: [
-      { text: 'Liste', value: 0 },
-      { text: 'Baum', value: 1 }
+      { text: 'Liste', value: false },
+      { text: 'Baum', value: true }
     ],
     api_name_rules: [ v => v.length <= 40 || 'Max 40 Zeichen', v => v.length > 0 || 'erforderlich' ],
     editedParamIndex: -1,
@@ -71,6 +71,12 @@ export default {
     value: {
       type: Object,
       required: true
+    }
+  },
+
+  computed: {
+    parameterEditTitle() {
+      return this.editedParamIndex < 0 ? 'Prozessparameter anlegen' : 'Prozessparameter bearbeiten';
     }
   },
 

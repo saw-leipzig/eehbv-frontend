@@ -1,0 +1,16 @@
+{
+  "info": {
+    "process": {
+      "definition": "<p>Info <em>definition of process</em><p>",
+      "variants": "<p>Info <em>definition of variants</em><p>",
+      "selection": "<p>Info <em>definition of variant selection</em><p>",
+      "solver": "<p>Info <em>Solver</em><p>",
+      "infoTexts": "<p>Info <em>Info texts</em><p>"
+    }
+  },
+  "error": {
+    "request": {
+      "badRequest": "Bad request"
+    }
+  }
+}

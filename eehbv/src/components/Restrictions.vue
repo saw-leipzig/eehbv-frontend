@@ -76,7 +76,7 @@ export default {
   },
 
   created() {
-    for (let v of this.variants) {
+    for (let v = 0; v <= this.variants.length; v++) {
       this.variants_conditions.push({
         id: 0,
         name: '',
@@ -117,14 +117,13 @@ export default {
     continueThree() {
       let v_c = [];
       let all_cond = this.variants_conditions[0].conditions.map(a => a.map(ac => ac.formula));
-      this.variants_conditions.filter((v, i) => i > 0).forEach(v =>
+      this.variants_conditions.filter((v, i) => i > 0 && i <= this.variant_selection.length).forEach(v =>
           v_c.push({ id: v.id, name: v.name,
             conditions: v.conditions.map(c => c.map(cc => cc.formula)).concat(all_cond)})
       );
       this.$emit('continue', v_c);
     },
     resetConditions() {
-      this.variants_conditions.splice(this.variant_selection.length + 1);
       this.variant_selection.forEach((v,i) => {
         let variant = this.variants.find(va => va.id === v);
         this.variants_conditions[i + 1].id = v;

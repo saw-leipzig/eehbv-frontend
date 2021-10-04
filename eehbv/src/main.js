@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify';
+import { i18n } from "./i18n";
 import axios from 'axios';
 
 // axios.defaults.baseURL = 'http://localhost:5000';
@@ -15,6 +16,7 @@ Vue.prototype.$http = axios;
 new Vue({
   router,
   store,
+  i18n,
   vuetify,
   render: function (h) { return h(App) }
 }).$mount('#app')

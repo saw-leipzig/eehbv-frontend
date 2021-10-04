@@ -47,9 +47,9 @@ export default {
 
   methods: {
     initialize() {
-      this.$http.get('processes/' + this.process.id + '/questions').
+      this.$http.get('processes/' + this.process.id + '/selection').
               then((response) => {
-                  this.questions = response.data;
+                  this.questions = this.process.variant_tree ? response.data.tree : response.data.list;
                   this.askedQuestions.push(this.questions);
           });
     },

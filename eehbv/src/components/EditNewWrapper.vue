@@ -17,7 +17,7 @@
       <v-btn color="orange lighten-2" @click="infoOverlay = false">Schließen</v-btn>
     </v-overlay>
 
-    <v-btn color="green" @click="$emit('ok')">
+    <v-btn color="green" :disabled="disabled" @click="$emit('ok')">
       {{contextNew ? 'Weiter' : 'Speichern'}}
     </v-btn>
 
@@ -49,6 +49,11 @@ export default {
       type: String,
       required: false,
       default: ''
+    },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   }
 }

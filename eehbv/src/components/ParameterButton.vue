@@ -8,7 +8,7 @@
     </template>
     <v-card>
       <v-treeview :activatable="true" :items="treeParameters" item-text="view" item-key="id" item-disabled="disabled"
-                  item-children="parameters" return-object @update:active="click"></v-treeview>
+                  item-children="parameters" return-object dense @update:active="click"></v-treeview>
 <!--      <v-card-actions>
         <v-btn text @click="menu = false">Schließen</v-btn>
       </v-card-actions>-->

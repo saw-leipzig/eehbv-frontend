@@ -9,43 +9,7 @@
           <v-toolbar-title>{{ comp.view_name }}</v-toolbar-title>
           <v-divider class="mx-4" inset vertical ></v-divider>
           <v-spacer></v-spacer>
-          <v-dialog v-model="dialog" max-width="600px">
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn color="green" dark class="mb-2" v-bind="attrs" v-on="on">Neuer Eintrag</v-btn>
-            </template>
-            <v-card>
-              <v-card-title>
-                <span class="headline">{{ formTitle }}</span>
-              </v-card-title>
-
-              <v-card-text>
-                <v-container>
-                  <v-row>
-                    <v-col v-for="detail in comp.infos" :key="detail.position" cols="12" sm="6" md="4">
-                      <v-checkbox v-if="detail.type === 'BOOL'" v-model="editedItem[detail.column_name]" :label="entryLabel(detail)"></v-checkbox>
-                      <v-text-field v-else
-                          v-model="editedItem[detail.column_name]"
-                          :label="entryLabel(detail)"
-                          :type="detail.type === 'INT' || detail.type === 'DOUBLE' ? 'number' : 'text'"
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
-
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="green darken-1" text @click="close">
-                  Abbrechen
-                </v-btn>
-                <v-btn color="green darken-1" text @click="save">
-                  Speichern
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-
-          <DialogDelete v-model="dialogDelete" @abort="closeDelete" @delete="deleteItemConfirm"></DialogDelete>
+          <v-btn color="green" dark class="mb-2" @click="dialog = true">Neuer Eintrag</v-btn>
 
         </v-toolbar>
       </template>
@@ -61,6 +25,23 @@
         </v-btn>
       </template>
 
+      <DialogCardEditor v-model="dialog" max-width="600px" @save="save" @close="close">
+        <v-container>
+          <v-row>
+            <v-col v-for="detail in comp.infos" :key="detail.position" cols="12" sm="6" md="4">
+              <v-checkbox v-if="detail.type === 'BOOL'" v-model="editedItem[detail.column_name]" :label="entryLabel(detail)"></v-checkbox>
+              <v-text-field v-else
+                  v-model="editedItem[detail.column_name]"
+                  :label="entryLabel(detail)"
+                  :type="detail.type === 'INT' || detail.type === 'DOUBLE' ? 'number' : 'text'"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-container>
+      </DialogCardEditor>
+
+      <DialogDelete v-model="dialogDelete" @abort="closeDelete" @delete="deleteItemConfirm"></DialogDelete>
+
     </v-data-table>
 
     <component-button></component-button>
@@ -71,10 +52,11 @@
 import ComponentButton from "@/components/ComponentButton";
 import ComponentToolbar from "@/components/ComponentToolbar";
 import DialogDelete from "./DialogDelete";
+import DialogCardEditor from "./DialogCardEditor";
 
 export default {
   name: "ComponentOverview",
-  components: {DialogDelete, ComponentButton},
+  components: {DialogCardEditor, DialogDelete, ComponentButton},
 
   data: () => ({
     dialog: false,

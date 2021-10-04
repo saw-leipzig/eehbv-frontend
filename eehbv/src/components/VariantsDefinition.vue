@@ -2,22 +2,24 @@
   <div>
     <v-container>
       <v-row>
-        <v-card v-for="(variant, index) in value" :key="index">
-          <v-card-text>
-            <v-container>
-              <v-row>
-                <v-col cols="10">Beschreibung: {{variant.name}}</v-col>
-                <v-col cols="2">
-                  <v-icon small class="mr-2" @click="editVariant(index)">mdi-pencil</v-icon>
-                  <v-icon small @click="deleteVariant(index)">mdi-delete</v-icon>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="12"><b>Komponenten:</b> {{componentList(variant)}}</v-col>
-              </v-row>
-            </v-container>
-          </v-card-text>
-        </v-card>
+        <v-col cols="12">
+          <v-card v-for="(variant, index) in value" :key="index">
+            <v-card-text>
+              <v-container>
+                <v-row>
+                  <v-col cols="10">Beschreibung: {{ variant.name }}</v-col>
+                  <v-col cols="2">
+                    <v-icon small class="mr-2" @click="editVariant(index)">mdi-pencil</v-icon>
+                    <v-icon small @click="deleteVariant(index)">mdi-delete</v-icon>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="12"><b>Komponenten:</b> {{ componentList(variant) }}</v-col>
+                </v-row>
+              </v-container>
+            </v-card-text>
+          </v-card>
+        </v-col>
       </v-row>
       <v-row>
         <v-spacer></v-spacer>
@@ -27,7 +29,8 @@
 
     <DialogDelete v-model="dialogDeleteVariant" @abort="closeDeleteVariant" @delete="deleteVariantConfirm"></DialogDelete>
 
-    <DialogCardEditor v-model="dialogEditVariant" @save="saveVariant" @close="closeEditVariant" :disabled-save="disabledSaveVariant">
+    <DialogCardEditor v-model="dialogEditVariant" :title="variantEditTitle" :disabled-save="disabledSaveVariant"
+                      @save="saveVariant" @close="closeEditVariant">
       <v-row>
         <v-col cols="12"><v-text-field v-model="currentVariant.name" label="Beschreibung" counter="60"></v-text-field></v-col>
         <v-col cols="12">
@@ -53,10 +56,29 @@
           <v-card>
             <v-card-title>Zielfunktion</v-card-title>
             <v-card-text>
-              <v-textarea v-model="currentVariant.target_func" :disabled="true"></v-textarea>
+              <v-textarea v-if="currentTargetPythonStyle" v-model="currentVariant.target_func_python" :disabled="disabledEditFunc"></v-textarea>
+              <v-textarea v-else v-model="currentVariant.target_func" :disabled="true"></v-textarea>
             </v-card-text>
             <v-card-actions>
-              <v-btn color="green" :disabled="disabledEditFunc" @click="editTargetFunc">Bearbeiten</v-btn>
+              <v-row>
+                <v-col cols="3">
+                  <v-switch v-model="currentTargetPythonStyle" color="green" label="Python-Funktion"></v-switch>
+                </v-col>
+                <v-col cols="3">
+                  <v-btn color="green" :disabled="disabledEditFunc || !currentTargetPythonStyle" text @click="insertSignature">
+                    Funktionssignatur
+                  </v-btn>
+                </v-col>
+                <v-col cols="3">
+                  <ParameterButton :disabled="disabledEditFunc || !currentTargetPythonStyle"
+                                   :params="functionParams" @click="addParameter"></ParameterButton>
+                </v-col>
+                <v-col cols="3">
+                  <v-btn color="green" :disabled="disabledEditFunc || currentTargetPythonStyle" text @click="editTargetFunc">
+                    Bearbeiten
+                  </v-btn>
+                </v-col>
+              </v-row>
             </v-card-actions>
           </v-card>
         </v-col>
@@ -66,7 +88,7 @@
     <DialogCardEditor v-model="dialogEditComponent" @save="saveComponent" @close="closeEditComponent">
       <v-row>
         <v-col cols="4">
-          <v-select v-model="currentComponent.component_api_name" :items="componentSelection"></v-select>
+          <v-select v-model="currentComponent.component_api_name" :items="componentSelection" label="Komponententyp"></v-select>
         </v-col>
         <v-col cols="4">
           <v-text-field v-model="currentComponent.description" label="Bezeichner"></v-text-field>
@@ -79,10 +101,9 @@
 
     <DialogDelete v-model="dialogDeleteComponent" @abort="closeDeleteComponent" @delete="deleteComponentConfirm"></DialogDelete>
 
-    <!-- ToDo: Choice for math style or Python style -->
     <v-dialog v-model="dialogEditTargetFunc" max-width="600px">
       <FormulaEditor title="Zielfunktion" v-model="currentTargetFunc" :parameters="functionParams" :inequality="false"
-                     @closeDialog="closeTargetFunc"></FormulaEditor>
+                     :signature="'f' + signature + ' ='" @closeDialog="closeTargetFunc"></FormulaEditor>
     </v-dialog>
   </div>
 </template>
@@ -92,9 +113,10 @@ import DialogDelete from "./DialogDelete";
 import DialogCardEditor from "./DialogCardEditor";
 import {mapGetters} from "vuex";
 import FormulaEditor from "./FormulaEditor";
+import ParameterButton from "./ParameterButton";
 export default {
   name: "VariantsDefinition",
-  components: {FormulaEditor, DialogCardEditor, DialogDelete},
+  components: {ParameterButton, FormulaEditor, DialogCardEditor, DialogDelete},
 
   data: () => ({
     dialogEditVariant: false,
@@ -102,12 +124,14 @@ export default {
     dialogEditComponent: false,
     dialogDeleteComponent: false,
     dialogEditTargetFunc: false,
-    currentVariant: { name: '', target_func: '', variant_components: [] },
+    currentVariant: { name: '', target_func: '', target_func_python: '', variant_components: [] },
     currentVariantIndex: -1,
     currentComponent: { position: 0, component_api_name: '', variable_name: '', description: '' },
     currentComponentIndex: -1,
     currentTargetFunc: [],
-    targetFunctions: []
+    targetFunctions: [],
+    targetPythonStyle: [],
+    currentTargetPythonStyle: false
   }),
 
   props: {
@@ -124,8 +148,8 @@ export default {
   computed: {
     ...mapGetters(['componentTypes']),
     disabledSaveVariant() {
-      return this.currentVariant.name === '' || this.currentVariant.target_func === '' ||
-          this.currentVariant.variant_components.length < 1;
+      return (this.currentVariant.target_func === '' && this.currentVariant.target_func_python === '') ||
+          this.currentVariant.name === '' ||  this.currentVariant.variant_components.length < 1;
     },
     disabledEditFunc() {
       return this.currentVariant.name === '' || this.currentVariant.variant_components.length < 1;
@@ -144,6 +168,13 @@ export default {
     },
     componentSelection() {
       return this.componentTypes.map(c => { return { text: c.view_name, value: c.api_name } });
+    },
+    variantEditTitle() {
+      return 'Variante ' + (this.currentVariantIndex < 0 ? 'erstellen' : 'bearbeiten');
+    },
+    signature() {
+      return '(' + this.process.process_parameters.map(p => p.variable_name).join(', ') + ', ' +
+          this.currentVariant.variant_components.map(c => c.variable_name).join(', ') + ')'
     }
   },
 
@@ -154,7 +185,7 @@ export default {
     editVariant(index) {
       this.currentVariant = Object.assign({},
           index < 0 ?
-              { name: '', target_func: '', variant_components: [] } :
+              { name: '', target_func: '', target_func_python: '', variant_components: [] } :
               this.value[index]);
       this.dialogEditVariant = true;
     },
@@ -162,9 +193,11 @@ export default {
       if (this.currentVariantIndex < 0) {
         this.value.push(this.currentVariant);
         this.targetFunctions.push(JSON.parse(JSON.stringify(this.currentTargetFunc)));
+        this.targetPythonStyle.push(this.currentTargetPythonStyle);
       } else {
         this.value.splice(this.currentVariantIndex, 1, this.currentVariant);
         this.targetFunctions.splice(this.currentVariantIndex, 1, JSON.parse(JSON.stringify(this.currentTargetFunc)));
+        this.targetPythonStyle.splice(this.currentVariantIndex, 1, this.currentTargetPythonStyle);
       }
       this.closeEditVariant();
     },
@@ -179,6 +212,7 @@ export default {
     deleteVariantConfirm() {
       this.value.splice(this.currentVariantIndex, 1);
       this.targetFunctions.splice(this.currentVariantIndex, 1);
+      this.targetPythonStyle.splice(this.currentVariantIndex, 1);
       this.closeDeleteVariant();
     },
     closeDeleteVariant() {
@@ -222,7 +256,8 @@ export default {
     },
 
     editTargetFunc() {
-      if (this.currentTargetFunc.length < 1 && this.currentVariantIndex < this.targetFunctions.length) {
+      // ToDo: check condition
+      if (this.currentTargetFunc.length < 1 && this.currentVariantIndex < this.targetFunctions.length && this.currentVariantIndex > -1) {
         this.currentTargetFunc.push(...JSON.parse(JSON.stringify(this.targetFunctions[this.currentVariantIndex])));
       }
       this.dialogEditTargetFunc = true;
@@ -235,6 +270,13 @@ export default {
     },
     componentViewName(api_name) {
       return this.componentTypes.find(c => c.api_name === api_name).view_name;
+    },
+    addParameter(val) {
+      this.currentVariant.target_func_python += val.formula;
+    },
+    insertSignature() {
+      console.log('SIG - ' + this.currentVariant.target_func_python);
+      this.currentVariant.target_func_python += 'def target_func' + this.signature + ':';
     }
   }
 }
