@@ -2,31 +2,31 @@ import Vue from 'vue'
 import axios from "axios";
 
 const state = {
-    processes: []
+  processes: []
 };
 
 const getters = {
-    processes: state => state.processes
+  processes: state => state.processes
 };
 
 const actions = {
-    initProcesses: ({commit}) => {
-        axios.get('processes').
-            then((response) => {
-                commit('SET_PROCESSES', response.data.processes);
-        });
-    }
+  initProcesses: ({commit}) => {
+    axios.get('processes').
+        then((response) => {
+          commit('SET_PROCESSES', response.data.processes);
+    });
+  }
 };
 
 const mutations = {
-    'SET_PROCESSES' (state, processes) {
-        Vue.set(state, 'processes', [...processes]);
-    }
+  'SET_PROCESSES' (state, processes) {
+    Vue.set(state, 'processes', [...processes]);
+  }
 };
 
 export default {
-    state,
-    getters,
-    actions,
-    mutations
+  state,
+  getters,
+  actions,
+  mutations
 }

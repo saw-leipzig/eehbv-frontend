@@ -41,6 +41,7 @@ export default {
     items: [
       { icon: 'mdi-home-outline', title: 'Startseite', to: { name: 'Home' } },
       { icon: 'mdi-cog-outline', title: 'Komponenten', to: { name: 'Component' } },
+      { icon: 'mdi-blur-linear', title: 'Werkstoffeigenschaften', to: { name: 'Property' } },
       { icon: 'mdi-alert-octagon', title: 'Problemklassen', to: { name: 'Process' } },
       { icon: 'mdi-send', title: 'Export', to: { name: 'Home'} }
     ]

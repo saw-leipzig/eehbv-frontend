@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import MachineComponents from "../views/pages/MachineComponents";
+import MaterialProperties from "../views/pages/MaterialProperties";
 import Processes from "../views/pages/Processes";
 import ComponentOverview from "../components/ComponentOverview";
 import ProcessOverview from "../components/ProcessOverview";
@@ -22,6 +23,11 @@ const routes = [
     path: '/components',
     name: 'Component',
     component: MachineComponents
+  },
+  {
+    path: '/properties',
+    name: 'Property',
+    component: MaterialProperties
   },
   {
     path: '/components/create',

@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import {mapState} from 'vuex'
 
 export default {
   name: "MachineComponents",
@@ -25,7 +25,9 @@ export default {
     tables: []
   }),
   computed: {
-    ...mapGetters(['componentTypes'])
+    ...mapState({
+      componentTypes: state => state.componentInfo.componentTypes
+    })
   },
   methods: {
     log: function () {

@@ -24,6 +24,7 @@
 <script>
 import FormulaEditor from "./FormulaEditor";
 import {mapGetters} from "vuex";
+
 export default {
   name: "RestrictionList",
   components: {FormulaEditor},

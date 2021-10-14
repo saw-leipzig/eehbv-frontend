@@ -25,7 +25,7 @@ export default {
     tables: []
   }),
   computed: {
-    ...mapGetters(['processes', 'componentTypes'])
+    ...mapGetters(['componentTypes', 'processes'])
   },
   methods: {
     log: function () {

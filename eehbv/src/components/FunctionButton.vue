@@ -30,6 +30,9 @@ export default {
         { formula: 'sin(', view: 'sin', state: 'O' },
         { formula: 'cos(', view: 'cos', state: 'O' },
         { formula: 'tan(', view: 'tan', state: 'O' },
+        { formula: 'arcsin(', view: 'arcsin', state: 'O' },
+        { formula: 'arccos(', view: 'arccos', state: 'O' },
+        { formula: 'arctan(', view: 'arctan', state: 'O' },
         { formula: 'cot(', view: 'cot', state: 'O' }
       ]
     }

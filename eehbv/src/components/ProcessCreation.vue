@@ -125,7 +125,7 @@ export default {
           this.$t("info.process.solver"),
           this.$t("info.process.infoTexts")
       ],
-      varTesting: false
+      varTesting: true
     }
   },
 

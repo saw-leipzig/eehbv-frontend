@@ -9,7 +9,7 @@ import axios from 'axios';
 // axios.defaults.baseURL = 'http://localhost:5000';
 axios.defaults.baseURL = '/api/v1/';
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
 Vue.prototype.$http = axios;
 

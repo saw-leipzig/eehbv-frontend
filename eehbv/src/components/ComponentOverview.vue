@@ -25,24 +25,28 @@
         </v-btn>
       </template>
 
-      <DialogCardEditor v-model="dialog" max-width="600px" @save="save" @close="close">
-        <v-container>
-          <v-row>
-            <v-col v-for="detail in comp.infos" :key="detail.position" cols="12" sm="6" md="4">
-              <v-checkbox v-if="detail.type === 'BOOL'" v-model="editedItem[detail.column_name]" :label="entryLabel(detail)"></v-checkbox>
-              <v-text-field v-else
-                  v-model="editedItem[detail.column_name]"
-                  :label="entryLabel(detail)"
-                  :type="detail.type === 'INT' || detail.type === 'DOUBLE' ? 'number' : 'text'"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-        </v-container>
-      </DialogCardEditor>
-
-      <DialogDelete v-model="dialogDelete" @abort="closeDelete" @delete="deleteItemConfirm"></DialogDelete>
-
     </v-data-table>
+
+    <DialogCardEditor v-model="dialog" max-width="600px" @save="save" @close="close">
+      <v-container>
+        <v-row>
+          <v-col v-for="detail in comp.infos" :key="detail.position" cols="12" sm="6" md="4">
+            <v-checkbox v-if="detail.type === 'BOOL'" v-model="editedItem[detail.column_name]" :label="entryLabel(detail)"></v-checkbox>
+            <v-combobox v-else-if="detail.position === 2" :items="manufacturers"
+                      v-model="editedItem[detail.column_name]" :label="entryLabel(detail)"
+            >
+            </v-combobox>
+            <v-text-field v-else
+                v-model="editedItem[detail.column_name]"
+                :label="entryLabel(detail)"
+                :type="detail.type === 'INT' || detail.type === 'DOUBLE' ? 'number' : 'text'"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+      </v-container>
+    </DialogCardEditor>
+
+    <DialogDelete v-model="dialogDelete" @abort="closeDelete" @delete="deleteItemConfirm"></DialogDelete>
 
     <component-button></component-button>
   </v-container>
@@ -50,7 +54,6 @@
 
 <script>
 import ComponentButton from "@/components/ComponentButton";
-import ComponentToolbar from "@/components/ComponentToolbar";
 import DialogDelete from "./DialogDelete";
 import DialogCardEditor from "./DialogCardEditor";
 
@@ -92,6 +95,9 @@ export default {
     },
     formTitle() {
       return this.editedIndex === -1 ? 'Neuer Eintrag' : 'Eintrag bearbeiten'
+    },
+    manufacturers() {
+      return this.componentData.map(c => { return { text: c.manufacturer, value: c.manufacturer } });
     }
   },
 
@@ -127,20 +133,26 @@ export default {
     entryLabel(detail) {
       return detail.view_name + (detail.unit !== null ? ' [' + detail.unit + ']' : '');
     },
+    resetEditedItem() {
+      this.editedItem = Object.assign({}, this.defaultItem);
+      this.editedIndex = -1;
+    },
     refreshData() {
       this.$http.get('components/' + this.$route.params.type).
               then((response) => {
                   this.componentData = [...response.data.components];
           });
     },
-    editItem(item) {
+    assignItem(item) {
       this.editedIndex = this.componentData.indexOf(item);
       this.editedItem = Object.assign({}, item);
+    },
+    editItem(item) {
+      this.assignItem(item);
       this.dialog = true;
     },
     deleteItem(item) {
-      this.editedIndex = this.componentData.indexOf(item);
-      this.editedItem = Object.assign({}, item);
+      this.assignItem(item);
       this.dialogDelete = true;
     },
     deleteItemConfirm() {
@@ -152,16 +164,14 @@ export default {
     },
     close() {
       this.dialog = false;
-        this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem);
-          this.editedIndex = -1;
+      this.$nextTick(() => {
+        this.resetEditedItem();
       });
     },
     closeDelete() {
       this.dialogDelete = false;
-        this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem);
-          this.editedIndex = -1;
+      this.$nextTick(() => {
+        this.resetEditedItem();
       });
     },
     save() {
@@ -171,10 +181,10 @@ export default {
                     this.refreshData();
             });
       } else {
-          this.$http.post('components/' + this.$route.params.type, this.editedItem).
-              then((response) => {
-                  this.refreshData();
-          });
+        this.$http.post('components/' + this.$route.params.type, this.editedItem).
+            then((response) => {
+                this.refreshData();
+        });
       }
       this.close();
     }
