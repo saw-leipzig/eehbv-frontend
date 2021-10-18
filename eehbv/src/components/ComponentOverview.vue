@@ -69,8 +69,7 @@ export default {
     },
     defaultItem: {
     },
-    componentData: [],
-    //details: []
+    componentData: []
   }),
 
   props: {
@@ -82,15 +81,16 @@ export default {
 
   computed: {
     headers() {
-      return [...this.comp.infos.map(d => {
-        return {
-          text: this.entryLabel(d),
-          align: 'start',
-          sortable:true,
-          value: d.column_name
-        };
-      }),
-        { text: 'Aktionen', value: 'actions', sortable: false }
+      return [
+          ...this.comp.infos.map(d => {
+            return {
+              text: this.entryLabel(d),
+              align: 'start',
+              sortable: true,
+              value: d.column_name
+            };
+          }),
+          { text: 'Aktionen', value: 'actions', sortable: false }
       ];
     },
     formTitle() {
@@ -117,7 +117,8 @@ export default {
   methods: {
     initialize() {
       let defItem = {};
-      for (let detail in this.comp.infos) {
+      for (let i = 0; i < this.comp.infos.length; i++) {
+        let detail = this.comp.infos[i];
         defItem[detail.column_name] =
             detail.type === 'DOUBLE' || detail.type === 'INT' ?
                 0
@@ -127,7 +128,7 @@ export default {
                 );
       }
       this.defaultItem = Object.assign({}, defItem);
-      this.editedItem = Object.assign({}, this.defaultItem);
+      this.editedItem = Object.assign({}, this.defaultItem)
       this.refreshData();
     },
     entryLabel(detail) {
@@ -175,6 +176,9 @@ export default {
       });
     },
     save() {
+      if (typeof this.editedItem.manufacturer === 'object') {
+        this.editedItem.manufacturer = this.editedItem.manufacturer.value;
+      }
       if (this.editedIndex > -1) {
         this.$http.put('components/' + this.$route.params.type + '/' + this.editedItem.id, this.editedItem).
                 then((response) => {

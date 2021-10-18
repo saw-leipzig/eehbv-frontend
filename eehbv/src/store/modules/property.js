@@ -9,8 +9,12 @@ const state = {
 const getters = {
   properties: state => state.properties,
   prop_values: state => state.prop_values,
+  propertyById: (state) => (propId) => {
+    let prop = state.properties.find(p => p.id === propId);
+    return typeof prop === 'undefined' ? '' : prop.property;
+  },
   valuesOfProp: (state) => (propId) => {
-    return state.prop_values.filter(v => v.material_properties_id === propId)
+    return state.prop_values.filter(v => v.material_properties_id === propId);
   }
 };
 

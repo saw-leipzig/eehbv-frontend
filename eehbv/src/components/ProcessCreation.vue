@@ -88,6 +88,7 @@ import VariantsDefinition from "./VariantsDefinition";
 import VariantSelectionDefinition from "./VariantSelectionDefinition";
 import SolverDefinition from "./SolverDefinition";
 import InfoTextsDefinition from "./InfoTextsDefinition";
+
 export default {
   name: "ProcessCreation",
   components: {
@@ -133,7 +134,7 @@ export default {
     if (this.varTesting) {  // Test variant selection settings, predefined data
       this.process = Object.assign({},{
         api_name: 'edge_banding', variant_tree: false, view_name: 'Kantenanleimmaschine',
-        process_parameters:[{ name: 'Fräsbreite', variable_name: 'p_milling_width', unit: 'mm'}]
+        process_parameters:[{ name: 'Fräsbreite', variable_name: 'p_milling_width', unit: 'mm', material_properties_id: null }]
       });
       this.variants.push(...[
           { name: 'Variante 1', target_func: 'x', target_func_python: 'x',

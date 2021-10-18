@@ -98,8 +98,13 @@ export default {
 
   methods: {
     save() {
-      // ToDo: check new view_name/api_name against existing
-      //  axios.post('components', new_component)
+      // ToDo: check new view_name/api_name against existing, validate conventions (all lower-case, component_* for table names)
+      this.$http.post('components', this.component_type).
+          then(() => {
+            this.$store.dispatch('initComponents');
+          }).catch((error)  => {
+            // ToDo:
+      });
     },
     editColumn(index) {
       this.currentColumn = Object.assign({},

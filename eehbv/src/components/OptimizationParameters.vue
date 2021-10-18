@@ -69,10 +69,15 @@
             </v-row>
             <v-row>
               <v-col v-for="param in process.parameters" :key="param.name" cols="12" sm="6" md="4">
-                <v-text-field
+                <v-combobox v-if="param.material_properties_id != null"
+                    v-model="editedItem[param.variable_name]" :items="parameterOptions(param.material_properties_id)"
+                    :label="param.name + ' [' + param.unit + ']'"
+                    type="text"
+                ></v-combobox>
+                <v-text-field v-else
                     v-model="editedItem[param.variable_name]"
                     :label="param.name + ' [' + param.unit + ']'"
-                    :type="'number'"
+                    type="number"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -113,6 +118,7 @@
 </template>
 
 <script>
+import {mapGetters} from 'vuex'
 import DialogDelete from "./DialogDelete";
 export default {
   name: "OptimizationParameters",
@@ -148,6 +154,7 @@ export default {
   },
 
   computed: {
+    ...mapGetters(['valuesOfProp', 'prop_values']),
     formTitle () {
       return this.editedIndex === -1 ? 'Neuer Eintrag' : 'Eintrag bearbeiten'
       // ToDo: Mixin with ComponentOverview
@@ -162,8 +169,8 @@ export default {
   },
 
   methods: {
-    log() {
-      //console.log(this.selection);
+    parameterOptions(id) {
+      return this.valuesOfProp(id).map(v => { return { text: v.material + ' - ' + v.value, value: v.value } });
     },
     initialize() {
       let defItem = {};
@@ -171,6 +178,9 @@ export default {
       defItem['portion'] = 0;
       this.defaultItem = Object.assign({}, defItem);
       this.editedItem = Object.assign({}, this.defaultItem);
+      if (this.prop_values.length < 1) {
+        this.$store.dispatch('initProperties');
+      }
     },
     continueOne(select_type) {
       this.variantDialog = false;
@@ -181,7 +191,6 @@ export default {
         this.editedIndex = this.value.indexOf(item);
         this.editedItem = Object.assign({}, item);
       }
-      console.log(this.editedItem);
       this.editDialog = true;
     },
     deleteItem(item) {
@@ -197,8 +206,15 @@ export default {
       this.editedIndex = -1;
     },
     save() {
+      for (let param in this.editedItem) {
+        if (typeof this.editedItem[param] === 'object') {
+          this.editedItem[param] = this.editedItem[param].value;
+        } else if (typeof this.editedItem[param] === 'string') {
+          this.editedItem[param] = parseInt(this.editedItem[param]);
+        }
+      }
       if (this.editedIndex === -1) {
-        this.value.push(this.editedItem)
+        this.value.push(this.editedItem);
       } else {
         this.value.splice(this.editedIndex, 1, this.editedItem);
       }

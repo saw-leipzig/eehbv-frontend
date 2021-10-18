@@ -131,7 +131,7 @@ export default {
     if (this.properties.length < 1) {
       try {
         await this.$store.dispatch('initProperties');
-        if (this.properties.length < 1) {
+        if (this.properties.length > 0) {
           this.currentPropertyId = 1;
         }
       } catch  {}
@@ -162,13 +162,13 @@ export default {
     },
     deleteValueConfirm() {
       this.$http.delete('properties/values/' + this.editedItem.id).
-              then((response) => {
-                if (response.data.status === 'ok') {
-                  this.$store.commit('DELETE_PROPERTY_VALUE', this.editedItem);
-                } else {
-                  // ToDo:
-                }
-          });
+          then((response) => {
+            if (response.data.status === 'ok') {
+              this.$store.commit('DELETE_PROPERTY_VALUE', this.editedItem);
+            } else {
+              // ToDo:
+            }
+      });
       // ToDo: error handling
       this.closeDelete();
     },
@@ -186,7 +186,6 @@ export default {
         this.editedItem.material_properties_id = this.currentPropertyId;
         this.$http.post('properties/values', this.editedItem).
             then((response) => {
-              //console.log(response.data);
               this.$store.commit('ADD_PROPERTY_VALUE', response.data);
         });   // ToDo: error handling
       }

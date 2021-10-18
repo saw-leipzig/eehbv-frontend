@@ -19,9 +19,10 @@
             <v-card-text>
               <v-row v-for="(param, index) in value.process_parameters" :key="index">
                 <v-col cols="3">Name: {{param.name}}</v-col>
-                <v-col cols="3">Einheit: {{param.unit}}</v-col>
+                <v-col cols="2">Einheit: {{param.unit}}</v-col>
                 <v-col cols="3">Variablenname: {{param.variable_name}}</v-col>
-                <v-col cols="3">
+                <v-col cols="2">Materialkonstante: {{propertyById(param.material_properties_id)}}</v-col>
+                <v-col cols="1">
                   <v-icon small class="mr-2" @click="editParam(index)">mdi-pencil</v-icon>
                   <v-icon small @click="deleteParam(index)">mdi-delete</v-icon>
                 </v-col>
@@ -38,9 +39,12 @@
 
     <DialogCardEditor v-model="dialogEditParam" max-width="600px" :title="parameterEditTitle" @save="saveParam" @close="closeEditParam">
       <v-row>
-        <v-col cols="4"><v-text-field label="Name" v-model="editedParam.name" counter="40"></v-text-field></v-col>
-        <v-col cols="4"><v-text-field label="Einheit" v-model="editedParam.unit" counter="40"></v-text-field></v-col>
-        <v-col cols="4"><v-text-field label="Variablenname" v-model="editedParam.variable_name" counter="40"></v-text-field></v-col>
+        <v-col cols="6"><v-text-field label="Name" v-model="editedParam.name" counter="40"></v-text-field></v-col>
+        <v-col cols="6"><v-text-field label="Einheit" v-model="editedParam.unit" counter="40"></v-text-field></v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="6"><v-text-field label="Variablenname" v-model="editedParam.variable_name" counter="40"></v-text-field></v-col>
+        <v-col cols="6"><v-select :items="propOptions" label="Materialkonstante" v-model="editedParam.material_properties_id"></v-select></v-col>
       </v-row>
     </DialogCardEditor>
 
@@ -52,6 +56,7 @@
 <script>
 import DialogDelete from "./DialogDelete";
 import DialogCardEditor from "./DialogCardEditor";
+import {mapGetters} from "vuex";
 export default {
   name: "ProcessDefinition",
   components: {DialogCardEditor, DialogDelete},
@@ -75,8 +80,18 @@ export default {
   },
 
   computed: {
+    ...mapGetters(['properties', 'propertyById']),
     parameterEditTitle() {
       return this.editedParamIndex < 0 ? 'Prozessparameter anlegen' : 'Prozessparameter bearbeiten';
+    },
+    propOptions() {
+      return [{ text: ' ---', value: null }, ...this.properties.map(p => { return { text: p.property, value: p.id } })];
+    }
+  },
+
+  created() {
+    if (this.properties.length < 1) {
+      this.$store.dispatch('initProperties');
     }
   },
 
@@ -84,7 +99,7 @@ export default {
     editParam(index) {
       this.editedParam = Object.assign({},
           index < 0 ?
-                { name: '', variable_name: '', unit: ''}:
+                { name: '', variable_name: '', unit: '', material_properties_id: null }:
                 this.value.process_parameters[index]);
       this.editedParamIndex = index;
       this.dialogEditParam = true;
