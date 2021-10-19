@@ -1,16 +1,51 @@
 {
-  "info": {
-    "process": {
+  "general": {
+    "error": {
+      "badRequest": "Bad request"
+    },
+    "validation": {
+      "required": "Required",
+      "max40": "Max. 40 characters",
+      "snake": "Lowercase characters and underscore only"
+    }
+  },
+  "process_creation": {
+    "info": {
       "definition": "<p>Info <em>definition of process</em><p>",
       "variants": "<p>Info <em>definition of variants</em><p>",
       "selection": "<p>Info <em>definition of variant selection</em><p>",
       "solver": "<p>Info <em>Solver</em><p>",
       "infoTexts": "<p>Info <em>Info texts</em><p>"
+    },
+    "titles": {
+      "new_process": "New Process",
+      "process_definition": "Process definition",
+      "variants_definition": "Variants",
+      "variant_selection_definition_tree": "Question tree for variant selection",
+      "variant_selection_definition_list": "Question list for variant selection",
+      "info_texts_definition": "Specific help texts for definition of an optimization problem"
+    },
+    "labels": {
+      "process_definition": "Process",
+      "variants_definition": "Variants",
+      "variant_selection_definition": "Variant selection",
+      "solver_definition": "Solver",
+      "info_texts_definition": "Info texts"
     }
   },
-  "error": {
-    "request": {
-      "badRequest": "Bad request"
+  "process_definition": {
+    "titles": {},
+    "labels": {
+      "view_name": "Name",
+      "api_name": "API Path",
+      "variant_tree": "Question schema for variants",
+      "name": "Name",
+      "unit": "Unit",
+      "variable_name": "Variable name",
+      "material_property": "Material property"
+    },
+    "validation": {
+      "startsWithPLowDash": "Has to start with p_"
     }
   }
 }

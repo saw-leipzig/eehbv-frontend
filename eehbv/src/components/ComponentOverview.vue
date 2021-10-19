@@ -177,7 +177,7 @@ export default {
     },
     save() {
       if (typeof this.editedItem.manufacturer === 'object') {
-        this.editedItem.manufacturer = this.editedItem.manufacturer.value;
+        this.$set(this.editedItem, 'manufacturer', this.editedItem.manufacturer.value);
       }
       if (this.editedIndex > -1) {
         this.$http.put('components/' + this.$route.params.type + '/' + this.editedItem.id, this.editedItem).

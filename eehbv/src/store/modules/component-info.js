@@ -21,6 +21,9 @@ const actions = {
 const mutations = {
   'SET_COMPONENTS' (state, componentTypes) {
     Vue.set(state, 'componentTypes', [...componentTypes]);
+  },
+  'ADD_COMPONENT' (state, componentType) {
+    state.componentTypes.push(componentType);
   }
 };
 

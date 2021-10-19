@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="12"><h2>Neuer Prozess</h2></v-col>
+      <v-col cols="12"><h2>{{$t("process_creation.titles.new_process")}}</h2></v-col>
     </v-row>
 
     <v-row>
@@ -9,52 +9,52 @@
         <v-stepper v-model="def_step">
           <v-stepper-header>
             <v-stepper-step :complete="def_step > 1" color="green" step="1">
-              Prozess
+              {{$t("process_creation.labels.process_definition")}}
             </v-stepper-step>
 
             <v-divider></v-divider>
 
             <v-stepper-step :complete="def_step > 2" color="green" step="2">
-              Varianten
+              {{$t("process_creation.labels.variants_definition")}}
             </v-stepper-step>
 
             <v-divider></v-divider>
 
             <v-stepper-step :complete="def_step > 3" step="3" color="green">
-              Variantenauswahl
+              {{$t("process_creation.labels.variant_selection_definition")}}
             </v-stepper-step>
 
             <v-divider></v-divider>
 
             <v-stepper-step :complete="def_step > 4" step="4" color="green">
-              Solver
+              {{$t("process_creation.labels.solver_definition")}}
             </v-stepper-step>
 
             <v-divider></v-divider>
 
             <v-stepper-step step="5" color="green">
-              Info-Texte
+              {{$t("process_creation.labels.info_texts_definition")}}
             </v-stepper-step>
           </v-stepper-header>
 
           <v-stepper-items>
             <v-stepper-content step="1">
               <EditNewWrapper :context-new="true" :info-text="info[0]" :disabled="disabledProcess"
-                              title="Prozessdefinition" @ok="continueOne" @abort="abort">
+                              :title="$t('process_creation.titles.process_definition')" @ok="continueOne" @abort="abort">
                 <ProcessDefinition v-model="process"></ProcessDefinition>
               </EditNewWrapper>
             </v-stepper-content>
 
             <v-stepper-content step="2">
-              <EditNewWrapper :context-new="true" :info-text="info[1]" :disabled="disabledVariants" title="Varianten"
-                              @ok="continueTwo" @abort="abort">
+              <EditNewWrapper :context-new="true" :info-text="info[1]" :disabled="disabledVariants"
+                              :title="$t('process_creation.titles.variants_definition')" @ok="continueTwo" @abort="abort">
                 <VariantsDefinition v-model="variants" :process="process"></VariantsDefinition>
               </EditNewWrapper>
             </v-stepper-content>
 
             <v-stepper-content step="3">
               <EditNewWrapper :context-new="true" :info-text="info[2]"
-                              :title="(process.variant_tree ? 'Fragebaum' : 'Fragenliste') + ' für Variantenauswahl'"
+                              :title="process.variant_tree ? $t('process_creation.titles.variant_selection_definition_tree') : $t('process_creation.titles.variant_selection_definition_list')"
                               @ok="continueThree" @abort="abort">
                 <VariantSelectionDefinition v-model="variant_selection" :variants="variants" :process="process"></VariantSelectionDefinition>
               </EditNewWrapper>
@@ -68,7 +68,7 @@
 
             <v-stepper-content step="5">
               <EditNewWrapper :context-new="true" :info-text="info[4]"
-                              title="Prozessspezifische Hilfetexte für die Definition eines Optimierungsproblems"
+                              :title="$t('process_creation.titles.info_texts_definition')"
                               @ok="continueFive" @abort="abort">
                 <InfoTextsDefinition v-model="infoTexts"></InfoTextsDefinition>
               </EditNewWrapper>
@@ -120,13 +120,13 @@ export default {
       solver: '',
       infoTexts: [ {type: 1, type_id: null, position: 3, text: ''}, {type: 1, type_id: null, position: 4, text: ''} ],
       info: [
-          this.$t("info.process.definition"),
-          this.$t("info.process.variants"),
-          this.$t("info.process.selection"),
-          this.$t("info.process.solver"),
-          this.$t("info.process.infoTexts")
+          this.$t("process_creation.info.definition"),
+          this.$t("process_creation.info.variants"),
+          this.$t("process_creation.info.selection"),
+          this.$t("process_creation.info.solver"),
+          this.$t("process_creation.info.infoTexts")
       ],
-      varTesting: true
+      varTesting: false
     }
   },
 

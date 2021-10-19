@@ -1,16 +1,54 @@
 {
-  "info": {
-    "process": {
+  "error": {
+    "badRequest": "Fehlerhafte Anfrage"
+  },
+  "general": {
+    "error": {
+      "badRequest": "Fehlerhafte Anfrage"
+    },
+    "validation": {
+      "required": "Erforderlich",
+      "max40": "Darf max. 40 Zeichen lang sein",
+      "snake": "Nur Kleinbuchstaben und Unterstrich"
+    }
+  },
+  "process_creation": {
+    "info": {
       "definition": "<p>Infotext <em>Prozessdefinition</em><p>",
       "variants": "<p>Infotext <em>Varientendefintion</em><p>",
       "selection": "<p>Infotext <em>Variantenauswahldefinition</em><p>",
       "solver": "<p>Infotext <em>Solver</em><p>",
       "infoTexts": "<p>Infotext <em>Infotexte</em><p>"
+    },
+    "titles": {
+      "new_process": "Neuer Prozess",
+      "process_definition": "Prozessdefinition",
+      "variants_definition": "Varianten",
+      "variant_selection_definition_tree": "Fragebaum für Variantenauswahl",
+      "variant_selection_definition_list": "Fragenliste für Variantenauswahl",
+      "info_texts_definition": "Prozessspezifische Hilfetexte für die Definition eines Optimierungsproblems"
+    },
+    "labels": {
+      "process_definition": "Prozess",
+      "variants_definition": "Varianten",
+      "variant_selection_definition": "Variantenauswahl",
+      "solver_definition": "Solver",
+      "info_texts_definition": "Info-Texte"
     }
   },
-  "error": {
-    "request": {
-      "badRequest": "Fehlerhafte Anfrage"
+  "process_definition": {
+    "titles": {},
+    "labels": {
+      "view_name": "Name",
+      "api_name": "API-Pfad",
+      "variant_tree": "Variantenfrageschema",
+      "name": "Name",
+      "unit": "Einheit",
+      "variable_name": "Variablenname",
+      "material_property": "Materialkonstante"
+    },
+    "validation": {
+      "startsWithPLowDash": "Muss mit p_ beginnen"
     }
   }
 }

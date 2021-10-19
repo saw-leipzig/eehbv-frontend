@@ -100,8 +100,9 @@ export default {
     save() {
       // ToDo: check new view_name/api_name against existing, validate conventions (all lower-case, component_* for table names)
       this.$http.post('components', this.component_type).
-          then(() => {
-            this.$store.dispatch('initComponents');
+          then((response) => {
+            this.$store.commit('ADD_COMPONENT', response.data);
+            this.$router.push({ name: 'Component' });
           }).catch((error)  => {
             // ToDo:
       });
