@@ -1,15 +1,33 @@
 {
-  "error": {
-    "badRequest": "Fehlerhafte Anfrage"
-  },
   "general": {
     "error": {
       "badRequest": "Fehlerhafte Anfrage"
     },
     "validation": {
       "required": "Erforderlich",
+      "max20": "Darf max. 20 Zeichen lang sein",
       "max40": "Darf max. 40 Zeichen lang sein",
-      "snake": "Nur Kleinbuchstaben und Unterstrich"
+      "snake": "Nur Kleinbuchstaben und Unterstrich",
+      "present": "Eintrag schon vorhanden"
+    },
+    "editing": {
+      "create": "Eintrag erstellen",
+      "edit": "Eintrag bearbeiten",
+      "new": "Neuer Eintrag",
+      "actions": "Aktionen"
+    },
+    "domain": {
+      "property": "Eigenschaft",
+      "unit": "Einheit"
+    }
+  },
+  "material_properties": {
+    "material": "Material",
+    "titles": {
+      "new_property": "Neue Materialeigenschaft"
+    },
+    "tooltips": {
+      "add_property": "Materialeigenschaft hinzufügen"
     }
   },
   "process_creation": {

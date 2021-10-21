@@ -9,11 +9,13 @@
             <template v-slot:activator="{ on, attrs }">
               <v-btn color="green" @click="dialogProp = true" v-bind="attrs" v-on="on"><v-icon>mdi-plus</v-icon></v-btn>
             </template>
-            <span>Materialeigenschaft hinzufügen</span>
+            <span>{{$t('material_properties.tooltips.add_property')}}</span>
           </v-tooltip>
           <v-divider class="mx-4" inset vertical ></v-divider>
           <v-spacer></v-spacer>
-          <v-btn :disabled="disabledAdd" color="green" dark class="mb-2" @click="dialogValue = true">Neuer Eintrag</v-btn>
+          <v-btn :disabled="disabledAdd" color="green" dark class="mb-2" @click="dialogValue = true">
+            {{$t('general.editing.new')}}
+          </v-btn>
         </v-toolbar>
       </template>
 
@@ -34,10 +36,13 @@
       <v-container>
         <v-row>
           <v-col cols="6">
-            <v-text-field v-model="editedItem.material" label="Material" type="text"></v-text-field>
+            <v-combobox v-model="editedItem.material" :items="materialProposals"
+                        :label="$t('material_properties.material')" :error-messages="materialErrors"
+                        @input="$v.editedItem.material.$touch" @blur="$v.editedItem.material.$touch"></v-combobox>
           </v-col>
           <v-col cols="6">
-            <v-text-field v-model="editedItem.value" :label="currentPropLabel" type="number"></v-text-field>
+            <v-text-field v-model="editedItem.value" :label="currentPropLabel" type="number" :error-messages="valueErrors"
+                        @input="$v.editedItem.value.$touch" @blur="$v.editedItem.value.$touch"></v-text-field>
           </v-col>
         </v-row>
       </v-container>
@@ -45,14 +50,17 @@
 
     <DialogDelete v-model="dialogValueDelete" @abort="closeDelete" @delete="deleteValueConfirm"></DialogDelete>
 
-    <DialogCardEditor v-model="dialogProp" max-width="400px" title="Neue Materialeigenschaft" @save="saveProp" @close="closeProp">
+    <DialogCardEditor v-model="dialogProp" max-width="400px" :title="$t('material_properties.titles.new_property')"
+                      @save="saveProp" @close="closeProp">
       <v-container>
         <v-row>
           <v-col cols="6">
-            <v-text-field v-model="newProp.property" label="Eigenschaft" type="text"></v-text-field>
+            <v-text-field v-model="newProp.property" :label="$t('general.domain.property')" type="text" :error-messages="propertyErrors"
+                        @input="$v.newProp.property.$touch" @blur="$v.newProp.property.$touch"></v-text-field>
           </v-col>
           <v-col cols="6">
-            <v-text-field v-model="newProp.unit" label="Einheit" type="text"></v-text-field>
+            <v-text-field v-model="newProp.unit" :label="$t('general.domain.unit')" type="text" :error-messages="unitErrors"
+                        @input="$v.newProp.unit.$touch" @blur="$v.newProp.unit.$touch"></v-text-field>
           </v-col>
         </v-row>
       </v-container>
@@ -65,10 +73,32 @@
 import {mapGetters} from 'vuex'
 import DialogCardEditor from "./DialogCardEditor";
 import DialogDelete from "./DialogDelete";
+import { required, maxLength } from 'vuelidate/lib/validators'
 
 export default {
   name: "MaterialProperties",
   components: {DialogDelete, DialogCardEditor},
+
+  validations: {
+    editedItem: {
+      material: { required, maxLength: maxLength(40),
+        singularMaterial(material) {
+          return (this.editedIndex > 0 && material === this.prop_values[this.editedIndex].material) ||  // editing existing entry
+              !this.usedMaterials.includes(material);
+        }
+      },
+      value: { required },
+    },
+    newProp: {
+      property: { required, maxLength: maxLength(40),
+        singularProperty(property) {
+          return this.properties.findIndex(p => p.property === property) === -1;
+        }
+      },
+      unit: { required, maxLength: maxLength(20) }
+    }
+  },
+
   data: () => ({
     dialogValue: false,
     dialogValueDelete: false,
@@ -85,9 +115,9 @@ export default {
     ...mapGetters(['valuesOfProp', 'properties', 'prop_values']),
     headers() {
       return [
-        { text: 'Material', align: 'start', sortable: true, value: 'material' },
+        { text: this.$t('material_properties.material'), align: 'start', sortable: true, value: 'material' },
         { text: this.currentPropLabel, align: 'end', sortable: true, value: 'value' },
-        { text: 'Aktionen', value: 'actions', sortable: false }
+        { text: this.$t('general.editing.actions'), value: 'actions', sortable: false }
       ];
     },
     propOptions() {
@@ -118,10 +148,47 @@ export default {
       return this.currentProp + ' [' + this.currentUnit + ']';
     },
     editTitle() {
-      return 'Eintrag ' + (this.editedIndex < 0 ? 'erstellen' : 'bearbeiten');
+      return this.editedIndex < 0 ? this.$t('general.editing.create') : this.$t('general.editing.edit');
     },
     disabledAdd() {
       return this.currentPropertyId < 1;
+    },
+    materialProposals() {
+      return [... new Set(this.prop_values.map(v => v.material))].
+          filter(v => !this.usedMaterials.includes(v));
+    },
+    usedMaterials() {
+      return this.prop_values.
+          filter(v => this.currentPropertyId === v.material_properties_id).map(v => v.material);
+    },
+    valueErrors() {
+      let errors = [];
+      if (!this.$v.editedItem.value.$dirty) return errors;
+      !this.$v.editedItem.value.required && errors.push(this.$t('general.validation.required'));
+      return errors;
+    },
+    materialErrors() {
+      let errors = [];
+      if (!this.$v.editedItem.material.$dirty) return errors;
+      !this.$v.editedItem.material.required && errors.push(this.$t('general.validation.required'));
+      !this.$v.editedItem.material.maxLength && errors.push(this.$t('general.validation.max40'));
+      !this.$v.editedItem.material.singularMaterial && errors.push(this.$t('general.validation.present'));
+      return errors;
+    },
+    unitErrors() {
+      let errors = [];
+      if (!this.$v.newProp.unit.$dirty) return errors;
+      !this.$v.newProp.unit.required && errors.push(this.$t('general.validation.required'));
+      !this.$v.newProp.unit.maxLength && errors.push(this.$t('general.validation.max20'));
+      return errors;
+    },
+    propertyErrors() {
+      let errors = [];
+      if (!this.$v.newProp.property.$dirty) return errors;
+      !this.$v.newProp.property.required && errors.push(this.$t('general.validation.required'));
+      !this.$v.newProp.property.maxLength && errors.push(this.$t('general.validation.max40'));
+      !this.$v.newProp.property.singularProperty && errors.push(this.$t('general.validation.present'));
+      return errors;
     }
   },
 
@@ -177,13 +244,17 @@ export default {
       this.dialogValueDelete = false;
     },
     save() {
+      this.$v.editedItem.$touch();
+      if (this.$v.editedItem.$invalid) {
+        return;
+      }
       if (this.editedIndex > -1) {
         this.$http.put('properties/values/' + this.editedItem.id, this.editedItem).
             then((response) => {
               this.$store.commit('UPDATE_PROPERTY_VALUE', response.data);
         });   // ToDo: error handling
       } else {
-        this.editedItem.material_properties_id = this.currentPropertyId;
+        this.$set(this.editedItem, 'material_properties_id', this.currentPropertyId);
         this.$http.post('properties/values', this.editedItem).
             then((response) => {
               this.$store.commit('ADD_PROPERTY_VALUE', response.data);
@@ -193,9 +264,14 @@ export default {
     },
     close() {
       this.resetEditedItem();
+      this.$v.editedItem.$reset();
       this.dialogValue = false;
     },
     saveProp() {
+      this.$v.newProp.$touch();
+      if (this.$v.newProp.$invalid) {
+        return;
+      }
       this.$http.post('properties', this.newProp).
           then((response) => {
             this.$store.commit('ADD_PROPERTY', response.data);   // ToDo: error handling
@@ -204,6 +280,7 @@ export default {
     },
     closeProp() {
       this.newProp = Object.assign({}, this.defaultProp);
+      this.$v.newProp.$reset();
       this.dialogProp = false;
     }
   }

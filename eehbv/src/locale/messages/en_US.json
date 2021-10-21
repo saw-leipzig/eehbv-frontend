@@ -5,8 +5,29 @@
     },
     "validation": {
       "required": "Required",
+      "max20": "Max. 20 characters",
       "max40": "Max. 40 characters",
-      "snake": "Lowercase characters and underscore only"
+      "snake": "Lowercase characters and underscore only",
+      "present": "Entry already exists"
+    },
+    "editing": {
+      "create": "Create entry",
+      "edit": "Edit entry",
+      "new": "New entry",
+      "actions": "Actions"
+    },
+    "domain": {
+      "property": "Property",
+      "unit": "Unit"
+    }
+  },
+  "material_properties": {
+    "material": "Material",
+    "titles": {
+      "new_property": "New material property"
+    },
+    "tooltips": {
+      "add_property": "Add material property"
     }
   },
   "process_creation": {
