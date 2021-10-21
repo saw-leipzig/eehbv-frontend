@@ -60,11 +60,12 @@ export default {
   computed: {
     ...mapGetters(['componentTypes']),
     params() {
-      return [ this.parameters.map(p => {return { formula: p.variable_name, view: p.name }}),
+      return [ this.parameters.map(p => {return { formula: p.variable_name, view: p.name + ' [' + p.unit + ']' }}),
         this.variant.components.map(c => {
           return { formula: c.variable_name, view: c.description,
             parameters: this.componentTypes.filter(t => t.api_name === c.component_api_name).
-                map(t => t.infos.filter(i => i.column_name !== 'name' && i.column_name !== 'manufacturer').map(i => {return {formula: i.column_name, view: i.view_name}}))[0]
+                map(t => t.infos.filter(i => i.column_name !== 'name' && i.column_name !== 'manufacturer').
+                map(i => {return { formula: i.column_name, view: i.view_name + (i.unit ? ' [' + i.unit + ']' : '') }}))[0]
           }
         })
       ];

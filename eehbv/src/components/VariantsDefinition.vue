@@ -155,12 +155,12 @@ export default {
       return this.currentVariant.name === '' || this.currentVariant.variant_components.length < 1;
     },
     functionParams() {
-      return [ this.process.process_parameters.map(p => { return { formula: p.variable_name, view: p.name }}),
+      return [ this.process.process_parameters.map(p => { return { formula: p.variable_name, view: p.name + ' [' + p.unit + ']' }}),
         this.currentVariant.variant_components.map(c => {
           return { formula: c.variable_name, view: c.description,
             parameters: this.componentTypes.filter(t => t.api_name === c.component_api_name).
                 map(t => t.infos.filter(i => i.column_name !== 'name' && i.column_name !== 'manufacturer').
-                            map(i => {return {formula: i.column_name, view: i.view_name}})
+                            map(i => {return { formula: i.column_name, view: i.view_name + (i.unit ? ' [' + i.unit + ']' : '') }})
                 )[0]
           }
         })
