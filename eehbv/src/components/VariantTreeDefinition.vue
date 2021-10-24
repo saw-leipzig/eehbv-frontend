@@ -20,6 +20,24 @@
                       @save="saveItem" @close="closeEditItem">
       <v-row>
         <v-col cols="4"><v-text-field label="Frage" v-model="currentQuestion.question" counter="40"></v-text-field></v-col>
+        <v-col cols="8">
+          <v-textarea v-model="currentQuestion.info" multiple label="Erläuterung zur Frage"></v-textarea>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12">
+          Optionen für Antwort <span class="opt-green">JA</span> und <span class="opt-red">NEIN</span>
+          <br/><br/>
+          <v-chip v-for="variant in noExcludes" :key="variant" color="green" @click="switchExclude('no', variant)">
+            {{variant}}
+          </v-chip>
+          <v-chip v-for="variant in yesExcludes" :key="variant" color="red" @click="switchExclude('yes', variant)">
+            {{variant}}
+          </v-chip>
+        </v-col>
+      </v-row>
+
+<!--      <v-row>
         <v-col cols="4">
           <v-select id="YES_SELECT" :items="addableItems" v-model="yesSelect" label="Ausschluss für Antwort JA"></v-select>
           <v-btn color="green" @click="addExclude('yes')"><v-icon>mdi-plus</v-icon></v-btn>
@@ -40,7 +58,7 @@
             {{variant.name}}
           </v-chip>
         </v-col>
-      </v-row>
+      </v-row>-->
     </DialogCardEditor>
 
     <DialogDelete v-model="dialogDeleteQuestion" @abort="closeDeleteItem" @delete="deleteItemConfirm"></DialogDelete>
@@ -95,10 +113,19 @@ export default {
       return this.addableItems.length > 0 || this.currentQuestion.question === '' ||
           this.currentQuestion.answers[0].excludes.length < 1 ||
           this.currentQuestion.answers[1].excludes.length < 1;
+    },
+    yesExcludes() {
+      return this.currentQuestion.answers[0].excludes;
+    },
+    noExcludes() {
+      return this.currentQuestion.answers[1].excludes;
     }
   },
 
   methods: {
+    selectExcludes() {
+      console.log(this.yesSelect);
+    },
     addExclude(noYes) {
       console.log(noYes);
       this.currentQuestion.answers.find(a => a.response === noYes).excludes.push(noYes === 'no' ? this.noSelect : this.yesSelect);
@@ -108,8 +135,14 @@ export default {
       let index = answerNode.excludes.findIndex(q => q === val);
       answerNode.excludes.splice(index, 1);
     },
+    switchExclude(noYes, val) {
+      let answerIndex = this.currentQuestion.answers.findIndex(a => a.response === noYes);
+      let index = this.currentQuestion.answers[answerIndex].excludes.findIndex(q => q === val);
+      this.currentQuestion.answers[answerIndex].excludes.splice(index, 1);
+      this.currentQuestion.answers[(answerIndex + 1) % 2].excludes.push(val);
+    },
     editItem(nodes) {
-      if (nodes.length > 0) {
+      if (nodes.length > 0 && nodes[0].exclude_choices.length > 1) {
         let node = nodes[0];
         if (node.id === 'root' && node.exclude_choices.length < 1) {
           node.exclude_choices.push(...this.variants.map(v => v.name));
@@ -117,22 +150,32 @@ export default {
         if (node.answers.length < 1) {
           this.currentQuestion = Object.assign({}, {
             question: '',
+            info: '',
             exclude_choices: [...node.exclude_choices],
             answers: [
               { response: 'yes', question: '', excludes: [], id: node.id + '-y', answers: [], exclude_choices: [] },
-              { response: 'no', question: '', excludes: [], id: node.id + '-n', answers: [], exclude_choices: [] }
+              { response: 'no', question: '', excludes: [...node.exclude_choices], id: node.id + '-n', answers: [], exclude_choices: [] }
             ]
           });
           this.newNode = true;
         } else {
+          let first = node.id === 'root' && (node.answers[0].excludes.length + node.answers[0].excludes.length) < 1;
           this.currentQuestion = Object.assign({}, {
+            question: node.question,
+            exclude_choices: [...node.exclude_choices],
+            answers: [
+                { response: 'yes', excludes: [...node.answers[0].excludes], exclude_choices: [...node.answers[0].exclude_choices] },
+                {response: 'no', excludes: first ? [...node.exclude_choices] : [...node.answers[1].excludes], exclude_choices: [...node.answers[0].exclude_choices] }
+            ]
+          });
+/*          this.currentQuestion = Object.assign({}, {
             question: node.question,
             exclude_choices: [...node.exclude_choices],
             answers: [
               {response: 'yes', excludes: [...node.answers[0].excludes], exclude_choices: [...node.answers[0].exclude_choices] },
               {response: 'no', excludes: [...node.answers[1].excludes], exclude_choices: [...node.answers[0].exclude_choices] }
             ]
-          });
+          });*/
           this.newNode = false;
         }
         this.currentNode.push(node);
@@ -199,5 +242,12 @@ export default {
 </script>
 
 <style scoped>
-
+.opt-red {
+  color: red;
+  font-weight: bold;
+}
+.opt-green {
+  color: green;
+  font-weight: bold;
+}
 </style>

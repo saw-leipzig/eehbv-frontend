@@ -34,14 +34,25 @@
                       @save="saveItem" @close="closeEditItem">
       <v-row>
         <v-col cols="4"><v-text-field label="Frage" v-model="currentQuestion.question" counter="40"></v-text-field></v-col>
+        <v-col cols="8">
+          <v-textarea label="Erläuterung zur Frage" v-model="currentQuestion.info"></v-textarea>
+        </v-col>
+      </v-row>
+      <v-row>
         <v-col cols="4">
           <v-select id="YES_SELECT" :items="addableItems" v-model="yesSelect" label="Ausschluss für Antwort JA"></v-select>
+        </v-col>
+        <v-col cols="1">
           <v-btn color="green" @click="addExclude('yes')"><v-icon>mdi-plus</v-icon></v-btn>
         </v-col>
+        <v-col cols="1"></v-col>
         <v-col cols="4">
           <v-select id="NO_SELECT" :items="addableItems" v-model="noSelect" label="Ausschluss für Antwort NEIN"></v-select>
+        </v-col>
+        <v-col cols="1">
           <v-btn color="red" @click="addExclude('no')"><v-icon>mdi-plus</v-icon></v-btn>
         </v-col>
+        <v-col cols="1"></v-col>
       </v-row>
       <v-row>
         <v-col cols="12">
@@ -73,7 +84,7 @@ export default {
   data: () => ({
     dialogEditQuestion: false,
     dialogDeleteQuestion: false,
-    currentQuestion: { question: '', yes_excludes: [], no_excludes: [] },
+    currentQuestion: { question: '', info: '', yes_excludes: [], no_excludes: [] },
     currentQuestionIndex: -1,
     yesSelect: '',
     noSelect: ''
@@ -107,7 +118,7 @@ export default {
 
   methods: {
     questionTemplate() {
-      return { question: '', yes_excludes: [], no_excludes: [] };
+      return { question: '', info: '', yes_excludes: [], no_excludes: [] };
     },
     addExclude(noYes) {
       this.currentQuestion[noYes + '_excludes'].push(noYes === 'no' ? this.noSelect : this.yesSelect);

@@ -109,6 +109,7 @@ export default {
         tree: [{
           id: 'root',
           question: '',
+          info: '',
           excludes: [],
           exclude_choices: [],
           answers: [
