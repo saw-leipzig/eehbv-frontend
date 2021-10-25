@@ -64,6 +64,7 @@
 <script>
 import DialogCardEditor from "./DialogCardEditor";
 import DialogDelete from "./DialogDelete";
+
 export default {
   name: "ComponentCreation",
   components: {DialogDelete, DialogCardEditor},

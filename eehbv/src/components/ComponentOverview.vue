@@ -142,6 +142,7 @@ export default {
       this.$http.get('components/' + this.$route.params.type).
               then((response) => {
                   this.componentData = [...response.data.components];
+                  this.$store.dispatch('notify', { id: 0, message: 'Komponentendaten geladen', color: 'green' });
           });
     },
     assignItem(item) {

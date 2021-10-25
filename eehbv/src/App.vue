@@ -23,16 +23,20 @@
       <router-view></router-view>
     </v-container>
     </v-main>
+
+    <notifications></notifications>
   </v-app>
 </template>
 
 <script>
 import HelloWorld from './components/Title';
+import Notifications from "./components/Notifications";
 
 export default {
   name: 'App',
 
   components: {
+    Notifications,
     HelloWorld,
   },
 
