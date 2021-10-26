@@ -93,7 +93,10 @@ export default {
       { text: 'Liste', value: false },
       { text: 'Baum', value: true }
     ],
-    api_name_rules: [ v => v.length <= 40 || 'Max 40 Zeichen', v => v.length > 0 || 'erforderlich' ],
+    api_name_rules: [
+        v => v.length <= 40 || this.$t("general.validation.max40"),
+        v => v.length > 0 || this.$t("general.validation.required")
+    ],
     editedParamIndex: -1,
     editedParam: { name: '', variable_name: '', unit: '', material_properties_id: null }
   }),

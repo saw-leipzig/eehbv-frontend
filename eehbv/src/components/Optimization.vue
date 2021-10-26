@@ -42,6 +42,11 @@
         </v-stepper>
       </v-col>
     </v-row>
+
+    <DialogCardEditor v-model="dialogDescription" max-width="500px" title="Anfrage absenden" @save="startOptimization" :cancel="false">
+      <v-text-field label="Beschreibung" v-model="description" counter="60"></v-text-field>
+    </DialogCardEditor>
+
   </v-container>
 </template>
 
@@ -50,16 +55,19 @@ import OptimizationParameters from "./OptimizationParameters";
 import VariantPicklist from "./VariantPicklist";
 import VariantQuestionSelection from "./VariantQuestionSelection";
 import Restrictions from "./Restrictions";
+import DialogCardEditor from "./DialogCardEditor";
 export default {
   name: "Optimization",
-  components: {Restrictions, VariantQuestionSelection, VariantPicklist, OptimizationParameters},
+  components: {DialogCardEditor, Restrictions, VariantQuestionSelection, VariantPicklist, OptimizationParameters},
   data () {
     return {
       def_step: 1,
       variant_select_type: 0,
       parameters: [],
       selection: [],
-      variants_conditions: []
+      variants_conditions: [],
+      description: '',
+      dialogDescription: false
     }
   },
 
@@ -78,10 +86,13 @@ export default {
     }
   },
 
+  computed: {
+    genericName() {
+      return this.process.view_name + ' - ' + new Date().toLocaleString();
+    }
+  },
+
   methods: {
-    log() {
-      //console.log(this.selection);
-    },
     abort() {
       this.$router.push({ name: 'ProcessOverview', params: { type: this.process.api_name, process: this.process } });
     },
@@ -97,16 +108,22 @@ export default {
     },
     continueThree(param) {
       if (param) {
-        this.variants_conditions = [...param];  // ??? keep
+        this.variants_conditions = [...param];
       }
+      this.description = this.genericName;
+      this.dialogDescription = true;
+    },
+    startOptimization() {
+      this.dialogDescription = false;
       let requestData = {
+        description: this.description,
         process: {
           id: this.process.id,
           api_name: this.process.api_name,
           view_name: this.process.view_name
         },
         process_parameters: this.parameters,
-        variants_conditions: param
+        variants_conditions: this.variants_conditions
       };
       this.$http.post('problems/' + this.process.id, requestData).
           then((response) => {

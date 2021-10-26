@@ -7,8 +7,8 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="green darken-1" @click="$emit('save')" :disabled="disabledSave">Speichern</v-btn>
-        <v-btn color="green darken-1" text @click="$emit('close')">Abbrechen</v-btn>
+        <v-btn color="green darken-1" @click="$emit('save')" :disabled="disabledSave">{{confirmLabel}}</v-btn>
+        <v-btn v-if="cancel" color="green darken-1" text @click="$emit('close')">{{$t('general.dialog.cancel')}}</v-btn>
         <v-spacer></v-spacer>
       </v-card-actions>
     </v-card>
@@ -38,6 +38,22 @@ export default {
       type: Boolean,
       required: false,
       default: false
+    },
+    confirmSave: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    cancel: {
+      type: Boolean,
+      required: false,
+      default: true
+    }
+  },
+
+  computed: {
+    confirmLabel() {
+      return this.confirmSave ? this.$t('general.dialog.save') : this.$t('general.dialog.ok');
     }
   }
 }

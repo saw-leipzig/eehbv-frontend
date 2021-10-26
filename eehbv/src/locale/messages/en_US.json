@@ -10,6 +10,11 @@
       "snake": "Lowercase characters and underscore only",
       "present": "Entry already exists"
     },
+    "dialog": {
+      "save": "Save",
+      "ok": "OK",
+      "cancel": "Cancel"
+    },
     "editing": {
       "create": "Create entry",
       "edit": "Edit entry",

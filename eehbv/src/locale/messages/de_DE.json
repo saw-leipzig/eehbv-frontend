@@ -10,6 +10,11 @@
       "snake": "Nur Kleinbuchstaben und Unterstrich",
       "present": "Eintrag schon vorhanden"
     },
+    "dialog": {
+      "save": "Speichern",
+      "ok": "OK",
+      "cancel": "Verwerfen"
+    },
     "editing": {
       "create": "Eintrag erstellen",
       "edit": "Eintrag bearbeiten",
