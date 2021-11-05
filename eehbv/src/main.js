@@ -6,6 +6,9 @@ import vuetify from './plugins/vuetify';
 import Vuelidate from 'vuelidate';
 import { i18n } from './i18n';
 import axios from 'axios';
+import interceptorSetup from './utils/interceptors';
+
+interceptorSetup();
 
 // axios.defaults.baseURL = 'http://localhost:5000';
 axios.defaults.baseURL = '/api/v1/';

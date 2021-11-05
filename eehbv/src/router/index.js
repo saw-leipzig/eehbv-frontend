@@ -4,6 +4,8 @@ import Home from '../views/Home.vue'
 import MachineComponents from "../views/pages/MachineComponents";
 import MaterialProperties from "../views/pages/MaterialProperties";
 import Processes from "../views/pages/Processes";
+import UserManagement from "../views/pages/UserManagement";
+import Login from "../views/pages/Login";
 import ComponentOverview from "../components/ComponentOverview";
 import ProcessOverview from "../components/ProcessOverview";
 import Optimization from "../components/Optimization";
@@ -18,6 +20,16 @@ const routes = [
     path: '/',
     name: 'Home',
     component: Home
+  },
+  {
+    path: '/users',
+    name: 'Users',
+    component: UserManagement
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login
   },
   {
     path: '/components',

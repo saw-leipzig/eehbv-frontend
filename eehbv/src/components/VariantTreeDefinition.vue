@@ -36,29 +36,6 @@
           </v-chip>
         </v-col>
       </v-row>
-
-<!--      <v-row>
-        <v-col cols="4">
-          <v-select id="YES_SELECT" :items="addableItems" v-model="yesSelect" label="Ausschluss für Antwort JA"></v-select>
-          <v-btn color="green" @click="addExclude('yes')"><v-icon>mdi-plus</v-icon></v-btn>
-        </v-col>
-        <v-col cols="4">
-          <v-select id="NO_SELECT" :items="addableItems" v-model="noSelect" label="Ausschluss für Antwort NEIN"></v-select>
-          <v-btn color="red" @click="addExclude('no')"><v-icon>mdi-plus</v-icon></v-btn>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="12">
-          <v-chip v-for="variant in variants" v-if="currentQuestion.answers[0].excludes.includes(variant.name)" :key="variant.name"
-                  close color="green" @click:close="removeExclude('yes', variant.name)">
-            {{variant.name}}
-          </v-chip>
-          <v-chip v-for="variant in variants" v-if="currentQuestion.answers[1].excludes.includes(variant.name)" :key="variant.name"
-                  close color="red" @click:close="removeExclude('no', variant.name)">
-            {{variant.name}}
-          </v-chip>
-        </v-col>
-      </v-row>-->
     </DialogCardEditor>
 
     <DialogDelete v-model="dialogDeleteQuestion" @abort="closeDeleteItem" @delete="deleteItemConfirm"></DialogDelete>

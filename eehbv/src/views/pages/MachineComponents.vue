@@ -5,14 +5,14 @@
 </template>
 
 <script>
-  import MachineComponents from "@/components/MachineComponents";
+import MachineComponents from "@/components/MachineComponents";
 
-  export default {
-    name: "MachineComponents",
-    components: {
-      'm-c': MachineComponents
-    }
+export default {
+  name: "MachineComponents",
+  components: {
+    'm-c': MachineComponents
   }
+}
 </script>
 
 <style scoped>

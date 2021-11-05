@@ -2,20 +2,56 @@
   <v-app id="inspire">
     <v-navigation-drawer v-model="drawer" app>
       <v-list>
-        <v-list-item v-for="item in items" :key="item.icon" link :to="item.to">
-          <v-list-item-icon>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
-          </v-list-item-content>
+        <v-list-item link :to="{name: 'Home'}">
+          <v-list-item-icon><v-icon>mdi-home-outline</v-icon></v-list-item-icon>
+          <v-list-item-content><v-list-item-title>Startseite</v-list-item-title></v-list-item-content>
+        </v-list-item>
+        <v-list-item link :to="{name: 'Component'}">
+          <v-list-item-icon><v-icon>mdi-cog-outline</v-icon></v-list-item-icon>
+          <v-list-item-content><v-list-item-title>Komponenten</v-list-item-title></v-list-item-content>
+        </v-list-item>
+        <v-list-item link :to="{name: 'Property'}">
+          <v-list-item-icon><v-icon>mdi-blur-linear</v-icon></v-list-item-icon>
+          <v-list-item-content><v-list-item-title>Werkstoffeigenschaften</v-list-item-title></v-list-item-content>
+        </v-list-item>
+        <v-list-item link :to="{name: 'Process'}">
+          <v-list-item-icon><v-icon>mdi-alert-octagon</v-icon></v-list-item-icon>
+          <v-list-item-content><v-list-item-title>Problemklassen</v-list-item-title></v-list-item-content>
+        </v-list-item>
+        <v-list-item link :to="{name: 'Home'}">
+          <v-list-item-icon><v-icon>mdi-send</v-icon></v-list-item-icon>
+          <v-list-item-content><v-list-item-title>Export</v-list-item-title></v-list-item-content>
+        </v-list-item>
+        <v-list-item link :to="{name: 'Users'}" v-if="user.role > 0">
+          <v-list-item-icon><v-icon>mdi-account-supervisor-circle-outline</v-icon></v-list-item-icon>
+          <v-list-item-content><v-list-item-title>Nutzerverwaltung</v-list-item-title></v-list-item-content>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar app>
+    <v-app-bar app dense>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title>EEHBV</v-toolbar-title>
+      <v-spacer></v-spacer>
+
+      <v-menu left bottom>
+         <template v-slot:activator="{ on, attrs }">
+           <v-btn icon v-bind="attrs" v-on="on">
+            <v-icon>mdi-account-circle-outline</v-icon>
+          </v-btn>
+        </template>
+        <v-list>
+          <v-list-item v-if="user.role > 0">
+            <v-list-item-title>{{user.username}}</v-list-item-title>
+          </v-list-item>
+          <v-list-item v-if="user.role > 0" @click="$store.commit('LOGOUT')">
+            <v-list-item-title>Logout</v-list-item-title>
+          </v-list-item>
+          <v-list-item v-else link :to="{name: 'Login'}">
+            <v-list-item-title>Login</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </v-app-bar>
 
     <v-main>
@@ -31,6 +67,7 @@
 <script>
 import HelloWorld from './components/Title';
 import Notifications from "./components/Notifications";
+import { mapGetters } from  'vuex';
 
 export default {
   name: 'App',
@@ -41,14 +78,11 @@ export default {
   },
 
   data: () => ({
-    drawer: null,
-    items: [
-      { icon: 'mdi-home-outline', title: 'Startseite', to: { name: 'Home' } },
-      { icon: 'mdi-cog-outline', title: 'Komponenten', to: { name: 'Component' } },
-      { icon: 'mdi-blur-linear', title: 'Werkstoffeigenschaften', to: { name: 'Property' } },
-      { icon: 'mdi-alert-octagon', title: 'Problemklassen', to: { name: 'Process' } },
-      { icon: 'mdi-send', title: 'Export', to: { name: 'Home'} }
-    ]
-  })
+    drawer: false
+  }),
+
+  computed: {
+    ...mapGetters(['user'])
+  }
 };
 </script>
