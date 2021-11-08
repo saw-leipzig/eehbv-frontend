@@ -9,7 +9,7 @@
           <v-toolbar-title>{{ comp.view_name }}</v-toolbar-title>
           <v-divider class="mx-4" inset vertical ></v-divider>
           <v-spacer></v-spacer>
-          <v-btn color="green" dark class="mb-2" @click="dialog = true">Neuer Eintrag</v-btn>
+          <v-btn color="green" dark class="mb-2" @click="dialog = true">{{$t('general.editing.new')}}</v-btn>
 
         </v-toolbar>
       </template>
@@ -27,7 +27,7 @@
 
     </v-data-table>
 
-    <DialogCardEditor v-model="dialog" max-width="600px" @save="save" @close="close">
+    <DialogCardEditor v-model="dialog" :title="formTitle" :confirm-save="true" max-width="600px" @save="save" @close="close">
       <v-container>
         <v-row>
           <v-col v-for="detail in comp.infos" :key="detail.position" cols="12" sm="6" md="4">
@@ -56,10 +56,12 @@
 import ComponentButton from "@/components/ComponentButton";
 import DialogDelete from "./DialogDelete";
 import DialogCardEditor from "./DialogCardEditor";
+import messageHandling from "../mixins/messageHandling";
 
 export default {
   name: "ComponentOverview",
   components: {DialogCardEditor, DialogDelete, ComponentButton},
+  mixins: [messageHandling],
 
   data: () => ({
     dialog: false,
@@ -90,11 +92,11 @@ export default {
               value: d.column_name
             };
           }),
-          { text: 'Aktionen', value: 'actions', sortable: false }
+          { text: this.$t('general.editing.actions'), value: 'actions', sortable: false }
       ];
     },
     formTitle() {
-      return this.editedIndex === -1 ? 'Neuer Eintrag' : 'Eintrag bearbeiten'
+      return this.editedIndex === -1 ? this.$t('general.editing.new') : this.$t('general.editing.edit')
     },
     manufacturers() {
       return this.componentData.map(c => { return { text: c.manufacturer, value: c.manufacturer } });
@@ -142,7 +144,7 @@ export default {
       this.$http.get('components/' + this.$route.params.type).
               then((response) => {
                   this.componentData = [...response.data.components];
-                  this.$store.dispatch('notify', { id: 0, message: 'Komponentendaten geladen', color: 'green' });
+                  this.notify(this.$t('components.msg.loaded'));
           });
     },
     assignItem(item) {

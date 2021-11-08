@@ -24,7 +24,7 @@
         </v-list-item>
         <v-list-item link :to="{name: 'Users'}" v-if="user.role > 0">
           <v-list-item-icon><v-icon>mdi-account-supervisor-circle-outline</v-icon></v-list-item-icon>
-          <v-list-item-content><v-list-item-title>Nutzerverwaltung</v-list-item-title></v-list-item-content>
+          <v-list-item-content><v-list-item-title>{{$t('user.management')}}</v-list-item-title></v-list-item-content>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
@@ -45,10 +45,10 @@
             <v-list-item-title>{{user.username}}</v-list-item-title>
           </v-list-item>
           <v-list-item v-if="user.role > 0" @click="$store.commit('LOGOUT')">
-            <v-list-item-title>Logout</v-list-item-title>
+            <v-list-item-title>{{$t('user.logout')}}</v-list-item-title>
           </v-list-item>
           <v-list-item v-else link :to="{name: 'Login'}">
-            <v-list-item-title>Login</v-list-item-title>
+            <v-list-item-title>{{$t('user.login')}}</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>

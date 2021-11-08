@@ -5,82 +5,82 @@
       <v-card-text>
         <v-row>
           <v-col cols="3">
-            <v-text-field :value="user.username" label="Benutzername" disabled></v-text-field>
+            <v-text-field :value="user.username" :label="$t('user.username')" disabled></v-text-field>
           </v-col>
           <v-col cols="3">
-            <v-text-field v-model="oldPassword" label="Altes Passwort" @click:append="showOldPwd = !showOldPwd"
+            <v-text-field v-model="oldPassword" :label="$t('user.old_password')" @click:append="showOldPwd = !showOldPwd"
                           :append-icon="showOldPwd ? 'mdi-eye' : 'mdi-eye-off'" :type="showOldPwd ? 'text' : 'password'"
             ></v-text-field>
           </v-col>
           <v-col cols="3">
-            <v-text-field v-model="password" label="Neues Passwort" @click:append="show1 = !show1"
+            <v-text-field v-model="password" :label="$t('user.new_password')" @click:append="show1 = !show1"
                           :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" :type="show1 ? 'text' : 'password'"
             ></v-text-field>
           </v-col>
           <v-col cols="3">
-            <v-text-field v-model="repetitionPwd" label="Wdh. neues Passwort" @click:append="show2 = !show2"
+            <v-text-field v-model="repetitionPwd" :label="$t('user.new_password_rep')" @click:append="show2 = !show2"
                           :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'" :type="show2 ? 'text' : 'password'"
             ></v-text-field>
           </v-col>
         </v-row>
       </v-card-text>
       <v-card-actions>
-        <v-btn :disabled="disabledSendPwdChange" @click="changePwdSelf">Ändern</v-btn>
+        <v-btn :disabled="disabledSendPwdChange" @click="changePwdSelf">{{$t('user.change_pwd')}}</v-btn>
       </v-card-actions>
     </v-card>
 
     <v-card v-if="user.role > 2">
-      <v-card-title>Benutzer anlegen</v-card-title>
+      <v-card-title>{{$t('user.create')}}</v-card-title>
       <v-card-text>
         <v-row>
           <v-col cols="3">
-            <v-text-field v-model="newUser.username" label="Benutzername" counter="20"></v-text-field>
+            <v-text-field v-model="newUser.username" :label="$t('user.username')" counter="20"></v-text-field>
           </v-col>
           <v-col cols="3">
-            <v-text-field v-model="newUser.password" label="Passwort" @click:append="show3 = !show3"
+            <v-text-field v-model="newUser.password" :label="$t('user.password')" @click:append="show3 = !show3"
                           :append-icon="show3 ? 'mdi-eye' : 'mdi-eye-off'" :type="show3 ? 'text' : 'password'"
             ></v-text-field>
           </v-col>
           <v-col cols="3">
-            <v-text-field v-model="repetitionNewUsersPwd" label="Wiederholung Passwort" @click:append="show4 = !show4"
+            <v-text-field v-model="repetitionNewUsersPwd" :label="$t('user.password_rep')" @click:append="show4 = !show4"
                           :append-icon="show4 ? 'mdi-eye' : 'mdi-eye-off'" :type="show4 ? 'text' : 'password'"
             ></v-text-field>
           </v-col>
           <v-col cols="3">
-            <v-select :items="userRoles" v-model="newUser.role" label="Benutzerrolle"></v-select>
+            <v-select :items="userRoles" v-model="newUser.role" :label="$t('user.role')"></v-select>
           </v-col>
         </v-row>
       </v-card-text>
       <v-card-actions>
-        <v-btn :disabled="disabledSendNewUser" @click="createNewUser">Anlegen</v-btn>
+        <v-btn :disabled="disabledSendNewUser" @click="createNewUser">{{$t('user.create')}}</v-btn>
       </v-card-actions>
     </v-card>
 
     <v-card v-if="user.role > 2">
-      <v-card-title>Benutzer ändern</v-card-title>
+      <v-card-title>{{$t('user.change')}}</v-card-title>
       <v-card-text>
         <v-row>
           <v-col cols="3">
-            <v-select :items="userItems" v-model="selectedUser" label="Benutzername"></v-select>
+            <v-select :items="userItems" v-model="selectedUser" :label="$t('user.username')"></v-select>
           </v-col>
           <v-col cols="3">
-            <v-text-field v-model="selectedUserPwd" label="Passwort" @click:append="show5 = !show5"
+            <v-text-field v-model="selectedUserPwd" :label="$t('user.password')" @click:append="show5 = !show5"
                           :append-icon="show5 ? 'mdi-eye' : 'mdi-eye-off'" :type="show5 ? 'text' : 'password'"
             ></v-text-field>
           </v-col>
           <v-col cols="3">
-            <v-text-field v-model="selectedUserPwdRep" label="Wiederholung Passwort" @click:append="show6 = !show6"
+            <v-text-field v-model="selectedUserPwdRep" :label="$t('user.password_rep')" @click:append="show6 = !show6"
                           :append-icon="show6 ? 'mdi-eye' : 'mdi-eye-off'" :type="show6 ? 'text' : 'password'"
             ></v-text-field>
           </v-col>
           <v-col cols="3">
-            <v-select :items="userRoles" v-model="selectedRole" label="Benutzerrolle"></v-select>
+            <v-select :items="userRoles" v-model="selectedRole" :label="$t('user.role')"></v-select>
           </v-col>
         </v-row>
       </v-card-text>
       <v-card-actions>
-        <v-btn :disabled="disabledSendSelectedPwdChange" @click="changeSelectedPwd">Passwort ändern</v-btn>
-        <v-btn :disabled="disabledSendSelectedRoleChange" @click="changeSelectedRole">Benutzerrolle ändern</v-btn>
+        <v-btn :disabled="disabledSendSelectedPwdChange" @click="changeSelectedPwd">{{ $t('user.change_pwd') }}</v-btn>
+        <v-btn :disabled="disabledSendSelectedRoleChange" @click="changeSelectedRole">{{ $t('user.change_role') }}</v-btn>
       </v-card-actions>
     </v-card>
   </div>
@@ -88,9 +88,11 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import messageHandling from "../mixins/messageHandling";
 
 export default {
   name: "UserManagement",
+  mixins: [messageHandling],
 
   data: () => ({
     oldPassword: '',
@@ -122,11 +124,11 @@ export default {
     if (this.user.role > 2) {
       this.$http.get('users').then((response) => {
         this.users.splice(0, this.users.length, ...response.data);
-        this.$store.dispatch('notify', {id: 0, message: 'Beutzer geladen', color: 'green'});
+        this.notify(this.$t('user.msg.loaded_users'));
       });
       this.$http.get('roles').then((response) => {
         this.roles.splice(0, this.roles.length, ...response.data);
-        this.$store.dispatch('notify', {id: 0, message: 'Benutzerrollen geladen', color: 'green'});
+        this.notify(this.$t('user.msg.loaded_roles'));
       });
     }
 },
@@ -177,14 +179,12 @@ export default {
       this.changePwd(this.selectedUser, data, reset);
     },
     changePwd(id, data, reset) {
-      // ToDo: reset text fields
       this.$http.put('users/' + id + '/password', data).
           then(() => {
-            this.$store.dispatch('notify', { id: 11, message: 'Passwort geändert', color: 'green' });
+            this.notify(this.$t('user.msg.changed_pwd'));
             reset();
       }).catch((error) => {
-        console.log(error);
-        this.$store.dispatch('notify', { id: 12, message: error.response.message, color: 'red' });
+        this.handleRequestError(error, this.$t('user.msg.error_password'));
       });
     },
     changeSelectedRole() {
@@ -194,24 +194,20 @@ export default {
             const userIndex = this.users.findIndex(u => u.username === resp_user.username);
             this.users.splice(userIndex, 1, resp_user);
             this.selectedRole = 0;
-            this.$store.dispatch('notify', { id: 11, message: 'Benutzerrolle geändert', color: 'green' });
+            this.notify(this.$t('user.msg.changed_role'));
       }).catch((error) => {
-        console.log(error);
-        this.$store.dispatch('notify', { id: 12, message: error.response.message, color: 'red' });
+        this.handleRequestError(error, this.$t('user.msg.error_role'));
       });
     },
     createNewUser() {
       this.$http.post('users', this.newUser).
           then((response) => {
             this.users.push(response.data);
-            this.$store.dispatch('notify', { id: 11, message: 'Neuer Benutzer angelegt', color: 'green' });
+            this.notify(this.$t('user.msg.created_new'));
             this.newUser = Object.assign({}, { username: '', password: '', role: 0});
             this.repetitionNewUsersPwd = '';
       }).catch((error) => {
-        console.log(error);
-        let msg = error.response ? (error.response.data ? error.response.data : error.response.status) :
-            (error.request ? error.request : error.message);
-        this.$store.dispatch('notify', { id: 0, message: msg, color: 'red' });
+        this.handleRequestError(error, this.$t('user.msg.error_created'));
       });
     },
   }

@@ -26,6 +26,40 @@
       "unit": "Unit"
     }
   },
+  "user": {
+    "username": "Username",
+    "password": "Password",
+    "old_password": "Old password",
+    "password_rep": "Repetition password",
+    "new_password": "New password",
+    "new_password_rep": "Repetition new password",
+    "sign_in": "Sign-In",
+    "login": "Login",
+    "logout": "Logout",
+    "role": "User role",
+    "change_pwd": "Change password",
+    "change_role": "Change user role",
+    "change": "Edit user",
+    "management": "User management",
+    "change_own_pwd": "Change own password",
+    "create": "Create user",
+    "msg": {
+      "loaded_users": "Loaded user data",
+      "loaded_roles": "Loaded user roles",
+      "changed_pwd": "Changed password",
+      "changed_role": "Changed user role",
+      "created_new": "Created new user",
+      "error_created": "Error while creation of new user - Server might be not accessible",
+      "error_password": "Error while changing the password - Server might be not accessible",
+      "error_role": "Error while changing the user role - Server might be not accessible",
+      "error_login": "Error while login - Server might be not accessible"
+    }
+  },
+  "components": {
+    "msg": {
+      "loaded": "Loaded component data"
+    }
+  },
   "material_properties": {
     "material": "Material",
     "titles": {

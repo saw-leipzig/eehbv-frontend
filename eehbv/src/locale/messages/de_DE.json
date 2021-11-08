@@ -26,6 +26,40 @@
       "unit": "Einheit"
     }
   },
+  "user": {
+    "username": "Benutzername",
+    "password": "Passwort",
+    "old_password": "Altes Passwort",
+    "password_rep": "Wiederholung Passwort",
+    "new_password": "Neues Passwort",
+    "new_password_rep": "Wdh. neues Passwort",
+    "sign_in": "Anmeldung",
+    "login": "Anmelden",
+    "logout": "Abmelden",
+    "role": "Benutzerrolle",
+    "change_pwd": "Passwort ändern",
+    "change_role": "Benutzerrolle ändern",
+    "change": "Benutzer bearbeiten",
+    "management": "Nutzerverwaltung"
+    "change_own_pwd": "Eigenes Passwort ändern",
+    "create": "Benutzer anlegen",
+    "msg": {
+      "loaded_users": "Beutzer geladen",
+      "loaded_roles": "Benutzerrollen geladen",
+      "changed_pwd": "Passwort geändert",
+      "changed_role": "Benutzerrolle geändert",
+      "created_new": "Neuer Benutzer angelegt",
+      "error_created": "Unklarer Fehler beim Anlegen eines neuen Nutzers - Server evtl. nicht erreichbar",
+      "error_password": "Unklarer Fehler beim Ändern des Passworts - Server evtl. nicht erreichbar",
+      "error_role": "Unklarer Fehler beim Ändern der Nutzerrolle - Server evtl. nicht erreichbar",
+      "error_login": "Fehler bei Anmeldung - Server evtl. nicht erreichbar"
+    }
+  },
+  "components": {
+    "msg": {
+      "loaded": "Komponentendaten geladen"
+    }
+  },
   "material_properties": {
     "material": "Material",
     "titles": {

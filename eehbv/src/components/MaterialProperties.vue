@@ -32,7 +32,7 @@
 
     </v-data-table>
 
-    <DialogCardEditor v-model="dialogValue" max-width="500px" :title="editTitle" @save="save" @close="close">
+    <DialogCardEditor v-model="dialogValue" max-width="500px" :title="editTitle" :confirm-save="true" @save="save" @close="close">
       <v-container>
         <v-row>
           <v-col cols="6">
@@ -51,7 +51,7 @@
     <DialogDelete v-model="dialogValueDelete" @abort="closeDelete" @delete="deleteValueConfirm"></DialogDelete>
 
     <DialogCardEditor v-model="dialogProp" max-width="400px" :title="$t('material_properties.titles.new_property')"
-                      @save="saveProp" @close="closeProp">
+                      :confirm-save="true" @save="saveProp" @close="closeProp">
       <v-container>
         <v-row>
           <v-col cols="6">
