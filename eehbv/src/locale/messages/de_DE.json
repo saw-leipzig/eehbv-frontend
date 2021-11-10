@@ -13,7 +13,11 @@
     "dialog": {
       "save": "Speichern",
       "ok": "OK",
-      "cancel": "Verwerfen"
+      "cancel": "Verwerfen",
+      "next": "Weiter",
+      "close": "Schließen",
+      "abort": "Abbruch",
+      "confirm_delete": "Sind Sie sicher, dass Sie diesen Eintrag löschen wollen?"
     },
     "editing": {
       "create": "Eintrag erstellen",
@@ -40,7 +44,7 @@
     "change_pwd": "Passwort ändern",
     "change_role": "Benutzerrolle ändern",
     "change": "Benutzer bearbeiten",
-    "management": "Nutzerverwaltung"
+    "management": "Nutzerverwaltung",
     "change_own_pwd": "Eigenes Passwort ändern",
     "create": "Benutzer anlegen",
     "msg": {
@@ -56,6 +60,9 @@
     }
   },
   "components": {
+    "title": {
+      "new_type": "Neuer Komponententyp"
+    },
     "msg": {
       "loaded": "Komponentendaten geladen"
     }

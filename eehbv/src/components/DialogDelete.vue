@@ -1,11 +1,11 @@
 <template>
   <v-dialog v-model="value" max-width="400px">
     <v-card>
-      <v-card-title class="headline">Sind Sie sicher, dass Sie diesen Eintrag löschen wollen?</v-card-title>
+      <v-card-title class="headline">{{$t('general.dialog.confirm_delete')}}</v-card-title>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="green darken-1" text @click="$emit('abort')">Abbrechen</v-btn>
-        <v-btn color="green darken-1" text @click="$emit('delete')">OK</v-btn>
+        <v-btn color="green darken-1" text @click="$emit('abort')">{{$t('general.dialog.abort')}}</v-btn>
+        <v-btn color="green darken-1" text @click="$emit('delete')">{{$t('general.dialog.ok')}}</v-btn>
         <v-spacer></v-spacer>
       </v-card-actions>
     </v-card>

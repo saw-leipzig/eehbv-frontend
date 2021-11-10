@@ -14,15 +14,15 @@
       <v-container>
         <div v-html="infoText"></div>
       </v-container>
-      <v-btn color="orange lighten-2" @click="infoOverlay = false">Schließen</v-btn>
+      <v-btn color="orange lighten-2" @click="infoOverlay = false">{{$t('general.dialog.close')}}</v-btn>
     </v-overlay>
 
     <v-btn color="green" :disabled="disabled" @click="$emit('ok')">
-      {{contextNew ? 'Weiter' : 'Speichern'}}
+      {{contextNew ? $t('general.dialog.next') : $t('general.dialog.save')}}
     </v-btn>
 
     <v-btn text @click="$emit('abort')">
-      Abbruch
+      {{$t('general.dialog.abort')}}
     </v-btn>
   </div>
 </template>

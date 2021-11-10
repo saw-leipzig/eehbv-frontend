@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-row>
+    <v-row v-if="userRole > 1">
       <v-col cols="12">
         <v-btn :to="{ name: 'ComponentCreation' }">Neuer Komponententyp</v-btn>
       </v-col>
@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import {mapState} from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
   name: "MachineComponents",
@@ -25,18 +25,17 @@ export default {
     tables: []
   }),
   computed: {
-    ...mapState({
-      componentTypes: state => state.componentInfo.componentTypes
-    })
-  },
-  methods: {
-    log: function () {
-      console.log(this.$store.state);
-    }
+    ...mapGetters(['userRole', 'componentTypes'])
   },
   created() {
     if (this.componentTypes.length < 1) {
       this.$store.dispatch('initComponents');
+    }
+  },
+
+  methods: {
+    log: function () {
+      console.log(this.$store.state);
     }
   }
 }

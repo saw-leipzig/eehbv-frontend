@@ -13,7 +13,11 @@
     "dialog": {
       "save": "Save",
       "ok": "OK",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "next": "Next",
+      "close": "Close",
+      "abort": "Abort",
+      "confirm_delete": "Do you really want to delete this entry?"
     },
     "editing": {
       "create": "Create entry",
@@ -56,6 +60,9 @@
     }
   },
   "components": {
+    "title": {
+      "new_type": "New component type"
+    },
     "msg": {
       "loaded": "Loaded component data"
     }

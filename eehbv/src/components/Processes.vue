@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-row>
+    <v-row v-if="role > 1">
       <v-col cols="12">
         <v-btn :to="{ name: 'ProcessCreation' }">Neuer Prozess</v-btn>
       </v-col>
@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex';
+import { mapGetters } from 'vuex';
 
 export default {
   name: "Processes",
@@ -25,7 +25,7 @@ export default {
     tables: []
   }),
   computed: {
-    ...mapGetters(['componentTypes', 'processes'])
+    ...mapGetters(['componentTypes', 'processes', 'userRole'])
   },
   methods: {
     log: function () {

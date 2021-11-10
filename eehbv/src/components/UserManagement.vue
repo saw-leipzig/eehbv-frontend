@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card>
-      <v-card-title>Eigenes Passwort ändern</v-card-title>
+      <v-card-title>{{$t('user.change_own_pwd')}}</v-card-title>
       <v-card-text>
         <v-row>
           <v-col cols="3">

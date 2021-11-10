@@ -11,7 +11,8 @@ const state = {
 
 const getters = {
   user: state => state.user,
-  token: state => state.user.token
+  token: state => state.user.token,
+  userRole: state => state.user.role
 };
 
 const actions = {

@@ -5,7 +5,7 @@
       <template v-slot:top>
         <v-toolbar flat>
           <v-overflow-btn :items="propOptions" v-model="currentPropertyId"></v-overflow-btn>
-          <v-tooltip bottom>
+          <v-tooltip bottom v-if="userRole > 1">
             <template v-slot:activator="{ on, attrs }">
               <v-btn color="green" @click="dialogProp = true" v-bind="attrs" v-on="on"><v-icon>mdi-plus</v-icon></v-btn>
             </template>
@@ -13,7 +13,7 @@
           </v-tooltip>
           <v-divider class="mx-4" inset vertical ></v-divider>
           <v-spacer></v-spacer>
-          <v-btn :disabled="disabledAdd" color="green" dark class="mb-2" @click="dialogValue = true">
+          <v-btn v-if="userRole > 0" :disabled="disabledAdd" color="green" dark class="mb-2" @click="dialogValue = true">
             {{$t('general.editing.new')}}
           </v-btn>
         </v-toolbar>
@@ -112,7 +112,7 @@ export default {
   }),
 
   computed: {
-    ...mapGetters(['valuesOfProp', 'properties', 'prop_values']),
+    ...mapGetters(['valuesOfProp', 'properties', 'prop_values', 'userRole']),
     headers() {
       return [
         { text: this.$t('material_properties.material'), align: 'start', sortable: true, value: 'material' },

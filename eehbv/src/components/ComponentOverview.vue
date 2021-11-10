@@ -9,14 +9,14 @@
           <v-toolbar-title>{{ comp.view_name }}</v-toolbar-title>
           <v-divider class="mx-4" inset vertical ></v-divider>
           <v-spacer></v-spacer>
-          <v-btn color="green" dark class="mb-2" @click="dialog = true">{{$t('general.editing.new')}}</v-btn>
+          <v-btn v-if="userRole > 0" color="green" dark class="mb-2" @click="dialog = true">{{$t('general.editing.new')}}</v-btn>
 
         </v-toolbar>
       </template>
 
       <template v-slot:item.actions="{ item }">
-        <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
-        <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
+        <v-icon small class="mr-2" :disabled="userRole < 1" @click="editItem(item)">mdi-pencil</v-icon>
+        <v-icon small :disabled="userRole < 1" @click="deleteItem(item)">mdi-delete</v-icon>
       </template>
 
       <template v-slot:no-data>
@@ -53,7 +53,8 @@
 </template>
 
 <script>
-import ComponentButton from "@/components/ComponentButton";
+import { mapGetters } from 'vuex';
+import ComponentButton from "./ComponentButton";
 import DialogDelete from "./DialogDelete";
 import DialogCardEditor from "./DialogCardEditor";
 import messageHandling from "../mixins/messageHandling";
@@ -82,6 +83,7 @@ export default {
   },
 
   computed: {
+    ...mapGetters(['userRole']),
     headers() {
       return [
           ...this.comp.infos.map(d => {
