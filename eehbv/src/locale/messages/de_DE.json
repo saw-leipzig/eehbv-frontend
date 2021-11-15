@@ -59,15 +59,23 @@
       "error_login": "Fehler bei Anmeldung - Server evtl. nicht erreichbar"
     }
   },
+  "history": {
+    "title": "Historie"
+  },
+  "glossary": {
+    "title": "Glossar"
+  },
   "components": {
     "title": {
-      "new_type": "Neuer Komponententyp"
+      "new_type": "Neuer Komponententyp",
+      "components": "Komponenten"
     },
     "msg": {
       "loaded": "Komponentendaten geladen"
     }
   },
   "material_properties": {
+    "properties": "Materialeigenschaften",
     "material": "Material",
     "titles": {
       "new_property": "Neue Materialeigenschaft"

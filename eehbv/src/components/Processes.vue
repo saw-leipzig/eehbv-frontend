@@ -2,7 +2,7 @@
   <v-container>
     <v-row v-if="role > 1">
       <v-col cols="12">
-        <v-btn :to="{ name: 'ProcessCreation' }">Neuer Prozess</v-btn>
+        <v-btn :to="{ name: 'ProcessCreation' }">{{$t('components.title.new_type')}}</v-btn>
       </v-col>
     </v-row>
     <v-row>

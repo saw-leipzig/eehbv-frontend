@@ -59,15 +59,23 @@
       "error_login": "Error while login - Server might be not accessible"
     }
   },
+  "history": {
+    "title": "History"
+  },
+  "glossary": {
+    "title": "Glossary"
+  },
   "components": {
     "title": {
-      "new_type": "New component type"
+      "new_type": "New component type",
+      "components": "Components"
     },
     "msg": {
       "loaded": "Loaded component data"
     }
   },
   "material_properties": {
+    "properties": "Material properties",
     "material": "Material",
     "titles": {
       "new_property": "New material property"

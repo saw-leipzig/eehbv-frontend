@@ -5,6 +5,8 @@ import MachineComponents from "../views/pages/MachineComponents";
 import MaterialProperties from "../views/pages/MaterialProperties";
 import Processes from "../views/pages/Processes";
 import UserManagement from "../views/pages/UserManagement";
+import History from '../views/pages/History';
+import Glossary from '../views/pages/Glossary';
 import Login from "../views/pages/Login";
 import ComponentOverview from "../components/ComponentOverview";
 import ProcessOverview from "../components/ProcessOverview";
@@ -79,6 +81,16 @@ const routes = [
     name: 'OptimizationResult',
     component: OptimizationResult,
     props: true
+  },
+  {
+    path: '/history',
+    name: 'History',
+    component: History
+  },
+  {
+    path: '/glossary',
+    name: 'Glossary',
+    component: Glossary
   },
   {
     path: '/about',

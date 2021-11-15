@@ -2,27 +2,35 @@
   <v-app id="inspire">
     <v-navigation-drawer v-model="drawer" app>
       <v-list>
-        <v-list-item link :to="{name: 'Home'}">
+        <v-list-item link :to="{ name: 'Home' }">
           <v-list-item-icon><v-icon>mdi-home-outline</v-icon></v-list-item-icon>
           <v-list-item-content><v-list-item-title>Startseite</v-list-item-title></v-list-item-content>
         </v-list-item>
-        <v-list-item link :to="{name: 'Component'}">
+        <v-list-item link :to="{ name: 'Component' }">
           <v-list-item-icon><v-icon>mdi-cog-outline</v-icon></v-list-item-icon>
-          <v-list-item-content><v-list-item-title>Komponenten</v-list-item-title></v-list-item-content>
+          <v-list-item-content><v-list-item-title>{{$t('components.title.components')}}</v-list-item-title></v-list-item-content>
         </v-list-item>
-        <v-list-item link :to="{name: 'Property'}">
+        <v-list-item link :to="{ name: 'Property' }">
           <v-list-item-icon><v-icon>mdi-blur-linear</v-icon></v-list-item-icon>
-          <v-list-item-content><v-list-item-title>Werkstoffeigenschaften</v-list-item-title></v-list-item-content>
+          <v-list-item-content><v-list-item-title>{{$t('material_properties.properties')}}</v-list-item-title></v-list-item-content>
         </v-list-item>
-        <v-list-item link :to="{name: 'Process'}">
+        <v-list-item link :to="{ name: 'Process' }">
           <v-list-item-icon><v-icon>mdi-alert-octagon</v-icon></v-list-item-icon>
           <v-list-item-content><v-list-item-title>Problemklassen</v-list-item-title></v-list-item-content>
         </v-list-item>
-        <v-list-item link :to="{name: 'Home'}">
+        <v-list-item link :to="{ name: 'History' }">
+          <v-list-item-icon><v-icon>mdi-folder-cog-outline</v-icon></v-list-item-icon>
+          <v-list-item-content><v-list-item-title>{{$t('history.title')}}</v-list-item-title></v-list-item-content>
+        </v-list-item>
+        <v-list-item link :to="{ name: 'Glossary' }">
+          <v-list-item-icon><v-icon>mdi-folder-information-outline</v-icon></v-list-item-icon>
+          <v-list-item-content><v-list-item-title>{{$t('glossary.title')}}</v-list-item-title></v-list-item-content>
+        </v-list-item>
+<!--        <v-list-item link :to="{ name: 'Home' }">
           <v-list-item-icon><v-icon>mdi-send</v-icon></v-list-item-icon>
           <v-list-item-content><v-list-item-title>Export</v-list-item-title></v-list-item-content>
-        </v-list-item>
-        <v-list-item link :to="{name: 'Users'}" v-if="user.role > 0">
+        </v-list-item>-->
+        <v-list-item link :to="{ name: 'Users' }" v-if="user.role > 0">
           <v-list-item-icon><v-icon>mdi-account-supervisor-circle-outline</v-icon></v-list-item-icon>
           <v-list-item-content><v-list-item-title>{{$t('user.management')}}</v-list-item-title></v-list-item-content>
         </v-list-item>
@@ -55,9 +63,9 @@
     </v-app-bar>
 
     <v-main>
-    <v-container fluid>
-      <router-view></router-view>
-    </v-container>
+      <v-container fluid>
+        <router-view></router-view>
+      </v-container>
     </v-main>
 
     <notifications></notifications>
