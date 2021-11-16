@@ -16,7 +16,7 @@
       "cancel": "Verwerfen",
       "next": "Weiter",
       "close": "Schließen",
-      "abort": "Abbruch",
+      "abort": "Abbrechen",
       "confirm_delete": "Sind Sie sicher, dass Sie diesen Eintrag löschen wollen?"
     },
     "editing": {
@@ -89,11 +89,12 @@
       "definition": "<p>Infotext <em>Prozessdefinition</em><p>",
       "variants": "<p>Infotext <em>Varientendefintion</em><p>",
       "selection": "<p>Infotext <em>Variantenauswahldefinition</em><p>",
+      "parameters": "<p>Infotext <em>Parameter-Abhängigkeiten</em><p>",
       "solver": "<p>Infotext <em>Solver</em><p>",
       "infoTexts": "<p>Infotext <em>Infotexte</em><p>"
     },
     "titles": {
-      "new_process": "Neuer Prozess",
+      "new_process": "Neuer Prozesstyp",
       "process_definition": "Prozessdefinition",
       "variants_definition": "Varianten",
       "variant_selection_definition_tree": "Fragebaum für Variantenauswahl",
@@ -104,12 +105,15 @@
       "process_definition": "Prozess",
       "variants_definition": "Varianten",
       "variant_selection_definition": "Variantenauswahl",
+      "parameters": "Parameter",
       "solver_definition": "Solver",
       "info_texts_definition": "Info-Texte"
     }
   },
   "process_definition": {
-    "titles": {},
+    "titles": {
+      "parameters": "Prozessparameter"
+    },
     "labels": {
       "view_name": "Name",
       "api_name": "API-Pfad",
@@ -117,10 +121,17 @@
       "name": "Name",
       "unit": "Einheit",
       "variable_name": "Variablenname",
-      "material_property": "Materialkonstante"
+      "material_property": "Materialkonstante",
+      "restricting": "einschränkend",
+      "dependent": "abhängig",
+      "column_lower": "Spalte Untergrenze",
+      "column_upper": "Spalte Obergrenze",
+      "derived_param": "Abgeleiteter Parameter",
+      "dependency": "Abhängigkeit"
     },
     "validation": {
-      "startsWithPLowDash": "Muss mit p_ beginnen"
+      "startsWithPLowDash": "Muss mit p_ beginnen",
+      "startsWithDLowDash": "Muss mit d_ beginnen"
     }
   }
 }

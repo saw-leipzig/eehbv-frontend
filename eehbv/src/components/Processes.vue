@@ -1,8 +1,8 @@
 <template>
   <v-container>
-    <v-row v-if="role > 1">
+    <v-row v-if="userRole > 1">
       <v-col cols="12">
-        <v-btn :to="{ name: 'ProcessCreation' }">{{$t('components.title.new_type')}}</v-btn>
+        <v-btn :to="{ name: 'ProcessCreation' }">{{$t('process_creation.titles.new_process')}}</v-btn>
       </v-col>
     </v-row>
     <v-row>

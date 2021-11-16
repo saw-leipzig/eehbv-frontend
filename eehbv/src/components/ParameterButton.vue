@@ -49,6 +49,7 @@ export default {
         {
           view: 'Prozess',
           id: '0',
+          disabled: this.params[0].length < 1,
           parameters: this.params[0].map((p, i) => { return {...p, id: '0-'+ i}})
         },
         {

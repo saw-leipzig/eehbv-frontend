@@ -43,8 +43,8 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="green darken-1" @click="save" :disabled="disabledSave">Speichern</v-btn>
-        <v-btn color="green darken-1" text :to="{ name: 'Component' }">Abbrechen</v-btn>
+        <v-btn color="green darken-1" @click="save" :disabled="disabledSave">{{$t('general.dialog.save')}}</v-btn>
+        <v-btn color="green darken-1" text :to="{ name: 'Component' }">{{$t('general.dialog.abort')}}</v-btn>
       </v-card-actions>
     </v-card>
 

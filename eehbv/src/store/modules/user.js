@@ -3,7 +3,7 @@ import Vue from 'vue'
 const state = {
   user: {
     id: 0,
-    role: 0,
+    role: 3,//0,
     username: '',
     token: ''
   }

@@ -9,17 +9,19 @@
       </v-col>
     </v-row>
 
+
     <v-container>
       <v-row>
         <v-col cols="12" >
-          <v-card>
+          <ParameterList :parameters="process.parameters" :show-dep="true" :show-delete="false" :show-add="false" :show-edit="false"></ParameterList>
+<!--          <v-card>
             <v-card-title>Prozessparameter</v-card-title>
             <v-card-text>
               <v-list>
                 <v-list-item v-for="param in process.parameters" :key="param.id">{{param.name}} / {{param.unit}}</v-list-item>
               </v-list>
             </v-card-text>
-          </v-card>
+          </v-card>-->
         </v-col>
       </v-row>
     </v-container>
@@ -42,9 +44,11 @@
 </template>
 
 <script>
+import ParameterList from "./ParameterList";
+
 export default {
   name: "ProcessOverview",
-
+  components: {ParameterList},
   data: () => ({
     variants: [],
     infoTexts: [],

@@ -27,12 +27,18 @@
             <v-divider></v-divider>
 
             <v-stepper-step :complete="def_step > 4" step="4" color="green">
+              {{$t("process_creation.labels.parameters")}}
+            </v-stepper-step>
+
+            <v-divider></v-divider>
+
+            <v-stepper-step :complete="def_step > 5" step="5" color="green">
               {{$t("process_creation.labels.solver_definition")}}
             </v-stepper-step>
 
             <v-divider></v-divider>
 
-            <v-stepper-step step="5" color="green">
+            <v-stepper-step step="6" color="green">
               {{$t("process_creation.labels.info_texts_definition")}}
             </v-stepper-step>
           </v-stepper-header>
@@ -61,15 +67,22 @@
             </v-stepper-content>
 
             <v-stepper-content step="4">
-              <EditNewWrapper :context-new="true" :info-text="info[3]" @ok="continueFour" @abort="abort">
-                <SolverDefinition v-model="solver"></SolverDefinition>
+              <EditNewWrapper :context-new="true" :info-text="info[3]" :title="$t('process_definition.titles.parameters')"
+                              @ok="continueFour" @abort="abort">
+                <ParameterDependencyDefinition v-model="process.process_parameters" :variants="variants"></ParameterDependencyDefinition>
               </EditNewWrapper>
             </v-stepper-content>
 
             <v-stepper-content step="5">
-              <EditNewWrapper :context-new="true" :info-text="info[4]"
+              <EditNewWrapper :context-new="true" :info-text="info[4]" @ok="continueFive" @abort="abort">
+                <SolverDefinition v-model="solver"></SolverDefinition>
+              </EditNewWrapper>
+            </v-stepper-content>
+
+            <v-stepper-content step="6">
+              <EditNewWrapper :context-new="true" :info-text="info[5]"
                               :title="$t('process_creation.titles.info_texts_definition')"
-                              @ok="continueFive" @abort="abort">
+                              @ok="continueSix" @abort="abort">
                 <InfoTextsDefinition v-model="infoTexts"></InfoTextsDefinition>
               </EditNewWrapper>
             </v-stepper-content>
@@ -88,10 +101,12 @@ import VariantsDefinition from "./VariantsDefinition";
 import VariantSelectionDefinition from "./VariantSelectionDefinition";
 import SolverDefinition from "./SolverDefinition";
 import InfoTextsDefinition from "./InfoTextsDefinition";
+import ParameterDependencyDefinition from "./ParameterDependencyDefinition";
 
 export default {
   name: "ProcessCreation",
   components: {
+    ParameterDependencyDefinition,
     InfoTextsDefinition,
     VariantSelectionDefinition, SolverDefinition, VariantsDefinition, ProcessDefinition, EditNewWrapper},
   data () {
@@ -124,6 +139,7 @@ export default {
           this.$t("process_creation.info.definition"),
           this.$t("process_creation.info.variants"),
           this.$t("process_creation.info.selection"),
+          this.$t("process_creation.info.parameters"),
           this.$t("process_creation.info.solver"),
           this.$t("process_creation.info.infoTexts")
       ],
@@ -135,13 +151,18 @@ export default {
     if (this.varTesting) {  // Test variant selection settings, predefined data
       this.process = Object.assign({},{
         api_name: 'edge_banding', variant_tree: false, view_name: 'Kantenanleimmaschine',
-        process_parameters:[{ name: 'Fräsbreite', variable_name: 'p_milling_width', unit: 'mm', material_properties_id: null }]
+        process_parameters:[
+            { name: 'Fräsbreite', variable_name: 'p_milling_width', unit: 'mm', material_properties_id: null, restricting: false,
+             dependent: false, derived_parameter: null, min_column: null, max_column: null, dependency: null }
+        ]
       });
       this.variants.push(...[
           { name: 'Variante 1', target_func: 'x', target_func_python: 'x',
-            variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'}] },
+            variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'},
+            {position: 1, description: 'Fräsgetriebe', variable_name: 'v_milling_gear', component_api_name: 'gears'}] },
           { name: 'Variante 2', target_func: 'x', target_func_python: 'x',
-            variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'}] },
+            variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'},
+            {position: 1, description: 'Antriebsmotor', variable_name: 'v_forward_motor', component_api_name: 'motors'}] },
           { name: 'Variante 3', target_func: 'x', target_func_python: 'x',
             variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'}] },
           { name: 'Variante 4', target_func: 'x', target_func_python: 'x',
@@ -179,12 +200,15 @@ export default {
       this.def_step = 3;
     },
     continueThree() {
-      this.def_step = 4;
+      this.def_step = this.process.process_parameters.some(p => p.dependent || p.restricting) ? 4 : 5;
     },
     continueFour() {
       this.def_step = 5;
     },
     continueFive() {
+      this.def_step = 6;
+    },
+    continueSix() {
       let requestData = {
         process: this.process,
         variants: this.variants,

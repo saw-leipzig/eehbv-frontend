@@ -89,11 +89,12 @@
       "definition": "<p>Info <em>definition of process</em><p>",
       "variants": "<p>Info <em>definition of variants</em><p>",
       "selection": "<p>Info <em>definition of variant selection</em><p>",
+      "parameters": "<p>Info <em>definition of parameter dependencies</em><p>",
       "solver": "<p>Info <em>Solver</em><p>",
       "infoTexts": "<p>Info <em>Info texts</em><p>"
     },
     "titles": {
-      "new_process": "New Process",
+      "new_process": "New Process Type",
       "process_definition": "Process definition",
       "variants_definition": "Variants",
       "variant_selection_definition_tree": "Question tree for variant selection",
@@ -104,12 +105,15 @@
       "process_definition": "Process",
       "variants_definition": "Variants",
       "variant_selection_definition": "Variant selection",
+      "parameters": "Parameters",
       "solver_definition": "Solver",
       "info_texts_definition": "Info texts"
     }
   },
   "process_definition": {
-    "titles": {},
+    "titles": {
+      "parameters": "Process parameters"
+    },
     "labels": {
       "view_name": "Name",
       "api_name": "API Path",
@@ -117,10 +121,17 @@
       "name": "Name",
       "unit": "Unit",
       "variable_name": "Variable name",
-      "material_property": "Material property"
+      "material_property": "Material property",
+      "restricting": "restricting",
+      "dependent": "dependent",
+      "column_lower": "Column lower bound",
+      "column_upper": "Column upper bound",
+      "derived_param": "Derived parameter",
+      "dependency": "Dependency"
     },
     "validation": {
-      "startsWithPLowDash": "Has to start with p_"
+      "startsWithPLowDash": "Has to start with p_",
+      "startsWithDLowDash": "Has to start with d_"
     }
   }
 }

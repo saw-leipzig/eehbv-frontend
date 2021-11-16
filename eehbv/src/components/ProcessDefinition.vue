@@ -14,25 +14,7 @@
       </v-row>
       <v-row>
         <v-col cols="12">
-          <v-card>
-            <v-card-title>Prozessparameter</v-card-title>
-            <v-card-text>
-              <v-row v-for="(param, index) in value.process_parameters" :key="index">
-                <v-col cols="3">{{$t('process_definition.labels.name')}}: {{param.name}}</v-col>
-                <v-col cols="2">{{$t('process_definition.labels.unit')}}: {{param.unit}}</v-col>
-                <v-col cols="3">{{$t('process_definition.labels.variable_name')}}: {{param.variable_name}}</v-col>
-                <v-col cols="2">{{$t('process_definition.labels.material_property')}}: {{propertyById(param.material_properties_id)}}</v-col>
-                <v-col cols="1">
-                  <v-icon small class="mr-2" @click="editParam(index)">mdi-pencil</v-icon>
-                  <v-icon small @click="deleteParam(index)">mdi-delete</v-icon>
-                </v-col>
-              </v-row>
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="green" @click="editParam(-1)"><v-icon>mdi-plus</v-icon></v-btn>
-            </v-card-actions>
-          </v-card>
+          <ParameterList :parameters="value.process_parameters" @edit="editParam" @delete="deleteParam"></ParameterList>
         </v-col>
       </v-row>
     </v-container>
@@ -50,11 +32,28 @@
       </v-row>
       <v-row>
         <v-col cols="6">
-          <v-text-field :label="$t('process_definition.labels.variable_name')" v-model="editedParam.variable_name" counter="40" :error-messages="varErrors"
-                        @input="$v.editedParam.variable_name.$touch" @blur="$v.editedParam.variable_name.$touch"></v-text-field>
+          <v-text-field :label="$t('process_definition.labels.variable_name')" v-model="editedParam.variable_name"
+                        counter="40" :error-messages="varErrors" @input="$v.editedParam.variable_name.$touch"
+                        @blur="$v.editedParam.variable_name.$touch"></v-text-field>
         </v-col>
         <v-col cols="6">
           <v-select :items="propOptions" :label="$t('process_definition.labels.material_property')" v-model="editedParam.material_properties_id"></v-select>
+        </v-col>
+      </v-row>
+      <v-row>
+        <!-- ToDo: Tooltips -->
+        <v-col cols="6">
+          <v-switch v-model="editedParam.dependent" :label="$t('process_definition.labels.dependent')"></v-switch>
+        </v-col>
+        <v-col cols="6">
+          <v-switch v-model="editedParam.restricting" :label="$t('process_definition.labels.restricting')"></v-switch>
+        </v-col>
+      </v-row>
+      <v-row v-if="editedParam.dependent">
+        <v-col cols="6">
+          <v-text-field v-model="editedParam.derived_parameter" :label="$t('process_definition.labels.derived_param')"
+                        counter="20" :error-messages="derivedErrors" @input="$v.editedParam.derived_parameter.$touch"
+                        @blur="$v.editedParam.derived_parameter.$touch"></v-text-field>
         </v-col>
       </v-row>
     </DialogCardEditor>
@@ -67,13 +66,14 @@
 <script>
 import DialogDelete from "./DialogDelete";
 import DialogCardEditor from "./DialogCardEditor";
+import ParameterList from "./ParameterList";
 import {mapGetters} from "vuex";
 import { required, maxLength, helpers } from 'vuelidate/lib/validators'
 const snake = helpers.regex('snake', /^[a-z_]*$/);
 
 export default {
   name: "ProcessDefinition",
-  components: {DialogCardEditor, DialogDelete},
+  components: {ParameterList, DialogCardEditor, DialogDelete},
 
   validations: {
     editedParam: {
@@ -82,7 +82,14 @@ export default {
       variable_name: { required, maxLength: maxLength(40), snake,
         varConvention(variable_name) { return variable_name.startsWith('p_'); }
       },
-      material_properties_id: {}
+      material_properties_id: {},
+      restricting: {},
+      dependent: {},
+      derived_parameter: { maxLength: maxLength(40), snake,
+        derConvention(derived_parameter) { return !this.editedParam.dependent ||
+            (derived_parameter !== null && derived_parameter.startsWith('d_'));
+      }
+      }
     }
   },
 
@@ -98,7 +105,8 @@ export default {
         v => v.length > 0 || this.$t("general.validation.required")
     ],
     editedParamIndex: -1,
-    editedParam: { name: '', variable_name: '', unit: '', material_properties_id: null }
+    editedParam: { name: '', variable_name: '', unit: '', material_properties_id: null, restricting: false,
+             dependent: false, derived_parameter: null, min_column: null, max_column: null, dependency: null }
   }),
 
   props: {
@@ -109,9 +117,9 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['properties', 'propertyById']),
+    ...mapGetters(['properties'/*, 'propertyById'*/]),
     parameterEditTitle() {
-      return this.editedParamIndex < 0 ? 'Prozessparameter anlegen' : 'Prozessparameter bearbeiten';
+      return this.editedParamIndex < 0 ? this.$t('general.editing.create') : this.$t('general.editing.edit');
     },
     propOptions() {
       return [{ text: ' ---', value: null }, ...this.properties.map(p => { return { text: p.property, value: p.id } })];
@@ -119,23 +127,31 @@ export default {
     nameErrors() {
       let errors = [];
       if (!this.$v.editedParam.name.$dirty) return errors;
-      !this.$v.editedParam.name.required && errors.push(this.$t("general.validation.required"));
-      !this.$v.editedParam.name.maxLength && errors.push(this.$t("general.validation.max40"));
+      !this.$v.editedParam.name.required && errors.push(this.$t('general.validation.required'));
+      !this.$v.editedParam.name.maxLength && errors.push(this.$t('general.validation.max40'));
       return errors;
     },
     varErrors() {
       let errors = [];
       if (!this.$v.editedParam.variable_name.$dirty) return errors;
-      !this.$v.editedParam.variable_name.required && errors.push(this.$t("general.validation.required"));
-      !this.$v.editedParam.variable_name.maxLength && errors.push(this.$t("general.validation.max40"));
-      !this.$v.editedParam.variable_name.snake && errors.push(this.$t("general.validation.snake"));
-      !this.$v.editedParam.variable_name.varConvention && errors.push(this.$t("process_definition.validation.startsWithPLowDash"));
+      !this.$v.editedParam.variable_name.required && errors.push(this.$t('general.validation.required'));
+      !this.$v.editedParam.variable_name.maxLength && errors.push(this.$t('general.validation.max20'));
+      !this.$v.editedParam.variable_name.snake && errors.push(this.$t('general.validation.snake'));
+      !this.$v.editedParam.variable_name.varConvention && errors.push(this.$t('process_definition.validation.startsWithPLowDash'));
+      return errors;
+    },
+    derivedErrors() {
+      let errors = [];
+      if (!this.$v.editedParam.derived_parameter.$dirty) return errors;
+      !this.$v.editedParam.derived_parameter.maxLength && errors.push(this.$t('general.validation.max20'));
+      !this.$v.editedParam.derived_parameter.snake && errors.push(this.$t('general.validation.snake'));
+      !this.$v.editedParam.derived_parameter.derConvention && errors.push(this.$t('process_definition.validation.startsWithDLowDash'));
       return errors;
     },
     unitErrors() {
       let errors = [];
       if (!this.$v.editedParam.name.$dirty) return errors;
-      !this.$v.editedParam.name.maxLength && errors.push(this.$t("general.validation.max40"));
+      !this.$v.editedParam.name.maxLength && errors.push(this.$t('general.validation.max40'));
       return errors;
     }
   },
@@ -150,7 +166,8 @@ export default {
     editParam(index) {
       this.editedParam = Object.assign({},
           index < 0 ?
-                { name: '', variable_name: '', unit: '', material_properties_id: null }:
+                { name: '', variable_name: '', unit: '', material_properties_id: null, restricting: false,
+                  dependent: false, derived_parameter: null, min_column: null, max_column: null, dependency: null } :
                 this.value.process_parameters[index]);
       this.editedParamIndex = index;
       this.dialogEditParam = true;
