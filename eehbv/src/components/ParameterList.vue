@@ -84,7 +84,7 @@ export default {
 
   methods: {
     boolText(val) {
-      return val ? 'ja': 'nein'
+      return val ? this.$t('general.bool.yes') : this.$t('general.bool.no')
     }
   }
 }

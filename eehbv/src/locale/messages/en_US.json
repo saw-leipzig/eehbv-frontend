@@ -15,19 +15,30 @@
       "ok": "OK",
       "cancel": "Cancel",
       "next": "Next",
+      "back": "Back",
       "close": "Close",
       "abort": "Abort",
       "confirm_delete": "Do you really want to delete this entry?"
     },
     "editing": {
+      "do": "Edit",
       "create": "Create entry",
       "edit": "Edit entry",
       "new": "New entry",
       "actions": "Actions"
     },
+    "bool": {
+      "yes": "Yes",
+      "no": "No"
+    },
     "domain": {
       "property": "Property",
       "unit": "Unit"
+    }
+  },
+  "start": {
+    "titles": {
+      "start_page": "Start Page"
     }
   },
   "user": {
@@ -60,18 +71,30 @@
     }
   },
   "history": {
-    "title": "History"
+    "titles": "History"
   },
   "glossary": {
-    "title": "Glossary"
+    "titles": "Glossary"
   },
   "components": {
-    "title": {
+    "titles": {
       "new_type": "New component type",
       "components": "Components"
     },
+    "labels": {
+      "view_name": "Name",
+      "table_name": "Table name",
+      "api_name": "API path",
+      "is_aggregate": "Aggregate",
+      "column_name": "Database column",
+      "data_type": "Data type"
+    },
     "msg": {
       "loaded": "Loaded component data"
+    },
+    "domain": {
+      "manufacturer": "Manufacturer",
+      "model": "Model"
     }
   },
   "material_properties": {
@@ -112,6 +135,7 @@
   },
   "process_definition": {
     "titles": {
+      "problems": "Problem types",
       "parameters": "Process parameters"
     },
     "labels": {
@@ -129,9 +153,44 @@
       "derived_param": "Derived parameter",
       "dependency": "Dependency"
     },
+    "selects": {
+      "list": "List",
+      "tree": "Tree"
+    },
     "validation": {
       "startsWithPLowDash": "Has to start with p_",
       "startsWithDLowDash": "Has to start with d_"
+    }
+  },
+  "variants_definition": {
+    "labels": {
+      "description": "Description",
+      "component_type": "Component type",
+      "variable_name": "Variable name",
+      "target_function": "Target function",
+      "python_function": "Python function",
+      "signature": "Function signature"
+    }
+  },
+  "variant_selection_definition": {
+    "labels": {
+      "question": "Question",
+      "info_question": "Info to question",
+      "excludes_yes": "Excludes for response YES",
+      "excludes_no": "Excludes for response NO",
+      "options": "Options for",
+      "and": "and"
+    }
+  },
+  "info_texts_definition": {
+    "labels": {
+      "help_process_parameters": "Help text for process parameters",
+      "help_constraints": "Help text for constraints"
+    }
+  },
+  "solver_definition": {
+    "labels": {
+      "code": "Solver code"
     }
   }
 }

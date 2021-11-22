@@ -7,14 +7,14 @@
             <v-card-text>
               <v-container>
                 <v-row>
-                  <v-col cols="10">Beschreibung: {{ variant.name }}</v-col>
+                  <v-col cols="10">{{ $t('variants_definition.labels.description') }}: {{ variant.name }}</v-col>
                   <v-col cols="2">
                     <v-icon small class="mr-2" @click="editVariant(index)">mdi-pencil</v-icon>
                     <v-icon small @click="deleteVariant(index)">mdi-delete</v-icon>
                   </v-col>
                 </v-row>
                 <v-row>
-                  <v-col cols="12"><b>Komponenten:</b> {{ componentList(variant) }}</v-col>
+                  <v-col cols="12"><b>{{ $t('components.titles.components') }}:</b> {{ componentList(variant) }}</v-col>
                 </v-row>
               </v-container>
             </v-card-text>
@@ -32,15 +32,17 @@
     <DialogCardEditor v-model="dialogEditVariant" :title="variantEditTitle" :disabled-save="disabledSaveVariant"
                       @save="saveVariant" @close="closeEditVariant">
       <v-row>
-        <v-col cols="12"><v-text-field v-model="currentVariant.name" label="Beschreibung" counter="60"></v-text-field></v-col>
+        <v-col cols="12">
+          <v-text-field v-model="currentVariant.name" :label="$t('variants_definition.labels.description')" counter="60"></v-text-field>
+        </v-col>
         <v-col cols="12">
           <v-card>
-            <v-card-title>Komponenten</v-card-title>
+            <v-card-title>{{ $t('components.titles.components') }}</v-card-title>
             <v-card-text>
               <v-row v-for="component in currentVariant.variant_components" :key="component.position">
-                <v-col cols="3">Bezeichner: {{component.description}}</v-col>
-                <v-col cols="3">Komponententyp: {{componentViewName(component.component_api_name)}}</v-col>
-                <v-col cols="3">Variablenname: {{component.variable_name}}</v-col>
+                <v-col cols="3">{{ $t('variants_definition.labels.description') }}: {{component.description}}</v-col>
+                <v-col cols="3">{{ $t('variants_definition.labels.component_type') }}: {{componentViewName(component.component_api_name)}}</v-col>
+                <v-col cols="3">{{ $t('variants_definition.labels.variable_name') }}: {{component.variable_name}}</v-col>
                 <v-col cols="3">
                   <v-icon small class="mr-2" @click="editComponent(component.position)">mdi-pencil</v-icon>
                   <v-icon small @click="deleteComponent(component.position)">mdi-delete</v-icon>
@@ -54,7 +56,7 @@
         </v-col>
         <v-col cols="12">
           <v-card>
-            <v-card-title>Zielfunktion</v-card-title>
+            <v-card-title>{{ $t('variants_definition.labels.target_function') }}</v-card-title>
             <v-card-text>
               <v-textarea v-if="currentTargetPythonStyle" v-model="currentVariant.target_func_python" :disabled="disabledEditFunc"></v-textarea>
               <v-textarea v-else v-model="currentVariant.target_func" :disabled="true"></v-textarea>
@@ -62,11 +64,11 @@
             <v-card-actions>
               <v-row>
                 <v-col cols="3">
-                  <v-switch v-model="currentTargetPythonStyle" color="green" label="Python-Funktion"></v-switch>
+                  <v-switch v-model="currentTargetPythonStyle" color="green" :label="$t('variants_definition.labels.python_function')"></v-switch>
                 </v-col>
                 <v-col cols="3">
                   <v-btn color="green" :disabled="disabledEditFunc || !currentTargetPythonStyle" text @click="insertSignature">
-                    Funktionssignatur
+                    {{ $t('variants_definition.labels.signature') }}
                   </v-btn>
                 </v-col>
                 <v-col cols="3">
@@ -75,7 +77,7 @@
                 </v-col>
                 <v-col cols="3">
                   <v-btn color="green" :disabled="disabledEditFunc || currentTargetPythonStyle" text @click="editTargetFunc">
-                    Bearbeiten
+                    {{ $t('general.editing.signature') }}Bearbeiten
                   </v-btn>
                 </v-col>
               </v-row>
@@ -88,13 +90,13 @@
     <DialogCardEditor v-model="dialogEditComponent" @save="saveComponent" @close="closeEditComponent">
       <v-row>
         <v-col cols="4">
-          <v-select v-model="currentComponent.component_api_name" :items="componentSelection" label="Komponententyp"></v-select>
+          <v-select v-model="currentComponent.component_api_name" :items="componentSelection" :label="$t('variants_definition.labels.component_type')"></v-select>
         </v-col>
         <v-col cols="4">
-          <v-text-field v-model="currentComponent.description" label="Bezeichner"></v-text-field>
+          <v-text-field v-model="currentComponent.description" :label="$t('variants_definition.labels.description')"></v-text-field>
         </v-col>
         <v-col cols="4">
-          <v-text-field v-model="currentComponent.variable_name" label="Variablenname"></v-text-field>
+          <v-text-field v-model="currentComponent.variable_name" :label="$t('variants_definition.labels.variable_name')"></v-text-field>
         </v-col>
       </v-row>
     </DialogCardEditor>
@@ -102,8 +104,8 @@
     <DialogDelete v-model="dialogDeleteComponent" @abort="closeDeleteComponent" @delete="deleteComponentConfirm"></DialogDelete>
 
     <v-dialog v-model="dialogEditTargetFunc" max-width="600px">
-      <FormulaEditor title="Zielfunktion" v-model="currentTargetFunc" :parameters="functionParams" :inequality="false"
-                     :signature="'f' + signature + ' ='" @closeDialog="closeTargetFunc"></FormulaEditor>
+      <FormulaEditor :title="$t('variants_definition.labels.target_function')" v-model="currentTargetFunc" :inequality="false"
+                     :parameters="functionParams" :signature="'f' + signature + ' ='" @closeDialog="closeTargetFunc"></FormulaEditor>
     </v-dialog>
   </div>
 </template>
@@ -170,7 +172,7 @@ export default {
       return this.componentTypes.map(c => { return { text: c.view_name, value: c.api_name } });
     },
     variantEditTitle() {
-      return 'Variante ' + (this.currentVariantIndex < 0 ? 'erstellen' : 'bearbeiten');
+      return this.currentVariantIndex < 0 ? this.$t('general.editing.create') : this.$t('general.editing.edit');
     },
     signature() {
       return '(' + this.process.process_parameters.map(p => p.variable_name).join(', ') + ', ' +

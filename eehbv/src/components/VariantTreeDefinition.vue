@@ -16,17 +16,19 @@
       </template>
     </v-treeview>
 
-    <DialogCardEditor v-model="dialogEditQuestion" title="Frage bearbeiten" :disabled-save="disabledSaveQuestion"
+    <DialogCardEditor v-model="dialogEditQuestion" :title="$t('general.editing.edit')" :disabled-save="disabledSaveQuestion"
                       @save="saveItem" @close="closeEditItem">
       <v-row>
-        <v-col cols="4"><v-text-field label="Frage" v-model="currentQuestion.question" counter="40"></v-text-field></v-col>
+        <v-col cols="4">
+          <v-text-field :label="$t('variant_selection_definition.labels.question')" v-model="currentQuestion.question" counter="40"></v-text-field>
+        </v-col>
         <v-col cols="8">
-          <v-textarea v-model="currentQuestion.info" multiple label="Erläuterung zur Frage"></v-textarea>
+          <v-textarea v-model="currentQuestion.info" multiple :label="$t('variant_selection_definition.labels.info_question')"></v-textarea>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="12">
-          Optionen für Antwort <span class="opt-green">JA</span> und <span class="opt-red">NEIN</span>
+          {{ $t('variant_selection_definition.labels.options') }} <span class="opt-green">{{$t('general.bool.yes')}}</span> {{ $t('variant_selection_definition.labels.and') }} <span class="opt-red">{{$t('general.bool.no')}}</span>
           <br/><br/>
           <v-chip v-for="variant in noExcludes" :key="variant" color="green" @click="switchExclude('no', variant)">
             {{variant}}

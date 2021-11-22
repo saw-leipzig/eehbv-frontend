@@ -1,8 +1,8 @@
 <template>
   <div>
-    <h2>Hilfetext für Prozessparameter</h2>
+    <h2>{{$t('info_texts_definition.labels.help_process_parameters')}}</h2>
     <v-textarea v-model="value[0].text"></v-textarea>
-    <h2>Hilfetext für Nebenbedingungen</h2>
+    <h2>{{$t('info_texts_definition.labels.help_constraints')}}</h2>
     <v-textarea v-model="value[1].text"></v-textarea>
   </div>
 </template>

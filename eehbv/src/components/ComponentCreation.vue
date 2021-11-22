@@ -1,20 +1,20 @@
 <template>
   <div>
     <v-card>
-      <v-card-title class="headline">{{$t('components.title.new_type')}}</v-card-title>
+      <v-card-title class="headline">{{$t('components.titles.new_type')}}</v-card-title>
       <v-card-text>
         <v-row>
           <v-col cols="3">
-            <v-text-field v-model="component_type.view_name" label="Name" counter="40"></v-text-field>
+            <v-text-field v-model="component_type.view_name" :label="$t('components.labels.view_name')" counter="40"></v-text-field>
           </v-col>
           <v-col cols="3">
-            <v-text-field v-model="component_type.table_name" label="Tabellenname" counter="40"></v-text-field>
+            <v-text-field v-model="component_type.table_name" :label="$t('components.labels.table_name')" counter="40"></v-text-field>
           </v-col>
           <v-col cols="3">
-            <v-text-field v-model="component_type.api_name" label="API-Pfad" counter="20"></v-text-field>
+            <v-text-field v-model="component_type.api_name" :label="$t('components.labels.api_name')" counter="20"></v-text-field>
           </v-col>
           <v-col cols="3">
-            <v-switch v-model="component_type.is_aggregate" color="green" label="Aggregat"></v-switch>
+            <v-switch v-model="component_type.is_aggregate" color="green" :label="$t('components.labels.is_aggregate')"></v-switch>
           </v-col>
         </v-row>
         <v-row>
@@ -50,10 +50,10 @@
 
     <DialogCardEditor v-model="dialogEditColumn" @save="saveColumn" @close="closeEditColumn">
       <v-row>
-        <v-col cols="3"><v-text-field v-model="currentColumn.view_name" label="Name" counter="40"></v-text-field></v-col>
-        <v-col cols="3"><v-text-field v-model="currentColumn.column_name" label="Datenbank-Spalte" counter="30"></v-text-field></v-col>
-        <v-col cols="3"><v-text-field v-model="currentColumn.unit" label="Einheit" counter="20"></v-text-field></v-col>
-        <v-col cols="3"><v-select :items="typeItems" v-model="currentColumn.type" label="Datentyp"></v-select></v-col>
+        <v-col cols="3"><v-text-field v-model="currentColumn.view_name" :label="$t('components.labels.view_name')" counter="40"></v-text-field></v-col>
+        <v-col cols="3"><v-text-field v-model="currentColumn.column_name" :label="$t('components.labels.column_name')" counter="30"></v-text-field></v-col>
+        <v-col cols="3"><v-text-field v-model="currentColumn.unit" :label="$t('general.domain.unit')" counter="20"></v-text-field></v-col>
+        <v-col cols="3"><v-select :items="typeItems" v-model="currentColumn.type" :label="$t('components.labels.data_type')"></v-select></v-col>
       </v-row>
     </DialogCardEditor>
 
@@ -75,8 +75,8 @@ export default {
       api_name: '',
       is_aggregate: false,
       columns: [
-          { column_name: 'name', view_name: 'Modell', type: 'VARCHAR', position: 1, unit: null },
-          { column_name: 'manufacturer', view_name: 'Hersteller', type: 'VARCHAR', position: 2, unit: null }
+          { column_name: 'name', view_name: this.$t('components.domain.model'), type: 'VARCHAR', position: 1, unit: null },
+          { column_name: 'manufacturer', view_name: this.$t('components.domain.manufacturer'), type: 'VARCHAR', position: 2, unit: null }
       ]
     },
     currentColumn: {},

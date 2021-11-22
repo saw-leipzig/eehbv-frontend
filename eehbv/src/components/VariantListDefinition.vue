@@ -33,21 +33,23 @@
     <DialogCardEditor v-model="dialogEditQuestion" :title="questionEditTitle"
                       @save="saveItem" @close="closeEditItem">
       <v-row>
-        <v-col cols="4"><v-text-field label="Frage" v-model="currentQuestion.question" counter="40"></v-text-field></v-col>
+        <v-col cols="4">
+          <v-text-field :label="$t('variant_selection_definition.labels.question')" v-model="currentQuestion.question" counter="40"></v-text-field>
+        </v-col>
         <v-col cols="8">
-          <v-textarea label="Erläuterung zur Frage" v-model="currentQuestion.info"></v-textarea>
+          <v-textarea :label="$t('variant_selection_definition.labels.info_question')" v-model="currentQuestion.info"></v-textarea>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="4">
-          <v-select id="YES_SELECT" :items="addableItems" v-model="yesSelect" label="Ausschluss für Antwort JA"></v-select>
+          <v-select id="YES_SELECT" :items="addableItems" v-model="yesSelect" :label="$t('variant_selection_definition.labels.excludes_yes')"></v-select>
         </v-col>
         <v-col cols="1">
           <v-btn color="green" @click="addExclude('yes')"><v-icon>mdi-plus</v-icon></v-btn>
         </v-col>
         <v-col cols="1"></v-col>
         <v-col cols="4">
-          <v-select id="NO_SELECT" :items="addableItems" v-model="noSelect" label="Ausschluss für Antwort NEIN"></v-select>
+          <v-select id="NO_SELECT" :items="addableItems" v-model="noSelect" :label="$t('variant_selection_definition.labels.excludes_no')"></v-select>
         </v-col>
         <v-col cols="1">
           <v-btn color="red" @click="addExclude('no')"><v-icon>mdi-plus</v-icon></v-btn>
@@ -107,7 +109,7 @@ export default {
 
   computed: {
     questionEditTitle() {
-      return 'Frage ' + (this.currentQuestionIndex < 0 ? 'anlegen' : 'bearbeiten');
+      return this.currentQuestionIndex < 0 ? this.$t('general.editing.create') : this.$t('general.editing.edit');
     },
     addableItems() {
       return this.variants.filter(v => !this.currentQuestion.yes_excludes.includes(v.name) &&

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>Solver-Code</h2>
+    <h2>{{$t('solver_definition.labels.code')}}</h2>
     <v-textarea v-model="value"></v-textarea>
   </div>
 </template>

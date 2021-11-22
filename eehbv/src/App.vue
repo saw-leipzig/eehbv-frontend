@@ -4,11 +4,11 @@
       <v-list>
         <v-list-item link :to="{ name: 'Home' }">
           <v-list-item-icon><v-icon>mdi-home-outline</v-icon></v-list-item-icon>
-          <v-list-item-content><v-list-item-title>Startseite</v-list-item-title></v-list-item-content>
+          <v-list-item-content><v-list-item-title>{{$t('start.titles.start_page')}}</v-list-item-title></v-list-item-content>
         </v-list-item>
         <v-list-item link :to="{ name: 'Component' }">
           <v-list-item-icon><v-icon>mdi-cog-outline</v-icon></v-list-item-icon>
-          <v-list-item-content><v-list-item-title>{{$t('components.title.components')}}</v-list-item-title></v-list-item-content>
+          <v-list-item-content><v-list-item-title>{{$t('components.titles.components')}}</v-list-item-title></v-list-item-content>
         </v-list-item>
         <v-list-item link :to="{ name: 'Property' }">
           <v-list-item-icon><v-icon>mdi-blur-linear</v-icon></v-list-item-icon>
@@ -16,15 +16,15 @@
         </v-list-item>
         <v-list-item link :to="{ name: 'Process' }">
           <v-list-item-icon><v-icon>mdi-alert-octagon</v-icon></v-list-item-icon>
-          <v-list-item-content><v-list-item-title>Problemklassen</v-list-item-title></v-list-item-content>
+          <v-list-item-content><v-list-item-title>{{$t('process_definition.titles.problems')}}</v-list-item-title></v-list-item-content>
         </v-list-item>
         <v-list-item link :to="{ name: 'History' }">
           <v-list-item-icon><v-icon>mdi-folder-cog-outline</v-icon></v-list-item-icon>
-          <v-list-item-content><v-list-item-title>{{$t('history.title')}}</v-list-item-title></v-list-item-content>
+          <v-list-item-content><v-list-item-title>{{$t('history.titles')}}</v-list-item-title></v-list-item-content>
         </v-list-item>
         <v-list-item link :to="{ name: 'Glossary' }">
           <v-list-item-icon><v-icon>mdi-folder-information-outline</v-icon></v-list-item-icon>
-          <v-list-item-content><v-list-item-title>{{$t('glossary.title')}}</v-list-item-title></v-list-item-content>
+          <v-list-item-content><v-list-item-title>{{$t('glossary.titles')}}</v-list-item-title></v-list-item-content>
         </v-list-item>
 <!--        <v-list-item link :to="{ name: 'Home' }">
           <v-list-item-icon><v-icon>mdi-send</v-icon></v-list-item-icon>

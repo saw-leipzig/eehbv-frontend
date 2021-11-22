@@ -97,8 +97,8 @@ export default {
     dialogEditParam: false,
     dialogDeleteParam: false,
     selectionOptions: [
-      { text: 'Liste', value: false },
-      { text: 'Baum', value: true }
+      { text: this.$t('process_definition.selects.list'), value: false },
+      { text: this.$t('process_definition.selects.tree'), value: true }
     ],
     api_name_rules: [
         v => v.length <= 40 || this.$t("general.validation.max40"),

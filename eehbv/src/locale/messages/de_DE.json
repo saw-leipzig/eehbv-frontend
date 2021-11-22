@@ -15,19 +15,30 @@
       "ok": "OK",
       "cancel": "Verwerfen",
       "next": "Weiter",
+      "back": "Zurück",
       "close": "Schließen",
       "abort": "Abbrechen",
       "confirm_delete": "Sind Sie sicher, dass Sie diesen Eintrag löschen wollen?"
     },
     "editing": {
+      "do": "Bearbeiten",
       "create": "Eintrag erstellen",
       "edit": "Eintrag bearbeiten",
       "new": "Neuer Eintrag",
       "actions": "Aktionen"
     },
+    "bool": {
+      "yes": "Ja",
+      "no": "Nein"
+    },
     "domain": {
       "property": "Eigenschaft",
       "unit": "Einheit"
+    }
+  },
+  "start": {
+    "titles": {
+      "start_page": "Startseite"
     }
   },
   "user": {
@@ -60,18 +71,30 @@
     }
   },
   "history": {
-    "title": "Historie"
+    "titles": "Historie"
   },
   "glossary": {
-    "title": "Glossar"
+    "titles": "Glossar"
   },
   "components": {
-    "title": {
+    "titles": {
       "new_type": "Neuer Komponententyp",
       "components": "Komponenten"
     },
+    "labels": {
+      "view_name": "Name",
+      "table_name": "Tabellenname",
+      "api_name": "API-Pfad",
+      "is_aggregate": "Aggregat",
+      "column_name": "Datenbank-Spalte",
+      "data_type": "Datentyp"
+    },
     "msg": {
       "loaded": "Komponentendaten geladen"
+    },
+    "domain": {
+      "manufacturer": "Hersteller",
+      "model": "Modell"
     }
   },
   "material_properties": {
@@ -112,6 +135,7 @@
   },
   "process_definition": {
     "titles": {
+      "problems": "Problemklassen",
       "parameters": "Prozessparameter"
     },
     "labels": {
@@ -129,9 +153,50 @@
       "derived_param": "Abgeleiteter Parameter",
       "dependency": "Abhängigkeit"
     },
+    "selects": {
+      "list": "Liste",
+      "tree": "Baum"
+    },
     "validation": {
       "startsWithPLowDash": "Muss mit p_ beginnen",
       "startsWithDLowDash": "Muss mit d_ beginnen"
+    }
+  },
+  "variants_definition": {
+    "labels": {
+      "description": "Beschreibung",
+      "component_type": "Komponententyp",
+      "variable_name": "Variablenname",
+      "target_function": "Zielfunktion",
+      "python_function": "Python-Funktion",
+      "signature": "Funktionssignatur"
+    }
+  },
+  "variant_selection_definition": {
+    "labels": {
+      "question": "Frage",
+      "info_question": "Erläuterung zur Frage",
+      "excludes_yes": "Ausschluss für Antwort JA",
+      "excludes_no": "Ausschluss für Antwort NEIN",
+      "options": "Optionen für",
+      "and": "und"
+    }
+  },
+  "info_texts_definition": {
+    "labels": {
+      "help_process_parameters": "Hilfetext für Prozessparameter",
+      "help_constraints": "Hilfetext für Nebenbedingungen"
+    }
+  },
+  "solver_definition": {
+    "labels": {
+      "code": "Solver-Code"
+    }
+  },
+  "process_overview": {
+    "labels": {
+      "define_opt": "Optimierung definieren",
+      "process_list": "Prozessliste"
     }
   }
 }

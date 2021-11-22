@@ -6,18 +6,16 @@
           <v-card>
             <v-card-title>{{ q.question }}</v-card-title>
             <v-card-actions v-if="i === askedQuestions.length - 1">
-              <v-btn @click="update(true)">Ja</v-btn>
-              <v-btn @click="update(false)">Nein</v-btn>
-              <v-btn v-if="i > 0" @click="askedQuestions.splice(-1, 1)">Zurück</v-btn>
+              <v-btn @click="update(true)">{{$t('general.bool.yes')}}</v-btn>
+              <v-btn @click="update(false)">{{$t('general.bool.no')}}</v-btn>
+              <v-btn v-if="i > 0" @click="askedQuestions.splice(-1, 1)">{{$t('general.dialog.back')}}</v-btn>
             </v-card-actions>
           </v-card>
         </v-col>
       </v-row>
     </v-card>
 
-    <v-btn text @click="$emit('abort')">
-      Abbruch
-    </v-btn>
+    <v-btn text @click="$emit('abort')">{{$t('general.dialog.abort')}}</v-btn>
   </div>
 </template>
 
