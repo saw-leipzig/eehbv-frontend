@@ -2,7 +2,7 @@
   <v-container>
     <v-row v-if="userRole > 1">
       <v-col cols="12">
-        <v-btn :to="{ name: 'ComponentCreation' }">Neuer Komponententyp</v-btn>
+        <v-btn :to="{ name: 'ComponentCreation' }">{{ $t('components.titles.new_type') }}</v-btn>
       </v-col>
     </v-row>
     <v-row>

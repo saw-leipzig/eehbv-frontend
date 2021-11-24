@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="12"><h2>Optimierungsdefinition {{process.view_name}}</h2></v-col>
+      <v-col cols="12"><h2>{{ $t('optimization.titles.definition') }} {{process.view_name}}</h2></v-col>
     </v-row>
 
     <v-row>
@@ -9,19 +9,19 @@
         <v-stepper v-model="def_step">
           <v-stepper-header>
             <v-stepper-step :complete="def_step > 1" color="green" step="1">
-              Prozessparameter
+              {{ $t('process_definition.titles.parameters') }}
             </v-stepper-step>
 
             <v-divider></v-divider>
 
             <v-stepper-step :complete="def_step > 2" color="green" step="2">
-              Variantenauswahl
+              {{ $t('process_creation.labels.variant_selection_definition') }}
             </v-stepper-step>
 
             <v-divider></v-divider>
 
             <v-stepper-step step="3" color="green">
-              Nebenbedingungen
+              {{ $t('optimization.titles.constraints') }}
             </v-stepper-step>
           </v-stepper-header>
 
@@ -43,8 +43,8 @@
       </v-col>
     </v-row>
 
-    <DialogCardEditor v-model="dialogDescription" max-width="500px" title="Anfrage absenden" @save="startOptimization" :cancel="false">
-      <v-text-field label="Beschreibung" v-model="description" counter="60"></v-text-field>
+    <DialogCardEditor v-model="dialogDescription" max-width="500px" :title="$t('optimization.titles.send')" @save="startOptimization" :cancel="false">
+      <v-text-field :label="$t('variants_definition.labels.description')" v-model="description" counter="60"></v-text-field>
     </DialogCardEditor>
 
   </v-container>

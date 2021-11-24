@@ -23,11 +23,11 @@
     </v-card>
 
     <v-btn color="green" @click="$emit('continue', selection)" :disabled="selection.length < 1">
-      Weiter
+      {{ $t('general.dialog.next') }}
     </v-btn>
 
     <v-btn text @click="$emit('abort')">
-      Abbruch
+      {{ $t('general.dialog.abort') }}
     </v-btn>
   </div>
 </template>

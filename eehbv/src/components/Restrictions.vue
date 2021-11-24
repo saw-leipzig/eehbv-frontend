@@ -4,14 +4,14 @@
       <v-row>
         <v-col cols="12">
           <v-card>
-            <v-card-title>Varianten</v-card-title>
+            <v-card-title>{{ $t('process_creation.titles.variants_definition') }}</v-card-title>
             <v-card-text>
               <v-container>
 
                 <v-row v-if="variant_selection.length > 1">
                   <v-col cols="12">
                     <v-card>
-                      <v-card-title>Für alle Varianten</v-card-title>
+                      <v-card-title>{{ $t('optimization.labels.all_variants') }}</v-card-title>
                       <v-card-text>
                         <RestrictionList :variant="variantCommonComp" :parameters="parameters" v-model="variants_conditions[0].conditions"></RestrictionList>
                       </v-card-text>
@@ -39,11 +39,11 @@
     </v-card>
 
     <v-btn color="green" @click="continueThree">
-      Weiter
+      {{ $t('general.dialog.next') }}
     </v-btn>
 
     <v-btn text @click="$emit('abort')">
-      Abbruch
+      {{ $t('general.dialog.abort') }}
     </v-btn>
   </div>
 </template>

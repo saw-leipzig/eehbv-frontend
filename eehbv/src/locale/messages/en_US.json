@@ -25,7 +25,8 @@
       "create": "Create entry",
       "edit": "Edit entry",
       "new": "New entry",
-      "actions": "Actions"
+      "actions": "Actions",
+      "add": "Add"
     },
     "bool": {
       "yes": "Yes",
@@ -191,6 +192,25 @@
   "solver_definition": {
     "labels": {
       "code": "Solver code"
+    }
+  },
+  "optimization": {
+    "titles": {
+      "definition": "Optimization definition",
+      "constraints": "Constraints",
+      "send": "Send request",
+      "overview_result": "Overview optimization result",
+      "request": "Optimization request",
+      "result": "Result"
+    },
+    "labels": {
+      "fraction": "Fraction",
+      "pick_list": "Pick list",
+      "questions": "Questions",
+      "all_variants": "For all variants"
+    },
+    "info": {
+      "parameters": "<p>A set of <strong>Process parameters</strong> defines a profile of process usage.</p><p>Apply at least one set of process parameters with a fraction greater than zero.</p><p>Should the process be used with different profiles, each fraction gives the relative frequency of the prospective usage of the profile.</p><p>The sum of fractions has not to add up to 1 or 100 bt will be normalized to 100%.</p><p>Process parameters which are irrelevant for some selected variants can have arbitrary values.</p>"
     }
   }
 }

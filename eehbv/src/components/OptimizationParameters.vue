@@ -11,7 +11,7 @@
               <v-card>
                 <v-card-text>
                   <v-row>
-                    <v-col cols="10">Anteil: {{item.portion}}</v-col>
+                    <v-col cols="10">{{ $t('optimization.labels.fraction') }}: {{item.portion}}</v-col>
                     <v-col cols="2">
                       <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
                       <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
@@ -19,7 +19,7 @@
                   </v-row>
                   <v-row>
                     <v-col v-for="param in process.parameters" :key="param.name" cols="12" sm="6" md="4">
-                      {{param.name + ' = ' + item[param.variable_name] + ' ' + param.unit}}
+                      {{ param.name + ' = ' + item[param.variable_name] + ' ' + param.unit }}
                     </v-col>
                   </v-row>
                 </v-card-text>
@@ -31,22 +31,15 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="green darken-1" text @click="editDialog = true">
-          Hinzufügen
+          {{ $t('general.editing.add') }}
         </v-btn>
       </v-card-actions>
 
       <v-overlay :opacity="0.9" :value="infoOverlay" z-index="3000">
         <v-container>
-          <p>Ein Satz von <strong>Prozessparametern</strong> definiert ein Nutzungsprofil des Prozesses.</p>
-          <p>Legen Sie mindestens einen Satz von Prozessparametern mit einem Anteil größer 0 an.</p>
-          <p>Soll der Prozess mit unterschiedlichen Profilen betrieben werden,
-            gibt der Anteil jeweils die relative Häufigkeit an, mit der dieses Profil voraussichtlich genutzt werden
-            wird.</p>
-          <p>Die Summe der Anteile muss nicht 1 oder 100 ergeben sondern wird auf 100% normalisiert.</p>
-          <p>Prozessparameter, die für einzelne Varianten irrelevant sind, können beliebige Werte haben.</p>
-          <div>{{ infoText }}</div>
+          <div v-html="$t('optimization.info.parameters')"></div>
         </v-container>
-        <v-btn color="orange lighten-2" @click="infoOverlay = false">Schließen</v-btn>
+        <v-btn color="orange lighten-2" @click="infoOverlay = false">{{ $t('general.dialog.close') }}</v-btn>
       </v-overlay>
     </v-card>
 
@@ -61,7 +54,7 @@
               <v-col cols="12">
                 <v-text-field
                     v-model="editedItem['portion']"
-                    label="Anteil"
+                    :label="$t('optimization.labels.fraction')"
                     type="number"
                     :rules="[rules.greaterZero]"
                 ></v-text-field>
@@ -86,10 +79,10 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="green darken-1" text @click="close">
-            Abbrechen
+            {{ $t('general.dialog.abort') }}
           </v-btn>
           <v-btn color="green darken-1" text @click="save" :disabled="editedItem['portion'] <= 0">
-            Speichern
+            {{ $t('general.dialog.save') }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -99,20 +92,20 @@
 
     <v-dialog v-model="variantDialog" width="400">
       <template v-slot:activator="{ on, attrs }">
-        <v-btn color="green" v-bind="attrs" v-on="on" :disabled="value.length < 1">Weiter</v-btn>
+        <v-btn color="green" v-bind="attrs" v-on="on" :disabled="value.length < 1">{{ $t('general.dialog.next') }}</v-btn>
       </template>
 
       <v-card>
-        <v-card-title>Variantenauswahl</v-card-title>
+        <v-card-title>{{ $t('process_creation.labels.variant_selection_definition') }}</v-card-title>
         <v-card-actions>
-          <v-btn @click="continueOne(0)">Pickliste</v-btn>
-          <v-btn @click="continueOne(1)">Fragen</v-btn>
+          <v-btn @click="continueOne(0)">{{ $t('optimization.labels.pick_list') }}</v-btn>
+          <v-btn @click="continueOne(1)">{{ $t('optimization.labels.questions') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
     <v-btn text @click="$emit('abort')">
-      Abbruch
+      {{ $t('general.dialog.abort') }}
     </v-btn>
   </div>
 </template>

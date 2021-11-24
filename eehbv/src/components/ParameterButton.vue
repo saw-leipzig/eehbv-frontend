@@ -10,7 +10,7 @@
       <v-treeview :activatable="true" :items="treeParameters" item-text="view" item-key="id" item-disabled="disabled"
                   item-children="parameters" return-object dense @update:active="click"></v-treeview>
 <!--      <v-card-actions>
-        <v-btn text @click="menu = false">Schließen</v-btn>
+        <v-btn text @click="menu = false">{{$t('general.dialog.close')}}</v-btn>
       </v-card-actions>-->
     </v-card>
   </v-menu>
@@ -47,13 +47,13 @@ export default {
     treeParameters() {
       return [
         {
-          view: 'Prozess',
+          view: this.$t('process_creation.labels.process_definition'),
           id: '0',
           disabled: this.params[0].length < 1,
           parameters: this.params[0].map((p, i) => { return {...p, id: '0-'+ i}})
         },
         {
-          view: 'Komponenten',
+          view: this.$t('components.titles.components'),
           id: '1',
           disabled: this.params[1].length < 1,
           parameters: this.params[1].map((p, i) => {

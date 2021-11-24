@@ -48,10 +48,10 @@
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-btn color="green darken-1" text @click="close(false)">
-        Abbrechen
+        {{ $t('general.dialog.abort') }}
       </v-btn>
       <v-btn color="green darken-1" text @click="close(true)" :disabled="disabledSave">
-        Speichern
+        {{ $t('general.dialog.save') }}
       </v-btn>
     </v-card-actions>
   </v-card>

@@ -10,7 +10,7 @@
       </v-row>
       <v-row>
         <v-col cols="12">
-          <v-btn @click="editItem([], -1)">Hinzufügen</v-btn>
+          <v-btn @click="editItem([], -1)">{{ $t('general.editing.add') }}</v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -74,7 +74,7 @@ export default {
 
   methods: {
     editItem(item, index) {
-      this.title = 'Nebenbedingung ' + (item.length > 0 ? 'bearbeiten' : 'anlegen');
+      this.title = item.length > 0 ? this.$t('general.editing.edit') : this.$t('general.editing.create');
       this.currentCondition.splice(0);
       this.currentCondition.push(...JSON.parse(JSON.stringify(item)));
       this.currentIndex = index;
