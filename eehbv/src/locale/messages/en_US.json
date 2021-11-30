@@ -75,7 +75,12 @@
     "titles": "History"
   },
   "glossary": {
-    "titles": "Glossary"
+    "titles": "Glossary",
+    "labels": {
+      "term": "Term",
+      "description": "Description",
+      "categories": "Categories"
+    }
   },
   "components": {
     "titles": {
