@@ -77,7 +77,7 @@
                 </v-col>
                 <v-col cols="3">
                   <v-btn color="green" :disabled="disabledEditFunc || currentTargetPythonStyle" text @click="editTargetFunc">
-                    {{ $t('general.editing.signature') }}Bearbeiten
+                    {{ $t('general.editing.do') }}
                   </v-btn>
                 </v-col>
               </v-row>

@@ -93,21 +93,25 @@ export default {
     }
   },
 
-  data: () => ({
-    dialogEditParam: false,
-    dialogDeleteParam: false,
-    selectionOptions: [
-      { text: this.$t('process_definition.selects.list'), value: false },
-      { text: this.$t('process_definition.selects.tree'), value: true }
-    ],
-    api_name_rules: [
+  data() {
+    return {
+      dialogEditParam: false,
+      dialogDeleteParam: false,
+      selectionOptions: [
+        {text: this.$t('process_definition.selects.list'), value: false},
+        {text: this.$t('process_definition.selects.tree'), value: true}
+      ],
+      api_name_rules: [
         v => v.length <= 40 || this.$t("general.validation.max40"),
         v => v.length > 0 || this.$t("general.validation.required")
-    ],
-    editedParamIndex: -1,
-    editedParam: { name: '', variable_name: '', unit: '', material_properties_id: null, restricting: false,
-             dependent: false, derived_parameter: null, min_column: null, max_column: null, dependency: null }
-  }),
+      ],
+      editedParamIndex: -1,
+      editedParam: {
+        name: '', variable_name: '', unit: '', material_properties_id: null, restricting: false,
+        dependent: false, derived_parameter: null, min_column: null, max_column: null, dependency: null
+      }
+    }
+  },
 
   props: {
     value: {

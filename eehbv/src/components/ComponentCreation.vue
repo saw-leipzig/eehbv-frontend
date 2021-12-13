@@ -68,27 +68,41 @@ import DialogDelete from "./DialogDelete";
 export default {
   name: "ComponentCreation",
   components: {DialogDelete, DialogCardEditor},
-  data: () => ({
-    component_type: {
-      table_name: '',
-      view_name: '',
-      api_name: '',
-      is_aggregate: false,
-      columns: [
-          { column_name: 'name', view_name: this.$t('components.domain.model'), type: 'VARCHAR', position: 1, unit: null },
-          { column_name: 'manufacturer', view_name: this.$t('components.domain.manufacturer'), type: 'VARCHAR', position: 2, unit: null }
+  data() {
+    return {
+      component_type: {
+        table_name: '',
+        view_name: '',
+        api_name: '',
+        is_aggregate: false,
+        columns: [
+          {
+            column_name: 'name',
+            view_name: this.$t('components.domain.model'),
+            type: 'VARCHAR',
+            position: 1,
+            unit: null
+          },
+          {
+            column_name: 'manufacturer',
+            view_name: this.$t('components.domain.manufacturer'),
+            type: 'VARCHAR',
+            position: 2,
+            unit: null
+          }
+        ]
+      },
+      currentColumn: {},
+      currentColumnIndex: -1,
+      dialogEditColumn: false,
+      dialogDeleteColumn: false,
+      typeItems: [
+        {text: 'DOUBLE', value: 'DOUBLE'},
+        {text: 'BOOL', value: 'BOOL'},
+        {text: 'VARCHAR', value: 'VARCHAR'},
       ]
-    },
-    currentColumn: {},
-    currentColumnIndex: -1,
-    dialogEditColumn: false,
-    dialogDeleteColumn: false,
-    typeItems: [
-      { text: 'DOUBLE', value: 'DOUBLE' },
-      { text: 'BOOL', value: 'BOOL' },
-      { text: 'VARCHAR', value: 'VARCHAR' },
-    ]
-  }),
+    }
+  },
 
   computed: {
     disabledSave() {
