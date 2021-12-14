@@ -56,7 +56,7 @@ export default {
               this.err(response.data.message);
             }
       }).catch((error) => {
-        this.handleRequestError(error, this.$t('user.msg.error_login'))
+        this.handleRequestError(error, this.$t('components.msg.error_upload'))
       });
     }
   }

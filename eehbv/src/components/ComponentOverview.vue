@@ -9,6 +9,7 @@
           <v-toolbar-title>{{ comp.view_name }}</v-toolbar-title>
           <v-divider class="mx-4" inset vertical ></v-divider>
           <v-spacer></v-spacer>
+          <v-btn v-if="userRole > 0" color="green" dark class="mb-2" @click="dialogImport = true"><v-icon>mdi-file-upload-outline</v-icon></v-btn>
           <v-btn v-if="userRole > 0" color="green" dark class="mb-2" @click="dialog = true">{{$t('general.editing.new')}}</v-btn>
 
         </v-toolbar>
@@ -48,6 +49,17 @@
 
     <DialogDelete v-model="dialogDelete" @abort="closeDelete" @delete="deleteItemConfirm"></DialogDelete>
 
+    <DialogCardEditor v-model="dialogImport" :title="$t('components.titles.import')" :confirm-save="true"
+                      max-width="400px" @save="upload" @close="closeImport">
+      <v-container>
+        <v-row>
+          <v-col cols="12">
+            <v-file-input show-size label="Import" v-model="importFile"></v-file-input>
+          </v-col>
+        </v-row>
+      </v-container>
+    </DialogCardEditor>
+
     <component-button></component-button>
   </v-container>
 </template>
@@ -67,12 +79,14 @@ export default {
   data: () => ({
     dialog: false,
     dialogDelete: false,
+    dialogImport: false,
     editedIndex: -1,
     editedItem: {
     },
     defaultItem: {
     },
-    componentData: []
+    componentData: [],
+    importFile: null
   }),
 
   props: {
@@ -186,9 +200,9 @@ export default {
       }
       if (this.editedIndex > -1) {
         this.$http.put('components/' + this.$route.params.type + '/' + this.editedItem.id, this.editedItem).
-                then((response) => {
-                    this.refreshData();
-            });
+            then((response) => {
+                this.refreshData();
+        });
       } else {
         this.$http.post('components/' + this.$route.params.type, this.editedItem).
             then((response) => {
@@ -196,6 +210,27 @@ export default {
         });
       }
       this.close();
+    },
+    upload() {
+      if (this.importFile) {
+        let formData = new FormData();
+/*        for (let file of this.importFiles) {
+            formData.append('file', file, file.name);
+          }*/
+        formData.append('file', this.importFile, this.importFile.name);
+        this.closeImport();
+        this.$http.post('components/' + this.$route.params.type + '/upload', formData).
+            then((response) => {
+              if (response.data.status === 'ok') {
+                this.refreshData();
+              } else {
+                this.err(response.data.message);
+              }
+         }).catch(error => { this.handleRequestError(error, this.$t('user.msg.error_login')) });
+      }
+    },
+    closeImport() {
+      this.dialogImport = false;
     }
   }
 }

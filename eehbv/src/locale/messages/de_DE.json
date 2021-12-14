@@ -85,7 +85,8 @@
   "components": {
     "titles": {
       "new_type": "Neuer Komponententyp",
-      "components": "Komponenten"
+      "components": "Komponenten",
+      "import": "Import"
     },
     "labels": {
       "view_name": "Name",
@@ -96,7 +97,8 @@
       "data_type": "Datentyp"
     },
     "msg": {
-      "loaded": "Komponentendaten geladen"
+      "loaded": "Komponentendaten geladen",
+      "error_upload": "Fehler beim Import von Komponentendaten"
     },
     "domain": {
       "manufacturer": "Hersteller",

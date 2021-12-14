@@ -85,7 +85,8 @@
   "components": {
     "titles": {
       "new_type": "New component type",
-      "components": "Components"
+      "components": "Components",
+      "import": "Import"
     },
     "labels": {
       "view_name": "Name",
@@ -96,7 +97,8 @@
       "data_type": "Data type"
     },
     "msg": {
-      "loaded": "Loaded component data"
+      "loaded": "Loaded component data",
+      "error_upload": "Error while importing component data - Server might be not accessible"
     },
     "domain": {
       "manufacturer": "Manufacturer",
