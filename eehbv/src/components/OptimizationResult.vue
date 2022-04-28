@@ -26,8 +26,8 @@
             <div v-if="result === ''" class="text-center">
               <v-progress-circular indeterminate color="green" size="70" width="7"></v-progress-circular>
             </div>
-            <div v-else>{{ result }}</div>
-<!--            <div v-else v-html="result"></div>-->
+<!--            <div v-else>{{ result }}</div>-->
+            <div v-else v-html="result"></div>
           </v-card-text>
         </v-card>
       </v-col>
@@ -83,7 +83,7 @@ export default {
 
   created() {
     // ToDo: replace polling with server-sent Events or WebSocket
-    this.polling = setInterval(this.checkResult, 5000);
+    this.polling = setInterval(this.checkResult, 1000);
   }
 }
 </script>

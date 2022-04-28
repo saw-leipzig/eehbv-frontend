@@ -119,7 +119,7 @@ export default {
       let all_cond = this.variants_conditions[0].conditions.map(a => a.map(ac => ac.formula));
       this.variants_conditions.filter((v, i) => i > 0 && i <= this.variant_selection.length).forEach(v =>
           v_c.push({ id: v.id, name: v.name,
-            conditions: v.conditions.map(c => c.map(cc => cc.formula)).concat(all_cond)})
+            conditions: v.conditions.map(c => '0 ' + c.map(cc => cc.formula).join(' ')).concat(all_cond)})
       );
       this.$emit('continue', v_c);
     },

@@ -86,7 +86,8 @@
     "titles": {
       "new_type": "New component type",
       "components": "Components",
-      "import": "Import"
+      "import": "Import",
+      "columns": "Columns"
     },
     "labels": {
       "view_name": "Name",
@@ -102,7 +103,8 @@
     },
     "domain": {
       "manufacturer": "Manufacturer",
-      "model": "Model"
+      "model": "Model",
+      "price": "Price"
     }
   },
   "material_properties": {

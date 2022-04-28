@@ -23,7 +23,7 @@ export default {
       comparators: [
         { formula: '<', view: 'LT', state: '' },
         { formula: '<=', view: 'LE', state: '' },
-        { formula: '=', view: 'EQ', state: '' },
+        { formula: '==', view: 'EQ', state: '' },
         { formula: '>=', view: 'GE', state: '' },
         { formula: '>', view: 'GT', state: '' }
       ]

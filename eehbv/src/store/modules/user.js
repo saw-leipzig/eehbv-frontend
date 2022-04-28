@@ -3,7 +3,7 @@ import Vue from 'vue'
 const state = {
   user: {
     id: 0,
-    role: 3,//0,
+    role: 0,
     username: '',
     token: ''
   }
@@ -17,7 +17,7 @@ const getters = {
 
 const actions = {
   login: ({commit}, cred) => {
-    commit('SET_USER', { id: 1, role: 3, username: cred.username, token: 'TOKEN' });
+    commit('SET_USER', { id: 0, role: 0, username: cred.username, token: 'TOKEN' });
   }
 };
 

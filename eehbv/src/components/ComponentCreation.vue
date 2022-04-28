@@ -20,13 +20,13 @@
         <v-row>
           <v-col cols="12">
             <v-card>
-              <v-card-title>Spalten</v-card-title>
+              <v-card-title>{{$t('components.titles.columns')}}</v-card-title>
               <v-card-text>
                 <v-row v-for="(column, index) in component_type.columns" :key="column.position">
                   <v-col cols="3">{{column.view_name}}</v-col>
                   <v-col cols="3">{{column.column_name}}</v-col>
                   <v-col cols="3">{{column.unit}}</v-col>
-                  <v-col cols="3" v-if="column.position > 2">
+                  <v-col cols="3" v-if="column.position > 3">
                     <v-icon small class="mr-2" @click="editColumn(index)">mdi-pencil</v-icon>
                     <v-icon small @click="deleteColumn(index)">mdi-delete</v-icon>
                   </v-col>
@@ -89,6 +89,13 @@ export default {
             type: 'VARCHAR',
             position: 2,
             unit: null
+          },
+          {
+            column_name: 'price',
+            view_name: this.$t('components.domain.price'),
+            type: 'DOUBLE',
+            position: 2,
+            unit: 'Euro'
           }
         ]
       },
