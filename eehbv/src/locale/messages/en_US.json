@@ -1,7 +1,8 @@
 {
   "general": {
     "error": {
-      "badRequest": "Bad request"
+      "badRequest": "Bad request",
+      "api_down": "Server might be down or encountered an internal error"
     },
     "validation": {
       "required": "Required",

@@ -161,7 +161,7 @@ export default {
               then((response) => {
                   this.componentData = [...response.data.components];
                   this.notify(this.$t('components.msg.loaded'));
-          });
+          }).catch(error => {});
     },
     assignItem(item) {
       this.editedIndex = this.componentData.indexOf(item);

@@ -1,7 +1,8 @@
 {
   "general": {
     "error": {
-      "badRequest": "Fehlerhafte Anfrage"
+      "badRequest": "Fehlerhafte Anfrage",
+      "api_down": "Server nicht erreichbar oder interner Fehler"
     },
     "validation": {
       "required": "Erforderlich",
