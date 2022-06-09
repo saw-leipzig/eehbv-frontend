@@ -17,7 +17,7 @@ export default function setup() {
     return response;
   }, function (error) {
     if (error.message && error.message === 'Request failed with status code 500') {
-      console.log('MESSAGE');
+      console.log('Status Code 500');
       try {
         store.dispatch('notify', {id: 0, message: i18n.t('general.error.api_down'), color: 'red'});
       } catch {}

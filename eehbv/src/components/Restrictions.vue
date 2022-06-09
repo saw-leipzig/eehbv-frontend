@@ -38,7 +38,7 @@
       </v-row>
     </v-card>
 
-    <v-btn color="green" @click="continueThree">
+    <v-btn color="green" @click="continueFour">
       {{ $t('general.dialog.next') }}
     </v-btn>
 
@@ -114,7 +114,7 @@ export default {
   },
 
   methods: {
-    continueThree() {
+    continueFour() {
       let v_c = [];
       let all_cond = this.variants_conditions[0].conditions.map(a => a.map(ac => ac.formula));
       this.variants_conditions.filter((v, i) => i > 0 && i <= this.variant_selection.length).forEach(v =>

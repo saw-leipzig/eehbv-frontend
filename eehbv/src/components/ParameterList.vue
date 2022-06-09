@@ -17,12 +17,15 @@
             </v-col>
           </v-row>
           <v-row>
+            <v-col cols="3">{{ $t('process_definition.labels.general') }} : {{ boolText(param.general) }}</v-col>
             <v-col cols="3">{{ $t('process_definition.labels.dependent') }} : {{ boolText(param.dependent) }}</v-col>
             <v-col cols="3">{{ $t('process_definition.labels.restricting') }} : {{ boolText(param.restricting) }}</v-col>
-            <v-col cols="3" v-if="showDep && param.restricting">
+          </v-row>
+          <v-row v-if="showDep && param.restricting">
+            <v-col cols="6">
               {{ $t('process_definition.labels.column_lower') }} : {{ param.min_column }}
             </v-col>
-            <v-col cols="3" v-if="showDep && param.restricting">
+            <v-col cols="6">
               {{ $t('process_definition.labels.column_upper') }} : {{ param.max_column }}
             </v-col>
           </v-row>

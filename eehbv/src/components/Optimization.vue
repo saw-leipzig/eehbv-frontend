@@ -15,28 +15,38 @@
             <v-divider></v-divider>
 
             <v-stepper-step :complete="def_step > 2" color="green" step="2">
+              {{ $t('process_definition.titles.profiles') }}
+            </v-stepper-step>
+
+            <v-divider></v-divider>
+
+            <v-stepper-step :complete="def_step > 3" color="green" step="3">
               {{ $t('process_creation.labels.variant_selection_definition') }}
             </v-stepper-step>
 
             <v-divider></v-divider>
 
-            <v-stepper-step step="3" color="green">
+            <v-stepper-step step="4" color="green">
               {{ $t('optimization.titles.constraints') }}
             </v-stepper-step>
           </v-stepper-header>
 
           <v-stepper-items>
             <v-stepper-content step="1">
-              <optimization-parameters v-model="parameters" :process="process" :info-texts="infoTexts" @continue="continueOne" @abort="abort"></optimization-parameters>
+              <optimization-parameters v-model="general_parameters" :process="process" :info-texts="infoTexts" @continue="continueOne" @abort="abort"></optimization-parameters>
             </v-stepper-content>
 
             <v-stepper-content step="2">
-              <variant-picklist v-if="variant_select_type === 0" :process="process" :variants="variants" @continue="continueTwo" @abort="abort"></variant-picklist>
-              <variant-question-selection v-else :process="process" :variants="variants" @continue="continueTwo" @abort="abort"></variant-question-selection>
+              <optimization-profiles v-model="profiles" :process="process" :info-texts="infoTexts" @continue="continueTwo" @abort="abort"></optimization-profiles>
             </v-stepper-content>
 
             <v-stepper-content step="3">
-              <restrictions :parameters="process.parameters" :variants="variants" :variant_selection="selection" @continue="continueThree" @abort="abort"></restrictions>
+              <variant-picklist v-if="variant_select_type === 0" :process="process" :variants="variants" @continue="continueThree" @abort="abort"></variant-picklist>
+              <variant-question-selection v-else :process="process" :variants="variants" @continue="continueThree" @abort="abort"></variant-question-selection>
+            </v-stepper-content>
+
+            <v-stepper-content step="4">
+              <restrictions :parameters="process.parameters" :variants="variants" :variant_selection="selection" @continue="continueFour" @abort="abort"></restrictions>
             </v-stepper-content>
           </v-stepper-items>
         </v-stepper>
@@ -51,19 +61,23 @@
 </template>
 
 <script>
-import OptimizationParameters from "./OptimizationParameters";
+import OptimizationProfiles from "./OptimizationProfiles";
 import VariantPicklist from "./VariantPicklist";
 import VariantQuestionSelection from "./VariantQuestionSelection";
 import Restrictions from "./Restrictions";
 import DialogCardEditor from "./DialogCardEditor";
+import OptimizationParameters from "./OptimizationParameters";
 export default {
   name: "Optimization",
-  components: {DialogCardEditor, Restrictions, VariantQuestionSelection, VariantPicklist, OptimizationParameters},
+  components: {
+    OptimizationParameters,
+    DialogCardEditor, Restrictions, VariantQuestionSelection, VariantPicklist, OptimizationProfiles},
   data () {
     return {
       def_step: 1,
       variant_select_type: 0,
-      parameters: [],
+      profiles: [],
+      general_parameters: {},
       selection: [],
       variants_conditions: [],
       description: '',
@@ -92,21 +106,36 @@ export default {
     }
   },
 
+  created() {
+    this.initialize();
+  },
+
   methods: {
+    initialize() {
+      let defItem = {};
+      this.process.parameters.forEach(p => { if (p.general) { defItem[p.variable_name] = 0; } });
+      this.general_parameters = Object.assign({}, defItem);
+      if (Object.keys(this.general_parameters).length === 0) {
+        this.def_step = 2;
+      }
+    },
     abort() {
       this.$router.push({ name: 'ProcessOverview', params: { type: this.process.api_name, process: this.process } });
     },
-    continueOne(select_type) {
-      this.variant_select_type = select_type;
+    continueOne() {
       this.def_step = 2;
     },
-    continueTwo(param) {
-      if (param) {
-        this.selection = [...param];
-      }
+    continueTwo(select_type) {
+      this.variant_select_type = select_type;
       this.def_step = 3;
     },
     continueThree(param) {
+      if (param) {
+        this.selection = [...param];
+      }
+      this.def_step = 4;
+    },
+    continueFour(param) {
       if (param) {
         this.variants_conditions = [...param];
       }
@@ -122,7 +151,8 @@ export default {
           api_name: this.process.api_name,
           view_name: this.process.view_name
         },
-        process_parameters: this.parameters,
+        general_parameters: this.general_parameters,
+        process_profiles: this.profiles,
         variants_conditions: this.variants_conditions
       };
       this.$http.post('problems/' + this.process.id, requestData).

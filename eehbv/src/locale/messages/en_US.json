@@ -147,7 +147,8 @@
   "process_definition": {
     "titles": {
       "problems": "Problem types",
-      "parameters": "Process parameters"
+      "parameters": "Process parameters",
+      "profiles": "Usage profiles"
     },
     "labels": {
       "view_name": "Name",
@@ -157,6 +158,7 @@
       "unit": "Unit",
       "variable_name": "Variable name",
       "material_property": "Material property",
+      "general": "general",
       "restricting": "restricting",
       "dependent": "dependent",
       "column_lower": "Column lower bound",
