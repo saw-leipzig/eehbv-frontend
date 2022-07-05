@@ -23,9 +23,11 @@ const actions = {
 
 const mutations = {
   'SET_USER' (state, user) {
+    localStorage.setItem('USER', JSON.stringify(user));
     Vue.set(state, 'user', user);
   },
   'LOGOUT' (state) {
+    localStorage.removeItem('USER');
     Vue.set(state, 'user', { id: 0, role: 0, username: '', token: ''});
   }
 };

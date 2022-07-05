@@ -4,7 +4,14 @@ import {i18n} from "../i18n";
 
 export default function setup() {
   axios.interceptors.request.use(function(config) {
-    const token = store.getters.token;
+    let token = store.getters.token;
+    if (token === 'TOKEN' || token === '') {
+      const user = localStorage.getItem('USER');
+      if (user !== null) {
+        store.commit('SET_USER', JSON.parse(user));
+        token = user.token;
+      }
+    }
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
