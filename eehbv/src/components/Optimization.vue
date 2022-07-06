@@ -26,8 +26,14 @@
 
             <v-divider></v-divider>
 
-            <v-stepper-step step="4" color="green">
+            <v-stepper-step :complete="def_step > 4" step="4" color="green">
               {{ $t('optimization.titles.constraints') }}
+            </v-stepper-step>
+
+            <v-divider></v-divider>
+
+            <v-stepper-step step="5" color="green">
+              {{ $t('optimization.titles.result_settings') }}
             </v-stepper-step>
           </v-stepper-header>
 
@@ -48,6 +54,10 @@
             <v-stepper-content step="4">
               <restrictions :parameters="process.parameters" :variants="variants" :variant_selection="selection" @continue="continueFour" @abort="abort"></restrictions>
             </v-stepper-content>
+
+            <v-stepper-content step="5">
+              <optimization-result-settings :value="result_settings" @continue="continueFive" @abort="abort"></optimization-result-settings>
+            </v-stepper-content>
           </v-stepper-items>
         </v-stepper>
       </v-col>
@@ -67,9 +77,11 @@ import VariantQuestionSelection from "./VariantQuestionSelection";
 import Restrictions from "./Restrictions";
 import DialogCardEditor from "./DialogCardEditor";
 import OptimizationParameters from "./OptimizationParameters";
+import OptimizationResultSettings from "./OptimizationResultSettings";
 export default {
   name: "Optimization",
   components: {
+    OptimizationResultSettings,
     OptimizationParameters,
     DialogCardEditor, Restrictions, VariantQuestionSelection, VariantPicklist, OptimizationProfiles},
   data () {
@@ -80,6 +92,14 @@ export default {
       general_parameters: {},
       selection: [],
       variants_conditions: [],
+      result_settings: {
+        n_list: 10,
+        costs_opt: {
+          exec: false,
+          amortisation_time: 2,
+          montage_price: 10000
+        }
+      },
       description: '',
       dialogDescription: false
     }
@@ -139,6 +159,9 @@ export default {
       if (param) {
         this.variants_conditions = [...param];
       }
+      this.def_step = 5;
+    },
+    continueFive() {
       this.description = this.genericName;
       this.dialogDescription = true;
     },
@@ -146,6 +169,7 @@ export default {
       this.dialogDescription = false;
       let requestData = {
         description: this.description,
+        result_settings: this.result_settings,
         process: {
           id: this.process.id,
           api_name: this.process.api_name,

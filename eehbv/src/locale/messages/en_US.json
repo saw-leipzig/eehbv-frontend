@@ -213,16 +213,23 @@
       "send": "Send request",
       "overview_result": "Overview optimization result",
       "request": "Optimization request",
-      "result": "Result"
+      "result": "Result",
+      "result_settings": "Result Presentation",
+      "view_parameters": "View parameters",
+      "costs_opt": "Cost optimization"
     },
     "labels": {
       "fraction": "Fraction",
       "pick_list": "Pick list",
       "questions": "Questions",
-      "all_variants": "For all variants"
+      "all_variants": "For all variants",
+      "result_length": "Length result list",
+      "run_costs_opt": "Run",
+      "amortization_time": "Amortization time",
+      "assembly_costs": "Montage price"
     },
     "info": {
-      "parameters": "<p>A set of <strong>Process parameters</strong> defines a profile of process usage.</p><p>Apply at least one set of process parameters with a fraction greater than zero.</p><p>Should the process be used with different profiles, each fraction gives the relative frequency of the prospective usage of the profile.</p><p>The sum of fractions has not to add up to 1 or 100 bt will be normalized to 100%.</p><p>Process parameters which are irrelevant for some selected variants can have arbitrary values.</p>"
+      "parameters": "<p>A set of <strong>Process parameters</strong> defines a profile of process usage.</p><p>Apply at least one set of process parameters with a fraction greater than zero.</p><p>Should the process be used with different profiles, each fraction gives the relative frequency of the prospective usage of the profile.</p><p>For a rough estimate of the absolute energy consumption it is necessary to provide here an estimate of hours per year the machine will run with this profile.</p><p>This is especially necessary if an amortisation calculation shall be conducted.</p><p>Process parameters which are irrelevant for some selected variants can have arbitrary values.</p>"
     }
   }
 }

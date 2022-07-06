@@ -219,16 +219,23 @@
       "send": "Anfrage absenden",
       "overview_result": "Übersicht Optimierungsergebnis",
       "request": "Optimierungsanfrage",
-      "result": "Ergebnis"
+      "result": "Ergebnis",
+      "result_settings": "Ergebnisdarstellung",
+      "view_parameters": "Anzeigeparameter",
+      "costs_opt": "Kostenoptimisierung"
     },
     "labels": {
       "fraction": "Anteil",
       "pick_list": "Auswahlliste",
       "questions": "Fragen",
-      "all_variants": "Für alle Varianten"
+      "all_variants": "Für alle Varianten",
+      "result_length": "Länge Ergebnisliste",
+      "run_costs_opt": "Ausführen",
+      "amortization_time": "Amortisationszeit",
+      "assembly_costs": "Montagepreis"
     },
     "info": {
-      "parameters": "<p>Ein Satz von <strong>Prozessparametern</strong> definiert ein Nutzungsprofil des Prozesses.</p><p>Legen Sie mindestens einen Satz von Prozessparametern mit einem Anteil größer 0 an.</p><p>Soll der Prozess mit unterschiedlichen Profilen betrieben werden, gibt der Anteil jeweils die relative Häufigkeit an, mit der dieses Profil voraussichtlich genutzt werden wird.</p><p>Die Summe der Anteile muss nicht 1 oder 100 ergeben sondern wird auf 100% normalisiert.</p><p>Prozessparameter, die für einzelne Varianten irrelevant sind, können beliebige Werte haben.</p>"
+      "parameters": "<p>Ein Satz von <strong>Prozessparametern</strong> definiert ein Nutzungsprofil des Prozesses.</p><p>Legen Sie mindestens einen Satz von Prozessparametern mit einem Anteil größer 0 an.</p><p>Soll der Prozess mit unterschiedlichen Profilen betrieben werden, gibt der Anteil jeweils die relative Häufigkeit an, mit der dieses Profil voraussichtlich genutzt werden wird.</p><p>Um nicht nur eine relative Vergleichbarkeit zwischen verschiedenen Auslegungen zu bekommen sondern eine grobe Schätzung des Gesamtenergieverbrauchs, muss an dieser Stelle die Anzahl der geschätzten Stunden pro Jahr angegeben werden, in denen die Maschine in diesem Betriebsprofil laufen wird.</p><p>Insbesondere ist eine Angabe in dieser Form notwendig, wenn eine Preisberechnung durchgeführt werden soll.<p><p>Prozessparameter, die für einzelne Varianten irrelevant sind, können beliebige Werte haben.</p>"
     }
   }
 }
