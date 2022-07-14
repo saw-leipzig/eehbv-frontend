@@ -225,8 +225,10 @@
       "all_variants": "For all variants",
       "result_length": "Length result list",
       "run_costs_opt": "Run",
-      "amortization_time": "Amortization time",
-      "assembly_costs": "Montage price"
+      "price_kwh": "Price kWh [Euros]",
+      "amortization_time": "Amortization time [years]",
+      "assembly_costs": "Assembly costs [Euros]",
+      "costs": "Acquisition/Energy Costs"
     },
     "info": {
       "parameters": "<p>A set of <strong>Process parameters</strong> defines a profile of process usage.</p><p>Apply at least one set of process parameters with a fraction greater than zero.</p><p>Should the process be used with different profiles, each fraction gives the relative frequency of the prospective usage of the profile.</p><p>For a rough estimate of the absolute energy consumption it is necessary to provide here an estimate of hours per year the machine will run with this profile.</p><p>This is especially necessary if an amortisation calculation shall be conducted.</p><p>Process parameters which are irrelevant for some selected variants can have arbitrary values.</p>"

@@ -37,13 +37,21 @@
                         type="text"
                     ></v-checkbox>
                   </v-col>
+                  <v-col v-if="value.costs_opt.exec" cols="12" sm="6" md="4">
+                    <v-text-field
+                        v-model="value.costs_opt.price_kwh"
+                        :label="$t('optimization.labels.price_kwh')"
+                        step="0.01"
+                        type="number"
+                    ></v-text-field>
+                  </v-col>
                 </v-row>
                 <v-row v-if="value.costs_opt.exec">
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
                         v-model="value.costs_opt.amortisation_time"
                         :label="$t('optimization.labels.amortization_time')"
-                        step="1"
+                        step="0.1"
                         type="number"
                     ></v-text-field>
                   </v-col>

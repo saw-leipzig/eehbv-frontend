@@ -96,6 +96,7 @@ export default {
         n_list: 10,
         costs_opt: {
           exec: false,
+          price_kwh: 0.23,
           amortisation_time: 2,
           montage_price: 10000
         }

@@ -231,8 +231,10 @@
       "all_variants": "Für alle Varianten",
       "result_length": "Länge Ergebnisliste",
       "run_costs_opt": "Ausführen",
-      "amortization_time": "Amortisationszeit",
-      "assembly_costs": "Montagepreis"
+      "price_kwh": "Preis kWh [Euro]",
+      "amortization_time": "Amortisationszeit [Jahre]",
+      "assembly_costs": "Montagepreis [Euro]",
+      "costs": "Anschaffungs-/Energiekosten"
     },
     "info": {
       "parameters": "<p>Ein Satz von <strong>Prozessparametern</strong> definiert ein Nutzungsprofil des Prozesses.</p><p>Legen Sie mindestens einen Satz von Prozessparametern mit einem Anteil größer 0 an.</p><p>Soll der Prozess mit unterschiedlichen Profilen betrieben werden, gibt der Anteil jeweils die relative Häufigkeit an, mit der dieses Profil voraussichtlich genutzt werden wird.</p><p>Um nicht nur eine relative Vergleichbarkeit zwischen verschiedenen Auslegungen zu bekommen sondern eine grobe Schätzung des Gesamtenergieverbrauchs, muss an dieser Stelle die Anzahl der geschätzten Stunden pro Jahr angegeben werden, in denen die Maschine in diesem Betriebsprofil laufen wird.</p><p>Insbesondere ist eine Angabe in dieser Form notwendig, wenn eine Preisberechnung durchgeführt werden soll.<p><p>Prozessparameter, die für einzelne Varianten irrelevant sind, können beliebige Werte haben.</p>"
