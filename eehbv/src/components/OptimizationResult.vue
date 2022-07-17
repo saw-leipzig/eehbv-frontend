@@ -29,16 +29,31 @@
             </div>
             <div v-else>
               <v-card-title>{{ $t('optimization.titles.overview_result') }}</v-card-title>
+
               <v-data-table :headers="optHeaders" :items="optRows" :single-expand="false" :expanded.sync="expanded"
                             item-key="key" show-expand class="elevation-1">
+                <!-- ToDo: Select item for Sankey diagram (use slot item or body and build table itself?!) -->
+                <template v-slot:item.col0="{ item, index }">
+                  <div @click="selectCell(index, 0)">{{ item.col0 }}</div>
+                </template>
+                <template v-if="result.length > 1"  v-slot:item.col1="{ item, index }">
+                  <div @click="selectCell(index, 1)">{{ item.col1 }}</div>
+                </template>
+                <template v-if="result.length > 2"  v-slot:item.col2="{ item, index }">
+                  <div @click="selectCell(index, 2)">{{ item.col2 }}</div>
+                </template>
+                <template v-if="result.length > 3"  v-slot:item.col3="{ item, index }">
+                  <div @click="selectCell(index, 3)">{{ item.col3 }}</div>
+                </template>
+
                 <template v-slot:expanded-item="{ headers, item }">
                   <td></td><td></td>
                   <td v-for="k in result.length" :key="k" v-html="item['info' + k]"></td>
                 </template>
               </v-data-table>
             </div>
-
             <div id="sankey_opt"></div>
+            <svg ref="sankey_opt"></svg>
 
             <!-- cost optimization only -->
             <div v-if="result.length > 0 && result[0].cost_opts.length > 0">
@@ -128,7 +143,6 @@ export default {
               '<br/>' +
               Object.keys(o.indices).map(k => '<b>' + k + '</b>: ' + o.indices[k].name + ' (' + o.indices[k].manufacturer + ')').join('<br/>');
         });
-        row['info'] = 'More Info';
         row['key'] = r + 1;
         rows.push(row);
       }
@@ -167,12 +181,12 @@ export default {
       return {
         nodes: [
           { node: 0, name: 'Total', id: 'total', color: 'gray' },
-            ...aggregateNames.map((agg,p) => { return { node: p + 1, name: agg, id: 'agg' + p, color: 'gray' } }),
+            ...aggregateNames.map((agg, p) => { return { node: p + 1, name: agg, id: 'agg' + p, color: 'gray' } }),
             ...Object.keys(base.partials).map((par,p) => { return { node: p + n_agg + 1, name: par, id: 'par' + p, color: 'gray'} }),
         ],
         links: [
-            ...aggregateNames.map((agg, p) => { return { source: 'Total', target: agg, value: aggregates[agg], color: 'gray' } }),
-            ...Object.keys(base.partials).map((par, p) => {
+            ...aggregateNames.map(agg => { return { source: 'Total', target: agg, value: aggregates[agg], color: 'gray' } }),
+            ...Object.keys(base.partials).map(par => {
               return { source: base.partials[par].aggregate, target: par, value: base.partials[par].value, color: 'gray' } })
         ],
       }
@@ -184,6 +198,11 @@ export default {
   },
 
   methods: {
+    selectCell(row, col) {
+      this.currentOptIndex = row;
+      this.currentVariantIndex = col;
+      //this.updateSankey();
+    },
     checkResult() {
       this.$http.get('problems/result/' + this.timestamp).
           then((response) => {
@@ -212,7 +231,7 @@ export default {
         const nodePadding = 60;
 
         const svg = d3
-            //.select(this.$refs.svg)
+            //.select(this.$refs.sankey_opt)
             .select("#sankey_opt").append("svg")
             .attr('viewBox', [0, -50, width, height + 100]);
 
