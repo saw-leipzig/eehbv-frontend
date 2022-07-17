@@ -23,11 +23,11 @@
         <v-card>
           <v-card-title>{{ $t('optimization.titles.result') }}</v-card-title>
           <v-card-text>
-            <div v-if="result.length === 0" class="text-center">
+
+            <div v-if="result.length === 0">
               <v-progress-circular indeterminate color="green" size="70" width="7"></v-progress-circular>
             </div>
             <div v-else>
-
               <v-card-title>{{ $t('optimization.titles.overview_result') }}</v-card-title>
               <v-data-table :headers="optHeaders" :items="optRows" :single-expand="false" :expanded.sync="expanded"
                             item-key="key" show-expand class="elevation-1">
@@ -36,22 +36,21 @@
                   <td v-for="k in result.length" :key="k" v-html="item['info' + k]"></td>
                 </template>
               </v-data-table>
+            </div>
 
+            <div id="sankey_opt"></div>
 
+            <!-- cost optimization only -->
+            <div v-if="result.length > 0 && result[0].cost_opts.length > 0">
 
-              <!-- cost optimization only -->
-              <div v-if="result[0].cost_opts.length > 0">
-
-                <v-card-title>{{ $t('optimization.titles.overview_result') }}</v-card-title>
-                <v-data-table :headers="costHeaders" :items="costRows" :single-expand="false" :expanded.sync="costExpanded"
-                              item-key="key" show-expand class="elevation-1">
-                  <template v-slot:expanded-item="{ headers, item }">
-                    <td></td><td></td>
-                    <td v-for="k in result.length" :key="k" v-html="item['info' + k]"></td>
-                  </template>
-                </v-data-table>
-
-              </div>
+              <v-card-title>{{ $t('optimization.titles.overview_result') }}</v-card-title>
+              <v-data-table :headers="costHeaders" :items="costRows" :single-expand="false" :expanded.sync="costExpanded"
+                            item-key="key" show-expand class="elevation-1">
+                <template v-slot:expanded-item="{ headers, item }">
+                  <td></td><td></td>
+                  <td v-for="k in result.length" :key="k" v-html="item['info' + k]"></td>
+                </template>
+              </v-data-table>
 
             </div>
           </v-card-text>
@@ -62,6 +61,10 @@
 </template>
 
 <script>
+import * as d3 from 'd3';
+import { sankey, sankeyLinkHorizontal } from 'd3-sankey';
+//import { sankey as d3Sankey, sankeyLinkHorizontal as d3SsankeyLinkHorizontal } from 'd3-sankey';
+
 export default {
   name: "OptimizationResult",
   data () {
@@ -69,7 +72,27 @@ export default {
       result: [],
       polling: null,
       expanded: [],
-      costExpanded: []
+      costExpanded: [],
+      items: {
+        nodes: [
+          { node: 0, name: 'node0', id: 'node0', color: 'gray', height: 6 },
+          { node: 1, name: 'node1', id: 'node1', color: 'gray', height: 4 },
+          { node: 2, name: 'node2', id: 'node2', color: 'gray', height: 3 },
+          { node: 3, name: 'node3', id: 'node3', color: 'gray', height: 2 },
+          { node: 4, name: 'node4', id: 'node4', color: 'gray', height: 3 },
+          { node: 5, name: 'node6', id: 'node5', color: 'gray', height: 2 },
+        ],
+        links: [
+          { source: 'node0', target: 'node2', value: 1, color: 'gray' },
+          { source: 'node1', target: 'node2', value: 2, color: 'gray' },
+          { source: 'node1', target: 'node3', value: 2, color: 'gray' },
+          { source: 'node0', target: 'node4', value: 3, color: 'gray' },
+          { source: 'node0', target: 'node5', value: 2, color: 'gray' },
+          { source: 'node5', target: 'node3', value: 2, color: 'gray' },
+        ],
+      },
+      currentOptIndex: 0,
+      currentVariantIndex: 0
     }
   },
 
@@ -101,7 +124,7 @@ export default {
         this.result.forEach((v, p) => {
           let o = v.opts[r];
           row['col' + p] = o.total + ' kWh' + (costOpt ? ' - ' + o.acquisition_costs + ' Euro' : '');
-          row['info' + (p + 1)] = Object.keys(o.partials).map(k => '<b>' + k + '</b>: ' + o.partials[k] + ' kWh').join('<br/>') +
+          row['info' + (p + 1)] = Object.keys(o.partials).map(k => '<b>' + k + '</b>: ' + o.partials[k].value + ' kWh').join('<br/>') +
               '<br/>' +
               Object.keys(o.indices).map(k => '<b>' + k + '</b>: ' + o.indices[k].name + ' (' + o.indices[k].manufacturer + ')').join('<br/>');
         });
@@ -123,7 +146,7 @@ export default {
         this.result.forEach((v, p) => {
           let o = v.cost_opts[r];
           row['col' + p] = o.total + ' kWh - ' + o.acquisition_costs + '/' + o.energy_costs + ' Euro (' + this.$t('optimization.labels.costs') + ')';
-          row['info' + (p + 1)] = Object.keys(o.partials).map(k => '<b>' + k + '</b>: ' + o.partials[k] + ' kWh').join('<br/>') +
+          row['info' + (p + 1)] = Object.keys(o.partials).map(k => '<b>' + k + '</b>: ' + o.partials[k].value + ' kWh').join('<br/>') +
               '<br/>' +
               Object.keys(o.indices).map(k => '<b>' + k + '</b>: ' + o.indices[k].name + ' (' + o.indices[k].manufacturer + ')').join('<br/>');
         });
@@ -132,7 +155,32 @@ export default {
         rows.push(row);
       }
       return rows;
+    },
+    optSankey() {
+      let base = this.result[this.currentVariantIndex].opts[this.currentOptIndex];
+      let aggregateNames = [...new Set(Object.keys(base.partials).map(k => base.partials[k].aggregate))];
+      let aggregates = {};
+      aggregateNames.forEach(a =>
+          aggregates[a] =
+              Object.keys(base.partials).filter(k => base.partials[k].aggregate === a).map(k => base.partials[k].value).reduce((p, c) => p + c, 0));
+      let n_agg = aggregateNames.length;
+      return {
+        nodes: [
+          { node: 0, name: 'Total', id: 'total', color: 'gray' },
+            ...aggregateNames.map((agg,p) => { return { node: p + 1, name: agg, id: 'agg' + p, color: 'gray' } }),
+            ...Object.keys(base.partials).map((par,p) => { return { node: p + n_agg + 1, name: par, id: 'par' + p, color: 'gray'} }),
+        ],
+        links: [
+            ...aggregateNames.map((agg, p) => { return { source: 'Total', target: agg, value: aggregates[agg], color: 'gray' } }),
+            ...Object.keys(base.partials).map((par, p) => {
+              return { source: base.partials[par].aggregate, target: par, value: base.partials[par].value, color: 'gray' } })
+        ],
+      }
     }
+  },
+
+  mounted() {
+    //this.updateSankey();
   },
 
   methods: {
@@ -143,9 +191,8 @@ export default {
               if (response.data.status  !== undefined && response.data.status === 'pending') {
                 // ToDo: update timer
               } else {
-                console.log(JSON.stringify(response.data.result));
                 this.result = [...response.data.result];
-                //console.log(this.result);
+                this.updateSankey();
                 clearInterval(this.polling);
               }
             } else {
@@ -155,6 +202,78 @@ export default {
           }).catch((error) => {
             clearInterval(this.polling);
       });
+    },
+    updateSankey() {
+      try {
+        const width = 600;
+        const height = 400;
+        const nodeWidth = 60;
+        const nodeHeight = 80;
+        const nodePadding = 60;
+
+        const svg = d3
+            //.select(this.$refs.svg)
+            .select("#sankey_opt").append("svg")
+            .attr('viewBox', [0, -50, width, height + 100]);
+
+        const {nodes, links} = sankey()
+            .nodeId((d) => d.name)
+            .nodeWidth(nodeWidth)
+            .nodePadding(nodePadding)
+            .extent([
+              [1, 1],
+              [width, height - nodeHeight],
+            ])(this.optSankey);
+
+        svg
+            .append('g')
+            .attr('stroke', '#000')
+            .attr('stroke-width', '0')
+            .selectAll('rect')
+            .data(nodes)
+            .join('rect')
+            .attr('x', (d) => d.x0)
+            .attr('y', (d) => d.y0)
+            .attr('height', (d) => d.y1 - d.y0)
+            .attr('width', (d) => d.x1 - d.x0)
+            .attr('fill', (d) => d.color)
+            .append('title')
+            .text((d) => `${d.name}\n${d.value}`);
+
+        const link = svg
+            .append('g')
+            .attr('fill', 'none')
+            .attr('stroke-opacity', 0.5)
+            .selectAll('g')
+            .data(links)
+            .join('g');
+        //.style("mix-blend-mode", "multiply");
+
+        link
+            .append('path')
+            .attr('d', sankeyLinkHorizontal())
+            .attr('stroke', (d) => d.color)
+            .attr('stroke-width', (d) => Math.max(1, d.width));
+
+        link
+            .append('title')
+            .text((d) => `${d.source.name} → ${d.target.name}\n${d.value}`);
+
+        svg
+            .append('g')
+            .attr('font-family', 'sans-serif')
+            .attr('font-size', 10)
+            .selectAll('text')
+            .data(nodes)
+            .join('text')
+            .attr('x', (d) => d.x0 + 8)
+            .attr('y', (d) => (d.y1 + d.y0) / 2)
+            .attr('dy', '0.35em')
+            .attr('text-anchor', 'start')
+            .text((d) => d.name);
+      } catch (ex) {
+        console.log(ex);
+      }
     }
   },
 
@@ -166,5 +285,7 @@ export default {
 </script>
 
 <style scoped>
-
+svg {
+  padding-inline: max(2rem, calc(50% - 24rem));
+}
 </style>

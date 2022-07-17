@@ -7,6 +7,7 @@ import { Vuelidate } from 'vuelidate';
 import { i18n } from './i18n';
 import axios from 'axios';
 import interceptorSetup from './utils/interceptors';
+import "@fontsource/roboto";
 
 interceptorSetup();
 
