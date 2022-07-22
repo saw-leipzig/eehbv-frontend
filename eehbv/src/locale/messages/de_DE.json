@@ -222,10 +222,11 @@
       "result": "Ergebnis",
       "result_settings": "Ergebnisdarstellung",
       "view_parameters": "Anzeigeparameter",
-      "costs_opt": "Kostenoptimisierung"
+      "costs_opt": "Kostenoptimierung",
+      "energy_optimization": "Energieoptimierung"
     },
     "labels": {
-      "fraction": "Anteil",
+      "fraction": "Anteil [h/Jahr]",
       "pick_list": "Auswahlliste",
       "questions": "Fragen",
       "all_variants": "Für alle Varianten",

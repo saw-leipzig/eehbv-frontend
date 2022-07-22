@@ -216,10 +216,11 @@
       "result": "Result",
       "result_settings": "Result Presentation",
       "view_parameters": "View parameters",
-      "costs_opt": "Cost optimization"
+      "costs_opt": "Cost optimization",
+      "energy_optimization": "Energy optimization"
     },
     "labels": {
-      "fraction": "Fraction",
+      "fraction": "Fraction [h/year]",
       "pick_list": "Pick list",
       "questions": "Questions",
       "all_variants": "For all variants",

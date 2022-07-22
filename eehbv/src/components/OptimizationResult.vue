@@ -28,22 +28,22 @@
               <v-progress-circular indeterminate color="green" size="70" width="7"></v-progress-circular>
             </div>
             <div v-else>
-              <v-card-title>{{ $t('optimization.titles.overview_result') }}</v-card-title>
+              <v-card-title>{{ $t('optimization.titles.energy_optimization') }}</v-card-title>
 
               <v-data-table :headers="optHeaders" :items="optRows" :single-expand="false" :expanded.sync="expanded"
                             item-key="key" show-expand class="elevation-1">
                 <!-- ToDo: Select item for Sankey diagram (use slot item or body and build table itself?!) -->
                 <template v-slot:item.col0="{ item, index }">
-                  <div @click="selectCell(index, 0)">{{ item.col0 }}</div>
+                  <div @click="selectCell(index, 0, false)">{{ item.col0 }}</div>
                 </template>
                 <template v-if="result.length > 1"  v-slot:item.col1="{ item, index }">
-                  <div @click="selectCell(index, 1)">{{ item.col1 }}</div>
+                  <div @click="selectCell(index, 1, false)">{{ item.col1 }}</div>
                 </template>
                 <template v-if="result.length > 2"  v-slot:item.col2="{ item, index }">
-                  <div @click="selectCell(index, 2)">{{ item.col2 }}</div>
+                  <div @click="selectCell(index, 2, false)">{{ item.col2 }}</div>
                 </template>
                 <template v-if="result.length > 3"  v-slot:item.col3="{ item, index }">
-                  <div @click="selectCell(index, 3)">{{ item.col3 }}</div>
+                  <div @click="selectCell(index, 3, false)">{{ item.col3 }}</div>
                 </template>
 
                 <template v-slot:expanded-item="{ headers, item }">
@@ -52,15 +52,28 @@
                 </template>
               </v-data-table>
             </div>
-            <div id="sankey_opt"></div>
-            <svg ref="sankey_opt"></svg>
+            <div id="div_opt"></div>
 
             <!-- cost optimization only -->
             <div v-if="result.length > 0 && result[0].cost_opts.length > 0">
 
-              <v-card-title>{{ $t('optimization.titles.overview_result') }}</v-card-title>
+              <v-card-title>{{ $t('optimization.titles.costs_opt') }}</v-card-title>
               <v-data-table :headers="costHeaders" :items="costRows" :single-expand="false" :expanded.sync="costExpanded"
                             item-key="key" show-expand class="elevation-1">
+                <!-- ToDo: Select item for Sankey diagram (use slot item or body and build table itself?!) -->
+                <template v-slot:item.col0="{ item, index }">
+                  <div @click="selectCell(index, 0, true)">{{ item.col0 }}</div>
+                </template>
+                <template v-if="result.length > 1"  v-slot:item.col1="{ item, index }">
+                  <div @click="selectCell(index, 1, true)">{{ item.col1 }}</div>
+                </template>
+                <template v-if="result.length > 2"  v-slot:item.col2="{ item, index }">
+                  <div @click="selectCell(index, 2, true)">{{ item.col2 }}</div>
+                </template>
+                <template v-if="result.length > 3"  v-slot:item.col3="{ item, index }">
+                  <div @click="selectCell(index, 3, true)">{{ item.col3 }}</div>
+                </template>
+
                 <template v-slot:expanded-item="{ headers, item }">
                   <td></td><td></td>
                   <td v-for="k in result.length" :key="k" v-html="item['info' + k]"></td>
@@ -68,6 +81,7 @@
               </v-data-table>
 
             </div>
+            <div id="div_costs_opt"></div>
           </v-card-text>
         </v-card>
       </v-col>
@@ -88,26 +102,13 @@ export default {
       polling: null,
       expanded: [],
       costExpanded: [],
-      items: {
-        nodes: [
-          { node: 0, name: 'node0', id: 'node0', color: 'gray', height: 6 },
-          { node: 1, name: 'node1', id: 'node1', color: 'gray', height: 4 },
-          { node: 2, name: 'node2', id: 'node2', color: 'gray', height: 3 },
-          { node: 3, name: 'node3', id: 'node3', color: 'gray', height: 2 },
-          { node: 4, name: 'node4', id: 'node4', color: 'gray', height: 3 },
-          { node: 5, name: 'node6', id: 'node5', color: 'gray', height: 2 },
-        ],
-        links: [
-          { source: 'node0', target: 'node2', value: 1, color: 'gray' },
-          { source: 'node1', target: 'node2', value: 2, color: 'gray' },
-          { source: 'node1', target: 'node3', value: 2, color: 'gray' },
-          { source: 'node0', target: 'node4', value: 3, color: 'gray' },
-          { source: 'node0', target: 'node5', value: 2, color: 'gray' },
-          { source: 'node5', target: 'node3', value: 2, color: 'gray' },
-        ],
-      },
       currentOptIndex: 0,
-      currentVariantIndex: 0
+      currentVariantIndex: 0,
+      currentCostsOptIndex: 0,
+      currentCostsVariantIndex: 0,
+      svgOpt: null,
+      sankeyWidth: 600,
+      sankeyHeight: 400
     }
   },
 
@@ -172,6 +173,52 @@ export default {
     },
     optSankey() {
       let base = this.result[this.currentVariantIndex].opts[this.currentOptIndex];
+      return this.computeSankeyData(base);
+    },
+    costsOptSankey() {
+      let base = this.result[this.currentCostsVariantIndex].cost_opts[this.currentCostsOptIndex];
+      return this.computeSankeyData(base);
+    }
+  },
+
+  mounted() {
+  },
+
+  methods: {
+    selectCell(row, col, costs) {
+      if (costs) {
+        this.currentCostsOptIndex = row;
+        this.currentCostsVariantIndex = col;
+        this.drawSankey(this.costsOptSankey, true, 'svg_cost_opt', '#div_costs_opt');
+      } else {
+        this.currentOptIndex = row;
+        this.currentVariantIndex = col;
+        this.drawSankey(this.optSankey, true, 'svg_opt', '#div_opt');
+      }
+    },
+    checkResult() {
+      this.$http.get('problems/result/' + this.timestamp).
+          then((response) => {
+            if (response.status < 400) {
+              if (response.data.status  !== undefined && response.data.status === 'pending') {
+                // ToDo: update timer
+              } else {
+                this.result = [...response.data.result];
+                this.drawSankey(this.optSankey, false, 'svg_opt', '#div_opt');
+                if (this.result[0].cost_opts.length > 0) {
+                  this.drawSankey(this.costsOptSankey, true, 'svg_cost_opt', '#div_costs_opt');
+                }
+                clearInterval(this.polling);
+              }
+            } else {
+              this.result = 'ERROR: ' + response.data;
+              clearInterval(this.polling);
+            }
+          }).catch((error) => {
+            clearInterval(this.polling);
+      });
+    },
+    computeSankeyData(base) {
       let aggregateNames = [...new Set(Object.keys(base.partials).map(k => base.partials[k].aggregate))];
       let aggregates = {};
       aggregateNames.forEach(a =>
@@ -190,50 +237,23 @@ export default {
               return { source: base.partials[par].aggregate, target: par, value: base.partials[par].value, color: 'gray' } })
         ],
       }
-    }
-  },
-
-  mounted() {
-    //this.updateSankey();
-  },
-
-  methods: {
-    selectCell(row, col) {
-      this.currentOptIndex = row;
-      this.currentVariantIndex = col;
-      //this.updateSankey();
     },
-    checkResult() {
-      this.$http.get('problems/result/' + this.timestamp).
-          then((response) => {
-            if (response.status < 400) {
-              if (response.data.status  !== undefined && response.data.status === 'pending') {
-                // ToDo: update timer
-              } else {
-                this.result = [...response.data.result];
-                this.updateSankey();
-                clearInterval(this.polling);
-              }
-            } else {
-              this.result = 'ERROR: ' + response.data;
-              clearInterval(this.polling);
-            }
-          }).catch((error) => {
-            clearInterval(this.polling);
-      });
-    },
-    updateSankey() {
+    drawSankey(data, update, id, parentId) {
       try {
-        const width = 600;
-        const height = 400;
-        const nodeWidth = 60;
+        const nodeWidth = 100;
         const nodeHeight = 80;
         const nodePadding = 60;
 
+        if (update) {
+          console.log('UPDATE SVG');
+          //document.getElementById(id).remove();
+          d3.select('#' + id).remove();
+        }
+
         const svg = d3
-            //.select(this.$refs.sankey_opt)
-            .select("#sankey_opt").append("svg")
-            .attr('viewBox', [0, -50, width, height + 100]);
+          .select(parentId).append('svg')
+          .attr('id', id)
+          .attr('viewBox', [0, -50, this.sankeyWidth, this.sankeyHeight + 100]);
 
         const {nodes, links} = sankey()
             .nodeId((d) => d.name)
@@ -241,8 +261,8 @@ export default {
             .nodePadding(nodePadding)
             .extent([
               [1, 1],
-              [width, height - nodeHeight],
-            ])(this.optSankey);
+              [this.sankeyWidth, this.sankeyHeight - nodeHeight],
+            ])(data);
 
         svg
             .append('g')
@@ -266,7 +286,6 @@ export default {
             .selectAll('g')
             .data(links)
             .join('g');
-        //.style("mix-blend-mode", "multiply");
 
         link
             .append('path')

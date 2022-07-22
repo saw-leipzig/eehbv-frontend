@@ -57,7 +57,7 @@
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
-                        v-model="value.costs_opt.montage_price"
+                        v-model="value.costs_opt.assembly_costs"
                         :label="$t('optimization.labels.assembly_costs')"
                         step="100"
                         type="number"
