@@ -13,7 +13,7 @@
         <v-card>
           <v-card-title>{{ $t('optimization.titles.request') }}</v-card-title>
           <v-card-text>
-            {{ JSON.stringify(request) }}
+            {{ JSON.stringify(requestData) }}
           </v-card-text>
         </v-card>
       </v-col>
@@ -54,6 +54,8 @@
             </div>
             <div id="div_opt"></div>
 
+            <div id="div_amortization"></div>
+
             <!-- cost optimization only -->
             <div v-if="result.length > 0 && result[0].cost_opts.length > 0">
 
@@ -92,7 +94,6 @@
 <script>
 import * as d3 from 'd3';
 import { sankey, sankeyLinkHorizontal } from 'd3-sankey';
-//import { sankey as d3Sankey, sankeyLinkHorizontal as d3SsankeyLinkHorizontal } from 'd3-sankey';
 
 export default {
   name: "OptimizationResult",
@@ -106,9 +107,9 @@ export default {
       currentVariantIndex: 0,
       currentCostsOptIndex: 0,
       currentCostsVariantIndex: 0,
-      svgOpt: null,
-      sankeyWidth: 600,
-      sankeyHeight: 400
+      requestData: null,
+      graphWidth: 600,
+      graphHeight: 400
     }
   },
 
@@ -161,8 +162,8 @@ export default {
         this.result.forEach((v, p) => {
           let o = v.cost_opts[r];
           row['col' + p] = o.total + ' kWh - ' + o.acquisition_costs + '/' + o.energy_costs + ' Euro (' + this.$t('optimization.labels.costs') + ')';
-          row['info' + (p + 1)] = Object.keys(o.partials).map(k => '<b>' + k + '</b>: ' + o.partials[k].value + ' kWh').join('<br/>') +
-              '<br/>' +
+          row['info' + (p + 1)] = Object.keys(o.partials).map(k => '<b>' + k + '</b>: ' + o.partials[k].value + ' kWh')
+              .join('<br/>') + '<br/>' +
               Object.keys(o.indices).map(k => '<b>' + k + '</b>: ' + o.indices[k].name + ' (' + o.indices[k].manufacturer + ')').join('<br/>');
         });
         row['info'] = 'More Info';
@@ -178,10 +179,27 @@ export default {
     costsOptSankey() {
       let base = this.result[this.currentCostsVariantIndex].cost_opts[this.currentCostsOptIndex];
       return this.computeSankeyData(base);
+    },
+    amortizationData() {
+      return [
+          ...this.result[this.currentVariantIndex].opts
+              .map(o => { return [{ x: 0, y: o.acquisition_costs},
+                { x: 10, y: o.acquisition_costs + o.total * this.requestData.result_settings.costs_opt.price_kwh}] }),
+                //{ x: 10, y: o.acquisition_costs + 2000}] }),
+          ...this.result[this.currentVariantIndex].cost_opts
+              .map(o => { return [{ x: 0, y: o.acquisition_costs},
+                { x: 10, y: o.acquisition_costs + o.total * this.requestData.result_settings.costs_opt.price_kwh}] }),
+                //{ x: 10, y: o.acquisition_costs + 3000}] })
+      ];
     }
   },
 
   mounted() {
+    if (this.request === undefined || this.request === null) {
+      this.checkRequest();
+    } else {
+      this.requestData = this.request;
+    }
   },
 
   methods: {
@@ -196,6 +214,18 @@ export default {
         this.drawSankey(this.optSankey, true, 'svg_opt', '#div_opt');
       }
     },
+    checkRequest() {
+      this.$http.get('problems/request/' + this.timestamp).
+          then((response) => {
+            if (response.status === 200) {
+              this.requestData = response.data;
+            } else {
+              // ToDo: show error
+            }
+          }).catch((error) => {
+            //
+      });
+    },
     checkResult() {
       this.$http.get('problems/result/' + this.timestamp).
           then((response) => {
@@ -207,6 +237,7 @@ export default {
                 this.drawSankey(this.optSankey, false, 'svg_opt', '#div_opt');
                 if (this.result[0].cost_opts.length > 0) {
                   this.drawSankey(this.costsOptSankey, true, 'svg_cost_opt', '#div_costs_opt');
+                  this.drawAmortization(this.amortizationData);
                 }
                 clearInterval(this.polling);
               }
@@ -238,22 +269,63 @@ export default {
         ],
       }
     },
+    drawAmortization(data) {
+      const id = 'svg_amort';
+      const leftMargin = 70;
+      const topMargin = 30;
+      const svg = d3.select('#div_amortization').append('svg').attr('id', id)
+          .attr('viewBox', [0, -50, this.graphWidth, this.graphHeight + 100]);
+
+      const maxVal = Math.max(...data.map(d => d[1].y));
+
+      const xScale = d3.scaleLinear().domain([0, 10]).range([leftMargin, this.graphWidth - leftMargin + 20]);
+      const xAxis = d3.axisBottom().scale(xScale).tickSize(10).ticks(11);
+      d3.select('#' + id).append("g").attr("class", "axis")
+          .attr("transform", "translate(0," + (this.graphHeight - topMargin) + ")").call(xAxis)
+          .append("text").attr("x", (this.graphWidth - 2 * leftMargin + 20)/2).attr("y", "50")
+          .text("Jahre");
+      const yScale = d3.scaleLinear().domain([maxVal, 0]).range([0, this.graphHeight - topMargin]);
+      //const yAxis = d3.axisLeft().scale(yScale).ticks(Math.floor(maxVal/1000) + 1).tickSize(10);
+      const yAxis = d3.axisLeft().scale(yScale).ticks(10).tickSize(10);
+      d3.select('#' + id).append("g").attr("class", "axis")
+          .attr("transform", "translate(" + leftMargin + ",0)").call(yAxis)
+          .append("text").attr("transform", "rotate(-90)").attr("x", "-1").attr("y", "-0").attr("text-anchor", "center")
+          .text("Euro");
+
+      let lineFunc = d3.line().x(d => xScale(d.x)).y(d => yScale(d.y));
+
+      let n = data.length / 2;
+
+      data.forEach((d, i) => {
+        if (i < 3 || (i >= n && i < n + 3)) {
+          d3.select('#' + id).append('path')
+              .attr('d', lineFunc(d)).attr('stroke', (i < n ? d3.rgb(255, 0, i * 90) : d3.rgb(0, (i-n)*100, 255)))
+              .attr('fill', 'none').attr("stroke-width", 2);
+          d3.select('#' + id).append("g").attr("class", "legend").attr("id", 'amort_legend' + i);
+          d3.select('#amort_legend' + i).append("circle")
+            .attr("cx", xScale(7))
+            .attr('cy', (i < n ? i : i - n + 4) * 20 + yScale(maxVal / 2))
+            .attr("r", 6)
+            .style("fill", (i < n ? d3.rgb(255, 0, i * 90) : d3.rgb(0, (i-n)*100, 255)));
+          d3.select('#amort_legend' + i).append("text")
+            .attr("x", xScale(7.5))
+            .attr("y", (i < n ? i : i - n + 4) * 20 + yScale(maxVal / 2) + 5)
+            .text((i < n ? 'Energie, Top ' + (i + 1)  : 'Kosten, Top ' + (i - n + 1)));
+        }
+      });
+    },
     drawSankey(data, update, id, parentId) {
       try {
-        const nodeWidth = 100;
+        const nodeWidth = 120;
         const nodeHeight = 80;
         const nodePadding = 60;
 
         if (update) {
-          console.log('UPDATE SVG');
-          //document.getElementById(id).remove();
           d3.select('#' + id).remove();
         }
 
-        const svg = d3
-          .select(parentId).append('svg')
-          .attr('id', id)
-          .attr('viewBox', [0, -50, this.sankeyWidth, this.sankeyHeight + 100]);
+        const svg = d3.select(parentId).append('svg').attr('id', id)
+          .attr('viewBox', [0, -50, this.graphWidth, this.graphHeight + 100]);
 
         const {nodes, links} = sankey()
             .nodeId((d) => d.name)
@@ -261,7 +333,7 @@ export default {
             .nodePadding(nodePadding)
             .extent([
               [1, 1],
-              [this.sankeyWidth, this.sankeyHeight - nodeHeight],
+              [this.graphWidth, this.graphHeight - nodeHeight],
             ])(data);
 
         svg
