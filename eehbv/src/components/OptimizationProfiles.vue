@@ -18,7 +18,7 @@
                     </v-col>
                   </v-row>
                   <v-row>
-                    <v-col v-for="param in process.parameters" :key="param.name" cols="12" sm="6" md="4">
+                    <v-col v-for="param in process.parameters" v-if="!param.general" :key="param.name" cols="12" sm="6" md="4">
                       {{ param.name + ' = ' + item[param.variable_name] + ' ' + param.unit }}
                     </v-col>
                   </v-row>
@@ -60,7 +60,13 @@
           <v-col v-for="param in process.parameters" v-if="!param.general" :key="param.name" cols="12" sm="6" md="4">
             <v-combobox v-if="param.material_properties_id != null"
                 v-model="editedItem[param.variable_name]"
-                :items="parameterOptions(param.material_properties_id)"
+                :items="parameterPropOptions(param.material_properties_id)"
+                :label="param.name + ' [' + param.unit + ']'"
+                type="text"
+            ></v-combobox>
+            <v-combobox v-else-if="param.defaults.includes(',')"
+                v-model="editedItem[param.variable_name]"
+                :items="parameterOptions(param.defaults)"
                 :label="param.name + ' [' + param.unit + ']'"
                 type="text"
             ></v-combobox>
@@ -100,9 +106,12 @@
 import {mapGetters} from 'vuex'
 import DialogDelete from "./DialogDelete";
 import DialogCardEditor from "./DialogCardEditor";
+import paramValues from "../mixins/paramValues";
 export default {
   name: "OptimizationProfiles",
   components: {DialogCardEditor, DialogDelete},
+  mixins: [ paramValues ],
+
   data: () => ({
     variantDialog: false,
     editDialog: false,
@@ -134,7 +143,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['valuesOfProp', 'prop_values']),
+    ...mapGetters([/*'valuesOfProp',*/ 'prop_values']),
     formTitle () {
       return this.editedIndex === -1 ? 'Neuer Eintrag' : 'Eintrag bearbeiten'
       // ToDo: Mixin with ComponentOverview
@@ -149,12 +158,18 @@ export default {
   },
 
   methods: {
-    parameterOptions(id) {
+/*    parameterPropOptions(id) {
       return this.valuesOfProp(id).map(v => { return { text: v.material + ' - ' + v.value, value: v.value } });
     },
+    parameterOptions(defaults) {
+      return defaults.split(',').map(d => parseFloat(d));
+    },*/
     initialize() {
       let defItem = {};
-      this.process.parameters.forEach(p => { if (!p.general) { defItem[p.variable_name] = 0; } });
+      this.process.parameters
+          .forEach(p => { if (!p.general) {
+            defItem[p.variable_name] = p.defaults === '' ? 0 : p.defaults.split(',')[0];
+          } });
       defItem['portion'] = 0;
       this.defaultItem = Object.assign({}, defItem);
       this.editedItem = Object.assign({}, this.defaultItem);

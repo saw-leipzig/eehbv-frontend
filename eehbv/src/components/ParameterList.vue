@@ -20,6 +20,7 @@
             <v-col cols="3">{{ $t('process_definition.labels.general') }} : {{ boolText(param.general) }}</v-col>
             <v-col cols="3">{{ $t('process_definition.labels.dependent') }} : {{ boolText(param.dependent) }}</v-col>
             <v-col cols="3">{{ $t('process_definition.labels.restricting') }} : {{ boolText(param.restricting) }}</v-col>
+            <v-col cols="3">{{ $t('process_definition.labels.defaults') }} : {{ param.defaults }}</v-col>
           </v-row>
           <v-row v-if="showDep && param.restricting">
             <v-col cols="6">

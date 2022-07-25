@@ -7,8 +7,10 @@
     "validation": {
       "required": "Required",
       "max20": "Max. 20 characters",
+      "max30": "Max. 30 characters",
       "max40": "Max. 40 characters",
       "snake": "Lowercase characters and underscore only",
+      "numbers": "Only numbers divided by commas",
       "present": "Entry already exists"
     },
     "dialog": {
@@ -164,7 +166,8 @@
       "column_lower": "Column lower bound",
       "column_upper": "Column upper bound",
       "derived_param": "Derived parameter",
-      "dependency": "Dependency"
+      "dependency": "Dependency",
+      "defaults": "Default(s)"
     },
     "selects": {
       "list": "List",

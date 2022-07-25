@@ -41,6 +41,14 @@
         </v-col>
       </v-row>
       <v-row>
+        <v-col cols="6">
+          <v-text-field :label="$t('process_definition.labels.defaults')" v-model="editedParam.defaults"
+                        :disabled="editedParam.material_properties_id !== null"
+                        counter="30" :error-messages="defaultsErrors" @input="$v.editedParam.defaults.$touch"
+                        @blur="$v.editedParam.defaults.$touch"></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
         <!-- ToDo: Tooltips -->
         <v-col cols="4">
           <v-switch v-model="editedParam.general" :label="$t('process_definition.labels.general')"></v-switch>
@@ -73,6 +81,7 @@ import ParameterList from "./ParameterList";
 import {mapGetters} from "vuex";
 import { required, maxLength, helpers } from 'vuelidate/lib/validators'
 const snake = helpers.regex('snake', /^[a-z_]*$/);
+const numbers = helpers.regex('numbers', /^(?!,$)[\d,.]+$/);
 
 export default {
   name: "ProcessDefinition",
@@ -86,6 +95,7 @@ export default {
         varConvention(variable_name) { return variable_name.startsWith('p_'); }
       },
       material_properties_id: {},
+      defaults: { maxLength: maxLength(30), numbers },
       restricting: {},
       dependent: {},
       derived_parameter: { maxLength: maxLength(40), snake,
@@ -145,6 +155,13 @@ export default {
       !this.$v.editedParam.variable_name.maxLength && errors.push(this.$t('general.validation.max20'));
       !this.$v.editedParam.variable_name.snake && errors.push(this.$t('general.validation.snake'));
       !this.$v.editedParam.variable_name.varConvention && errors.push(this.$t('process_definition.validation.startsWithPLowDash'));
+      return errors;
+    },
+    defaultsErrors() {
+      let errors = [];
+      if (!this.$v.editedParam.defaults.$dirty) return errors;
+      !this.$v.editedParam.defaults.maxLength && errors.push(this.$t('general.validation.max30'));
+      !this.$v.editedParam.defaults.numbers && errors.push(this.$t('general.validation.numbers'));
       return errors;
     },
     derivedErrors() {

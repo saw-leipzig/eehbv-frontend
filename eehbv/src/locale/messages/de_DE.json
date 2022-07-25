@@ -7,8 +7,10 @@
     "validation": {
       "required": "Erforderlich",
       "max20": "Darf max. 20 Zeichen lang sein",
+      "max30": "Darf max. 20 Zeichen lang sein",
       "max40": "Darf max. 40 Zeichen lang sein",
       "snake": "Nur Kleinbuchstaben und Unterstrich",
+      "numbers": "Nur durch Kommata getrennte Zahlen",
       "present": "Eintrag schon vorhanden"
     },
     "dialog": {
@@ -164,7 +166,8 @@
       "column_lower": "Spalte Untergrenze",
       "column_upper": "Spalte Obergrenze",
       "derived_param": "Abgeleiteter Parameter",
-      "dependency": "Abhängigkeit"
+      "dependency": "Abhängigkeit",
+      "defaults": "Standardwert(e)"
     },
     "selects": {
       "list": "Liste",

@@ -12,7 +12,13 @@
                   <v-col v-for="param in process.parameters" v-if="param.general" :key="param.name" cols="12" sm="6" md="4">
                     <v-combobox v-if="param.material_properties_id != null"
                         v-model="value[param.variable_name]"
-                        :items="parameterOptions(param.material_properties_id)"
+                        :items="parameterPropOptions(param.material_properties_id)"
+                        :label="param.name + ' [' + param.unit + ']'"
+                        type="text"
+                    ></v-combobox>
+                    <v-combobox v-else-if="param.defaults.includes(',')"
+                        v-model="value[param.variable_name]"
+                        :items="parameterOptions(param.defaults)"
                         :label="param.name + ' [' + param.unit + ']'"
                         type="text"
                     ></v-combobox>
@@ -42,8 +48,12 @@
 </template>
 
 <script>
+import paramValues from "../mixins/paramValues";
+
 export default {
   name: "OptimizationParameters",
+  mixins: [ paramValues ],
+
   data: () => ({
   }),
 
@@ -64,9 +74,9 @@ export default {
 
   methods: {
     // ToDo: mixin with method from OptimizationProfiles
-    parameterOptions(id) {
+/*    parameterPropOptions(id) {
       return this.valuesOfProp(id).map(v => { return { text: v.material + ' - ' + v.value, value: v.value } });
-    }
+    }*/
   }
 }
 </script>

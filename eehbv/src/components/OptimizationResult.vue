@@ -280,17 +280,17 @@ export default {
 
       const xScale = d3.scaleLinear().domain([0, 10]).range([leftMargin, this.graphWidth - leftMargin + 20]);
       const xAxis = d3.axisBottom().scale(xScale).tickSize(10).ticks(11);
-      d3.select('#' + id).append("g").attr("class", "axis")
-          .attr("transform", "translate(0," + (this.graphHeight - topMargin) + ")").call(xAxis)
-          .append("text").attr("x", (this.graphWidth - 2 * leftMargin + 20)/2).attr("y", "50")
-          .text("Jahre");
       const yScale = d3.scaleLinear().domain([maxVal, 0]).range([0, this.graphHeight - topMargin]);
-      //const yAxis = d3.axisLeft().scale(yScale).ticks(Math.floor(maxVal/1000) + 1).tickSize(10);
       const yAxis = d3.axisLeft().scale(yScale).ticks(10).tickSize(10);
       d3.select('#' + id).append("g").attr("class", "axis")
+          .attr("transform", "translate(0," + (this.graphHeight - topMargin) + ")").call(xAxis)
+      d3.select('#' + id).append("text").attr("class", "x label").attr("x", xScale(5)).attr("y", yScale(-maxVal / 10 ))
+          .attr("text-anchor", "middle") .text("Jahre");
+      d3.select('#' + id).append("g").attr("class", "axis")
           .attr("transform", "translate(" + leftMargin + ",0)").call(yAxis)
-          .append("text").attr("transform", "rotate(-90)").attr("x", "-1").attr("y", "-0").attr("text-anchor", "center")
-          .text("Euro");
+      d3.select('#' + id).append("text").attr("transform", "translate(-174,150)rotate(-90)")
+          .attr("x", xScale(-2)).attr("y", yScale(maxVal / 2 ))
+          .attr("text-anchor", "middle").text("Euro");
 
       let lineFunc = d3.line().x(d => xScale(d.x)).y(d => yScale(d.y));
 
@@ -298,18 +298,20 @@ export default {
 
       data.forEach((d, i) => {
         if (i < 3 || (i >= n && i < n + 3)) {
+          let col = i < n ? d3.rgb(255, 0, i * 90) : d3.rgb(0, (i-n)*100, 255);
+          let yLegend = (i < n ? i : i - n + 4) * 20 + yScale(maxVal / 2);
           d3.select('#' + id).append('path')
-              .attr('d', lineFunc(d)).attr('stroke', (i < n ? d3.rgb(255, 0, i * 90) : d3.rgb(0, (i-n)*100, 255)))
+              .attr('d', lineFunc(d)).attr('stroke', col)
               .attr('fill', 'none').attr("stroke-width", 2);
           d3.select('#' + id).append("g").attr("class", "legend").attr("id", 'amort_legend' + i);
           d3.select('#amort_legend' + i).append("circle")
             .attr("cx", xScale(7))
-            .attr('cy', (i < n ? i : i - n + 4) * 20 + yScale(maxVal / 2))
+            .attr('cy', yLegend)
             .attr("r", 6)
-            .style("fill", (i < n ? d3.rgb(255, 0, i * 90) : d3.rgb(0, (i-n)*100, 255)));
+            .style("fill", col);
           d3.select('#amort_legend' + i).append("text")
             .attr("x", xScale(7.5))
-            .attr("y", (i < n ? i : i - n + 4) * 20 + yScale(maxVal / 2) + 5)
+            .attr("y", yLegend + 5)
             .text((i < n ? 'Energie, Top ' + (i + 1)  : 'Kosten, Top ' + (i - n + 1)));
         }
       });

@@ -134,7 +134,9 @@ export default {
   methods: {
     initialize() {
       let defItem = {};
-      this.process.parameters.forEach(p => { if (p.general) { defItem[p.variable_name] = 0; } });
+      this.process.parameters.forEach(p => { if (p.general) {
+        defItem[p.variable_name] = p.defaults === '' ? 0 : p.defaults.split(',')[0];
+      } });
       this.general_parameters = Object.assign({}, defItem);
       if (Object.keys(this.general_parameters).length === 0) {
         this.def_step = 2;
