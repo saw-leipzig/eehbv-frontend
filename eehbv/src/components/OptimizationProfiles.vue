@@ -143,7 +143,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters([/*'valuesOfProp',*/ 'prop_values']),
+    ...mapGetters(['prop_values']),
     formTitle () {
       return this.editedIndex === -1 ? 'Neuer Eintrag' : 'Eintrag bearbeiten'
       // ToDo: Mixin with ComponentOverview
@@ -158,12 +158,6 @@ export default {
   },
 
   methods: {
-/*    parameterPropOptions(id) {
-      return this.valuesOfProp(id).map(v => { return { text: v.material + ' - ' + v.value, value: v.value } });
-    },
-    parameterOptions(defaults) {
-      return defaults.split(',').map(d => parseFloat(d));
-    },*/
     initialize() {
       let defItem = {};
       this.process.parameters

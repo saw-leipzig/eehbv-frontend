@@ -195,9 +195,7 @@ export default {
   },
 
   mounted() {
-    if (this.request === undefined || this.request === null) {
-      this.checkRequest();
-    } else {
+    if (this.request !== undefined && this.request !== null) {
       this.requestData = this.request;
     }
   },
@@ -214,26 +212,18 @@ export default {
         this.drawSankey(this.optSankey, true, 'svg_opt', '#div_opt');
       }
     },
-    checkRequest() {
-      this.$http.get('problems/request/' + this.timestamp).
-          then((response) => {
-            if (response.status === 200) {
-              this.requestData = response.data;
-            } else {
-              // ToDo: show error
-            }
-          }).catch((error) => {
-            //
-      });
-    },
     checkResult() {
       this.$http.get('problems/result/' + this.timestamp).
           then((response) => {
             if (response.status < 400) {
-              if (response.data.status  !== undefined && response.data.status === 'pending') {
+              if (response.data.status  !== undefined &&
+                  (response.data.status === 'processing' || response.data.status === 'pending')) {
                 // ToDo: update timer
               } else {
                 this.result = [...response.data.result];
+                if (this.request === undefined || this.request === null) {
+                  this.requestData = response.data.request;
+                }
                 this.drawSankey(this.optSankey, false, 'svg_opt', '#div_opt');
                 if (this.result[0].cost_opts.length > 0) {
                   this.drawSankey(this.costsOptSankey, true, 'svg_cost_opt', '#div_costs_opt');

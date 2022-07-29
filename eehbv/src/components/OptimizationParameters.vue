@@ -73,10 +73,6 @@ export default {
   },
 
   methods: {
-    // ToDo: mixin with method from OptimizationProfiles
-/*    parameterPropOptions(id) {
-      return this.valuesOfProp(id).map(v => { return { text: v.material + ' - ' + v.value, value: v.value } });
-    }*/
   }
 }
 </script>
