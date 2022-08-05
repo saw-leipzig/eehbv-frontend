@@ -11,9 +11,14 @@
     <v-row>
       <v-col cols="12">
         <v-card>
-          <v-card-title>{{ $t('optimization.titles.request') }}</v-card-title>
+          <v-card-title>{{ $t('optimization.titles.request') }} - {{ requestData.description }}</v-card-title>
           <v-card-text>
+
+            <ResultSettings v-model="requestData.result_settings" :disabled="true"></ResultSettings>
+
             {{ JSON.stringify(requestData) }}
+
+
           </v-card-text>
         </v-card>
       </v-col>
@@ -94,9 +99,11 @@
 <script>
 import * as d3 from 'd3';
 import { sankey, sankeyLinkHorizontal } from 'd3-sankey';
+import ResultSettings from "./ResultSettings";
 
 export default {
   name: "OptimizationResult",
+  components: {ResultSettings},
   data () {
     return {
       result: [],
@@ -107,7 +114,16 @@ export default {
       currentVariantIndex: 0,
       currentCostsOptIndex: 0,
       currentCostsVariantIndex: 0,
-      requestData: null,
+      requestData: {
+        description: '',
+        general_parameters: {},
+        process: { api_name: '', id: '', view_name: '' },
+        result_settings: {
+          n_list: 0,
+          costs_opt: { exec: false, amortisation_time: 0, assembly_costs: 0, price_kwh: 0 }
+        },
+        variants_conditions: []
+      },
       graphWidth: 600,
       graphHeight: 400
     }

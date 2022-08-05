@@ -152,14 +152,14 @@ export default {
       this.process = Object.assign({},{
         api_name: 'edge_banding', variant_tree: false, view_name: 'Kantenanleimmaschine',
         process_parameters:[
-            { name: 'Fräsbreite', variable_name: 'p_milling_width', unit: 'mm', material_properties_id: null, restricting: false,
-             dependent: false, derived_parameter: null, min_column: null, max_column: null, dependency: null }
+            { name: 'Fräsbreite', variable_name: 'p_milling_width', unit: 'mm', material_properties_id: null,
+             dependent: false, derived_parameter: null, dependency: null }
         ]
       });
       this.variants.push(...[
           { name: 'Variante 1', target_func: 'x', target_func_python: 'x',
             variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'},
-            {position: 1, description: 'Fräsgetriebe', variable_name: 'v_milling_gear', component_api_name: 'gears'}] },
+            {position: 1, description: 'Grindermotor', variable_name: 'v_grinding_motor', component_api_name: 'motors'}] },
           { name: 'Variante 2', target_func: 'x', target_func_python: 'x',
             variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'},
             {position: 1, description: 'Antriebsmotor', variable_name: 'v_forward_motor', component_api_name: 'motors'}] },

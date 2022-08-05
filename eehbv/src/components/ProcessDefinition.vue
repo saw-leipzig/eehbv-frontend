@@ -50,14 +50,11 @@
       </v-row>
       <v-row>
         <!-- ToDo: Tooltips -->
-        <v-col cols="4">
+        <v-col cols="6">
           <v-switch v-model="editedParam.general" :label="$t('process_definition.labels.general')"></v-switch>
         </v-col>
-        <v-col cols="4">
+        <v-col cols="6">
           <v-switch v-model="editedParam.dependent" :label="$t('process_definition.labels.dependent')"></v-switch>
-        </v-col>
-        <v-col cols="4">
-          <v-switch v-model="editedParam.restricting" :label="$t('process_definition.labels.restricting')"></v-switch>
         </v-col>
       </v-row>
       <v-row v-if="editedParam.dependent">
@@ -96,7 +93,6 @@ export default {
       },
       material_properties_id: {},
       defaults: { maxLength: maxLength(30), numbers },
-      restricting: {},
       dependent: {},
       derived_parameter: { maxLength: maxLength(40), snake,
         derConvention(derived_parameter) { return !this.editedParam.dependent ||
@@ -120,8 +116,8 @@ export default {
       ],
       editedParamIndex: -1,
       editedParam: {
-        name: '', variable_name: '', unit: '', material_properties_id: null, restricting: false,
-        dependent: false, derived_parameter: null, min_column: null, max_column: null, dependency: null
+        name: '', variable_name: '', unit: '', material_properties_id: null,
+        dependent: false, derived_parameter: null, dependency: null
       }
     }
   },
