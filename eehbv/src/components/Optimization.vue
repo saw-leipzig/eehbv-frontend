@@ -187,12 +187,12 @@ export default {
             if (response.status < 400) {
               this.$router.push({
                 name: 'OptimizationResult',
-                params: {type: this.process.api_name, timestamp: response.data, request: requestData}
+                params: {type: this.process.api_name, process: this.process, timestamp: response.data, request: requestData }
               });
             } else {
               this.$router.push({
                 name: 'OptimizationResult',
-                params: {type: this.process.api_name, timestamp: response.data, result: response.statusText, request: requestData}
+                params: {type: this.process.api_name, process: this.process, timestamp: response.data, result: response.statusText, request: requestData }
               });
             }
           }

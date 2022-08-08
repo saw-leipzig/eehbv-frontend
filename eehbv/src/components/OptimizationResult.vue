@@ -16,6 +16,8 @@
 
             <ResultSettings v-model="requestData.result_settings" :disabled="true"></ResultSettings>
 
+            <ResultRequestParameters v-model="requestData.general_parameters" :process="process"></ResultRequestParameters>
+
             {{ JSON.stringify(requestData) }}
 
 
@@ -100,10 +102,12 @@
 import * as d3 from 'd3';
 import { sankey, sankeyLinkHorizontal } from 'd3-sankey';
 import ResultSettings from "./ResultSettings";
+import { mapGetters } from 'vuex';
+import ResultRequestParameters from "./ResultRequestParameters";
 
 export default {
   name: "OptimizationResult",
-  components: {ResultSettings},
+  components: {ResultRequestParameters, ResultSettings},
   data () {
     return {
       result: [],
@@ -124,6 +128,7 @@ export default {
         },
         variants_conditions: []
       },
+      processData: null,
       graphWidth: 600,
       graphHeight: 400
     }
@@ -133,6 +138,10 @@ export default {
     type: {
       type: String,
       required: true
+    },
+    process: {
+      type: Object,
+      required: false
     },
     request: {
       type: Object,
@@ -145,6 +154,7 @@ export default {
   },
 
   computed: {
+    ...mapGetters(['processes']),
     optHeaders() {
       return [ { text: '', value: 'key', sortable: false }, ...this.result.map((v, p) => { return { text: v.variant, value: 'col' + p, sortable: false } })]
     },
@@ -396,6 +406,11 @@ export default {
   },
 
   created() {
+    if (!this.process) {
+      this.$router.push({ name: 'History' });
+    } else {
+      this.processData = this.process;
+    }
     // ToDo: replace polling with server-sent Events or WebSocket
     this.polling = setInterval(this.checkResult, 1000);
   }
