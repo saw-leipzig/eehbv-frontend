@@ -11,6 +11,6 @@ export default {
     },
     parameterOptions(defaults) {
       return defaults.split(',').map(d => parseFloat(d));
-    },
+    }
   }
 }

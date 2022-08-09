@@ -16,7 +16,16 @@
 
             <ResultSettings v-model="requestData.result_settings" :disabled="true"></ResultSettings>
 
-            <ResultRequestParameters v-model="requestData.general_parameters" :process="process"></ResultRequestParameters>
+            <ResultRequestParameters :parameters="requestData.general_parameters" :process="process"></ResultRequestParameters>
+
+            <v-card>
+              <v-card-title>{{ $t('process_definition.titles.profiles') }}</v-card-title>
+              <v-card-text>
+                <ResultProfiles :profiles="requestData.process_profiles" :process="process"></ResultProfiles>
+              </v-card-text>
+            </v-card>
+
+            <ResultRestrictions :variants_conditions="requestData.variants_conditions"></ResultRestrictions>
 
             {{ JSON.stringify(requestData) }}
 
@@ -104,10 +113,12 @@ import { sankey, sankeyLinkHorizontal } from 'd3-sankey';
 import ResultSettings from "./ResultSettings";
 import { mapGetters } from 'vuex';
 import ResultRequestParameters from "./ResultRequestParameters";
+import ResultProfiles from "./ResultProfiles";
+import ResultRestrictions from "./ResultRestrictions";
 
 export default {
   name: "OptimizationResult",
-  components: {ResultRequestParameters, ResultSettings},
+  components: {ResultRestrictions, ResultProfiles, ResultRequestParameters, ResultSettings},
   data () {
     return {
       result: [],
@@ -126,6 +137,7 @@ export default {
           n_list: 0,
           costs_opt: { exec: false, amortisation_time: 0, assembly_costs: 0, price_kwh: 0 }
         },
+        process_profiles: [],
         variants_conditions: []
       },
       processData: null,

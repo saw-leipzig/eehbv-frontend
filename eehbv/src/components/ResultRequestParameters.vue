@@ -5,7 +5,7 @@
       <v-container>
 
         <v-row>
-          <v-col v-for="(param, propertyName) in value" :key="propertyName" cols="12" sm="6" md="4">
+          <v-col v-for="(param, propertyName) in parameters" :key="propertyName" cols="12" sm="6" md="4">
             <v-text-field
                 :value="param"
                 :label="parameterByVarName(propertyName).name + ' [' + parameterByVarName(propertyName).unit + ']'"
@@ -21,23 +21,16 @@
 </template>
 
 <script>
+import paramVariables from "../mixins/paramVariables";
+
 export default {
   name: "ResultRequestParameters",
+  mixins: [ paramVariables ],
 
   props: {
-    value: {
+    parameters: {
       type: Object,
       required: true
-    },
-    process: {
-      type: Object,
-      required: true
-    }
-  },
-
-  methods: {
-    parameterByVarName(varName) {
-      return this.process.parameters.find(p => p.variable_name === varName);
     }
   }
 }
