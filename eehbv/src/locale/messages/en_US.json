@@ -21,7 +21,8 @@
       "back": "Back",
       "close": "Close",
       "abort": "Abort",
-      "confirm_delete": "Do you really want to delete this entry?"
+      "confirm_delete": "Do you really want to delete this entry?",
+      "show": "Show"
     },
     "editing": {
       "do": "Edit",
@@ -209,6 +210,12 @@
       "code": "Solver code"
     }
   },
+  "process_overview": {
+    "labels": {
+      "define_opt": "Define Optimization",
+      "process_list": "Process list"
+    }
+  },
   "optimization": {
     "titles": {
       "definition": "Optimization definition",
@@ -232,7 +239,8 @@
       "price_kwh": "Price kWh [Euros]",
       "amortization_time": "Amortization time [years]",
       "assembly_costs": "Assembly costs [Euros]",
-      "costs": "Acquisition/Energy Costs"
+      "costs": "Acquisition/Energy Costs",
+      "costs_short": "Costs"
     },
     "info": {
       "parameters": "<p>A set of <strong>Process parameters</strong> defines a profile of process usage.</p><p>Apply at least one set of process parameters with a fraction greater than zero.</p><p>Should the process be used with different profiles, each fraction gives the relative frequency of the prospective usage of the profile.</p><p>For a rough estimate of the absolute energy consumption it is necessary to provide here an estimate of hours per year the machine will run with this profile.</p><p>This is especially necessary if an amortisation calculation shall be conducted.</p><p>Process parameters which are irrelevant for some selected variants can have arbitrary values.</p>"

@@ -4,7 +4,7 @@
       <v-col cols="6"><h2>{{ $t('optimization.titles.overview_result') }}</h2></v-col>
 
       <v-col cols="6">
-        <v-btn :to="{ name: 'Process' }">{{ $t('process_overview.labels.process_list') }}</v-btn>
+        <v-btn :to="{ name: 'History' }">{{ $t('history.titles') }}</v-btn>
       </v-col>
     </v-row>
 
@@ -119,6 +119,7 @@ import ResultRestrictions from "./ResultRestrictions";
 export default {
   name: "OptimizationResult",
   components: {ResultRestrictions, ResultProfiles, ResultRequestParameters, ResultSettings},
+
   data () {
     return {
       result: [],
