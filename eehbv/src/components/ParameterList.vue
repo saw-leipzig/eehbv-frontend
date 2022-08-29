@@ -37,9 +37,11 @@
 
 <script>
 import {mapGetters} from "vuex";
+import textView from "../mixins/textView";
 
 export default {
   name: "ParameterList",
+  mixins: [ textView ],
 
   props: {
     parameters: {
@@ -75,12 +77,6 @@ export default {
 
   computed: {
     ...mapGetters(['propertyById'])
-  },
-
-  methods: {
-    boolText(val) {
-      return val ? this.$t('general.bool.yes') : this.$t('general.bool.no')
-    }
   }
 }
 </script>

@@ -8,6 +8,7 @@
               :items="processOptions"
               :label="$t('process_definition.titles.problems')"
               type="text"
+              hide-details="auto"
           ></v-combobox>
         </v-col>
         <v-col cols="2">
@@ -36,10 +37,13 @@
 <script>
 import { mapGetters } from 'vuex';
 import DialogDelete from "./DialogDelete";
+import textView from "../mixins/textView";
 
 export default {
   name: "History",
   components: {DialogDelete},
+  mixins: [ textView ],
+
   data() {
     return {
       history: [],
@@ -62,7 +66,7 @@ export default {
         return {
           process: e.process.view_name,
           description: e.description,
-          costs_opt: e.costs_opt,
+          costs_opt: this.boolText(e.costs_opt),
           variants: e.variants.join('<br/>'),
           timestamp: e.timestamp,
           process_id: e.process.id,

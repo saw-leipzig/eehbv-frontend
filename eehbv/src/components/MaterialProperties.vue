@@ -4,7 +4,7 @@
 
       <template v-slot:top>
         <v-toolbar flat>
-          <v-overflow-btn :items="propOptions" v-model="currentPropertyId"></v-overflow-btn>
+          <v-overflow-btn :items="propOptions" v-model="currentPropertyId" hide-details="auto"></v-overflow-btn>
           <v-tooltip bottom v-if="userRole > 1">
             <template v-slot:activator="{ on, attrs }">
               <v-btn color="green" @click="dialogProp = true" v-bind="attrs" v-on="on"><v-icon>mdi-plus</v-icon></v-btn>
