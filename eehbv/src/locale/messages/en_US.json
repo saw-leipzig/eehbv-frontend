@@ -102,6 +102,9 @@
       "column_names": "Database columns",
       "data_type": "Data type"
     },
+    "hints": {
+      "api_convention": "Convention: plural"
+    },
     "msg": {
       "loaded": "Loaded component data",
       "error_upload": "Error while importing component data - Server might be not accessible"

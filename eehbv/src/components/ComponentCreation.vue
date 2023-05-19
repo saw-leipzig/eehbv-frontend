@@ -4,14 +4,15 @@
       <v-card-title class="headline">{{$t('components.titles.new_type')}}</v-card-title>
       <v-card-text>
         <v-row>
-          <v-col cols="3">
-            <v-text-field v-model="component_type.view_name" :label="$t('components.labels.view_name')" counter="40"></v-text-field>
+          <v-col cols="4">
+            <v-text-field v-model="component_type.view_name" :label="$t('components.labels.view_name')" counter="40"
+                        :error-messages="viewErrors"
+                        @input="$v.component_type.view_name.$touch" @blur="$v.component_type.view_name.$touch"></v-text-field>
           </v-col>
-          <v-col cols="3">
-            <v-text-field v-model="component_type.table_name" :label="$t('components.labels.table_name')" counter="40"></v-text-field>
-          </v-col>
-          <v-col cols="3">
-            <v-text-field v-model="component_type.api_name" :label="$t('components.labels.api_name')" counter="20"></v-text-field>
+          <v-col cols="4">
+            <v-text-field v-model="component_type.api_name" :label="$t('components.labels.api_name')" counter="20"
+                        :hint="$t('components.hints.api_convention')" :error-messages="apiErrors"
+                        @input="$v.component_type.api_name.$touch" @blur="$v.component_type.api_name.$touch"></v-text-field>
           </v-col>
           <v-col cols="3">
             <v-switch v-model="component_type.is_aggregate" color="green" :label="$t('components.labels.is_aggregate')"></v-switch>
@@ -64,14 +65,28 @@
 <script>
 import DialogCardEditor from "./DialogCardEditor";
 import DialogDelete from "./DialogDelete";
+import { mapGetters } from 'vuex'
+import { required, maxLength, helpers } from 'vuelidate/lib/validators'
+const snake = helpers.regex('snake', /^[a-z_]*$/);
 
 export default {
   name: "ComponentCreation",
   components: {DialogDelete, DialogCardEditor},
+
+  validations: {
+    component_type: {
+      view_name: { required, maxLength: maxLength(40),
+        viewNameTaken(view_name) { return !this.componentTypes.map(t => t.view_name).includes(view_name); }
+      },
+      api_name: { required, maxLength: maxLength(20), snake,
+        apiNameTaken(api_name) { return !this.componentTypes.map(t => t.api_name).includes(api_name); }
+      }
+    }
+  },
+
   data() {
     return {
       component_type: {
-        table_name: '',
         view_name: '',
         api_name: '',
         is_aggregate: false,
@@ -112,16 +127,39 @@ export default {
   },
 
   computed: {
+    ...mapGetters(['componentTypes']),
     disabledSave() {
       return this.component_type.table_name === '' || this.component_type.view_name === '' ||
           this.component_type.api_name === '' || this.component_type.columns.length < 1;
+    },
+    viewErrors() {
+      let errors = [];
+      if (!this.$v.component_type.view_name.$dirty) return errors;
+      !this.$v.component_type.view_name.required && errors.push(this.$t('general.validation.required'));
+      !this.$v.component_type.view_name.maxLength && errors.push(this.$t('general.validation.max40'));
+      !this.$v.component_type.view_name.viewNameTaken && errors.push(this.$t('general.validation.present'));
+      return errors;
+    },
+    apiErrors() {
+      let errors = [];
+      if (!this.$v.component_type.api_name.$dirty) return errors;
+      !this.$v.component_type.api_name.required && errors.push(this.$t('general.validation.required'));
+      !this.$v.component_type.api_name.maxLength && errors.push(this.$t('general.validation.max20'));
+      !this.$v.component_type.api_name.apiNameTaken && errors.push(this.$t('general.validation.present'));
+      !this.$v.component_type.api_name.snake && errors.push(this.$t('general.validation.snake'));
+      return errors;
     }
   },
 
   methods: {
     save() {
-      // ToDo: check new view_name/api_name against existing, validate conventions (all lower-case, component_* for table names)
-      this.$http.post('components', this.component_type).
+      this.$v.component_type.$touch();
+      if (this.$v.component_type.$invalid) {
+        return;
+      }
+      let new_component_type = this.component_type;
+      new_component_type['table_name'] = 'component_' + this.component_type.api_name;
+      this.$http.post('components', new_component_type).
           then((response) => {
             this.$store.commit('ADD_COMPONENT', response.data);
             this.$router.push({ name: 'Component' });

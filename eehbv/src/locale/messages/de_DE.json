@@ -102,6 +102,9 @@
       "column_names": "Datenbank-Spalten",
       "data_type": "Datentyp"
     },
+    "hints": {
+      "api_convention": "Konvention: engl. Plural"
+    },
     "msg": {
       "loaded": "Komponentendaten geladen",
       "error_upload": "Fehler beim Import von Komponentendaten"
