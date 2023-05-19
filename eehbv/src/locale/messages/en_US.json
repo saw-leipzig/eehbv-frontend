@@ -99,6 +99,7 @@
       "api_name": "API path",
       "is_aggregate": "Aggregate",
       "column_name": "Database column",
+      "column_names": "Database columns",
       "data_type": "Data type"
     },
     "msg": {

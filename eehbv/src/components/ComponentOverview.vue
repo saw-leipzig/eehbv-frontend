@@ -9,7 +9,20 @@
           <v-toolbar-title>{{ comp.view_name }}</v-toolbar-title>
           <v-divider class="mx-4" inset vertical ></v-divider>
           <v-spacer></v-spacer>
-          <v-btn v-if="userRole > 0" color="green" dark class="mb-2" @click="dialogImport = true"><v-icon>mdi-file-upload-outline</v-icon></v-btn>
+
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn v-if="userRole > 0" color="green" dark class="mb-2" @click="dialogModel = true" v-bind="attrs" v-on="on"><v-icon>mdi-view-module-outline</v-icon></v-btn>
+            </template>
+            <span>{{$t('components.labels.column_names')}}</span>
+          </v-tooltip>
+          <v-tooltip bottom>
+           <template v-slot:activator="{ on, attrs }">
+              <v-btn v-if="userRole > 0" color="green" dark class="mb-2" @click="dialogImport = true" v-bind="attrs" v-on="on"><v-icon>mdi-file-upload-outline</v-icon></v-btn>
+            </template>
+            <span>{{$t('components.titles.import')}}</span>
+          </v-tooltip>
+
           <v-btn v-if="userRole > 0" color="green" dark class="mb-2" @click="dialog = true">{{$t('general.editing.new')}}</v-btn>
 
         </v-toolbar>
@@ -47,6 +60,20 @@
       </v-container>
     </DialogCardEditor>
 
+    <DialogCardEditor v-model="dialogModel" :title="$t('components.labels.column_names')" :cancel="false" max-width="600px" @save="closeModel">
+      <v-container>
+        <v-row>
+          <v-col v-for="detail in comp.infos" :key="detail.position" cols="12" sm="6" md="4">
+            <v-text-field
+                v-model="detail.column_name"
+                :label="detail.view_name"
+                :disabled="true"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+      </v-container>
+    </DialogCardEditor>
+
     <DialogDelete v-model="dialogDelete" @abort="closeDelete" @delete="deleteItemConfirm"></DialogDelete>
 
     <DialogCardEditor v-model="dialogImport" :title="$t('components.titles.import')" :confirm-save="true"
@@ -78,6 +105,7 @@ export default {
 
   data: () => ({
     dialog: false,
+    dialogModel: false,
     dialogDelete: false,
     dialogImport: false,
     editedIndex: -1,
@@ -193,6 +221,9 @@ export default {
       this.$nextTick(() => {
         this.resetEditedItem();
       });
+    },
+    closeModel() {
+      this.dialogModel = false;
     },
     save() {
       if (typeof this.editedItem.manufacturer === 'object') {

@@ -22,7 +22,7 @@
             <v-card>
               <v-card-title>{{$t('components.titles.columns')}}</v-card-title>
               <v-card-text>
-                <v-row v-for="(column, index) in component_type.columns" :key="column.position">
+                <v-row v-for="(column, index) in component_type.columns" :key="index">
                   <v-col cols="3">{{column.view_name}}</v-col>
                   <v-col cols="3">{{column.column_name}}</v-col>
                   <v-col cols="3">{{column.unit}}</v-col>

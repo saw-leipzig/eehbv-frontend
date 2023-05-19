@@ -99,6 +99,7 @@
       "api_name": "API-Pfad",
       "is_aggregate": "Aggregat",
       "column_name": "Datenbank-Spalte",
+      "column_names": "Datenbank-Spalten",
       "data_type": "Datentyp"
     },
     "msg": {
