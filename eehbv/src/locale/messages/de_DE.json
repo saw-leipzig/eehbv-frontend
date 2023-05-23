@@ -128,6 +128,7 @@
   "process_creation": {
     "info": {
       "definition": "<p>Infotext <em>Prozessdefinition</em><p>",
+      "functions": "<p>Infotext <em>Funktionen</em><p>",
       "variants": "<p>Infotext <em>Varientendefintion</em><p>",
       "selection": "<p>Infotext <em>Variantenauswahldefinition</em><p>",
       "parameters": "<p>Infotext <em>Parameter-Abhängigkeiten</em><p>",
@@ -148,7 +149,8 @@
       "variant_selection_definition": "Variantenauswahl",
       "parameters": "Parameter",
       "solver_definition": "Solver",
-      "info_texts_definition": "Info-Texte"
+      "info_texts_definition": "Info-Texte",
+      "functions": "Funktionen"
     }
   },
   "process_definition": {

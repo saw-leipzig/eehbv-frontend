@@ -54,7 +54,44 @@
             </v-card-actions>
           </v-card>
         </v-col>
+
         <v-col cols="12">
+          <v-card>
+            <v-card-title>Verlustfunktionen</v-card-title>
+            <v-card-text>
+                <v-row v-for="func in currentVariant.variant_functions" :key="func.position">
+                  <v-col cols="9">Funktion: {{func.description}}</v-col>
+                  <v-col cols="3">
+                    <v-icon small class="mr-2" @click="editFunction(func.position)">mdi-pencil</v-icon>
+                    <v-icon small @click="deleteFunction(func.position)">mdi-delete</v-icon>
+                  </v-col>
+                </v-row>
+            </v-card-text>
+              <v-card-actions>
+                <v-btn color="green" @click="editFunction(-1)"><v-icon>mdi-plus</v-icon></v-btn>
+              </v-card-actions>
+          </v-card>
+        </v-col>
+
+        <v-col cols="12">
+          <v-card>
+            <v-card-title>Einschränkungen</v-card-title>
+            <v-card-text>
+                <v-row v-for="(restriction, index) in currentVariant.variant_restrictions" :key="index">
+                  <v-col cols="9">Einschränkung: {{restriction.description}}</v-col>
+                  <v-col cols="3">
+                    <v-icon small class="mr-2" @click="editRestriction(index)">mdi-pencil</v-icon>
+                    <v-icon small @click="deleteRestriction(index)">mdi-delete</v-icon>
+                  </v-col>
+                </v-row>
+            </v-card-text>
+              <v-card-actions>
+                <v-btn color="green" @click="editRestriction(-1)"><v-icon>mdi-plus</v-icon></v-btn>
+              </v-card-actions>
+          </v-card>
+        </v-col>
+
+<!--        <v-col cols="12">
           <v-card>
             <v-card-title>{{ $t('variants_definition.labels.target_function') }}</v-card-title>
             <v-card-text>
@@ -83,7 +120,7 @@
               </v-row>
             </v-card-actions>
           </v-card>
-        </v-col>
+        </v-col>-->
       </v-row>
     </DialogCardEditor>
 
@@ -103,10 +140,59 @@
 
     <DialogDelete v-model="dialogDeleteComponent" @abort="closeDeleteComponent" @delete="deleteComponentConfirm"></DialogDelete>
 
-    <v-dialog v-model="dialogEditTargetFunc" max-width="600px">
+    <DialogCardEditor v-model="dialogEditFunction" @save="saveFunction" @close="closeEditFunction">
+      <v-row>
+        <v-col cols="4">
+          <v-text-field v-model="currentFunction.description" :label="$t('variants_definition.labels.description')"></v-text-field>
+        </v-col>
+        <v-col cols="4">
+          <v-text-field v-model="currentFunction.eval_after_position" type="number" label="Berechnen nach Auswahl von"></v-text-field>
+        </v-col>
+        <v-col cols="4">
+          <v-text-field v-model="currentFunction.aggregate" label="Aggregatname"></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+<!--        <v-col cols="4">
+          <v-select v-model="currentFunction.loss_function_description" :items="functionSelection" :label="$t('variants_definition.labels.component_type')"></v-select>
+        </v-col>-->
+        <v-col cols="4">
+          <v-text-field v-model="currentFunction.loss_function_description" label="Funktion"></v-text-field>
+        </v-col>
+        <v-col cols="4">
+          <v-text-field v-model="currentFunction.variable_name" :label="$t('variants_definition.labels.variable_name')"></v-text-field>
+        </v-col>
+        <v-col cols="4">
+          <v-text-field v-model="currentFunction.parameter_list" :label="$t('variants_definition.labels.signature')"></v-text-field>
+        </v-col>
+      </v-row>
+    </DialogCardEditor>
+
+    <DialogDelete v-model="dialogDeleteFunction" @abort="closeDeleteFunction" @delete="deleteFunctionConfirm"></DialogDelete>
+
+    <DialogCardEditor v-model="dialogEditRestriction" @save="saveRestriction" @close="closeEditRestriction">
+      <v-row>
+        <v-col cols="4">
+          <v-text-field v-model="currentRestriction.description" :label="$t('variants_definition.labels.description')"></v-text-field>
+        </v-col>
+        <v-col cols="4">
+          <v-text-field v-model="currentRestriction.eval_after_position" type="number" label="Berechnen nach Auswahl von"></v-text-field>
+        </v-col>
+<!--        <v-col cols="4">
+          <v-select v-model="currentRestriction.eval_after_position" :items="evalAfterSelection" label="Einfügen nach Auswahl von"></v-select>
+        </v-col>-->
+        <v-col cols="4">
+          <v-text-field v-model="currentRestriction.restriction" label="Bedingung"></v-text-field>
+        </v-col>
+      </v-row>
+    </DialogCardEditor>
+
+    <DialogDelete v-model="dialogDeleteRestriction" @abort="closeDeleteRestriction" @delete="deleteRestrictionConfirm"></DialogDelete>
+
+<!--    <v-dialog v-model="dialogEditTargetFunc" max-width="600px">
       <FormulaEditor :title="$t('variants_definition.labels.target_function')" v-model="currentTargetFunc" :inequality="false"
                      :parameters="functionParams" :signature="'f' + signature + ' ='" @closeDialog="closeTargetFunc"></FormulaEditor>
-    </v-dialog>
+    </v-dialog>-->
   </div>
 </template>
 
@@ -125,15 +211,24 @@ export default {
     dialogDeleteVariant: false,
     dialogEditComponent: false,
     dialogDeleteComponent: false,
-    dialogEditTargetFunc: false,
-    currentVariant: { name: '', target_func: '', target_func_python: '', variant_components: [] },
+    dialogEditFunction: false,
+    dialogDeleteFunction: false,
+    dialogEditRestriction: false,
+    dialogDeleteRestriction: false,
+//    dialogEditTargetFunc: false,
+//    currentVariant: { name: '', target_func: '', target_func_python: '', variant_components: [] },
+    currentVariant: { name: '', variant_components: [], variant_functions: [], variant_restrictions: [] },
     currentVariantIndex: -1,
     currentComponent: { position: 0, component_api_name: '', variable_name: '', description: '' },
     currentComponentIndex: -1,
+    currentFunction: {},
+    currentFunctionIndex: -1,
+    currentRestriction: {},
+    currentRestrictionIndex:-1,
     currentTargetFunc: [],
-    targetFunctions: [],
-    targetPythonStyle: [],
-    currentTargetPythonStyle: false
+//    targetFunctions: [],
+//    targetPythonStyle: [],
+//    currentTargetPythonStyle: false
   }),
 
   props: {
@@ -143,6 +238,10 @@ export default {
     },
     process: {
       type: Object,
+      required: true
+    },
+    loss_functions: {
+      type: Array,
       required: true
     }
   },
@@ -187,19 +286,20 @@ export default {
     editVariant(index) {
       this.currentVariant = Object.assign({},
           index < 0 ?
-              { name: '', target_func: '', target_func_python: '', variant_components: [] } :
+//              { name: '', target_func: '', target_func_python: '', variant_components: [] } :
+              { name: '', target_func: '', variant_components: [], variant_functions: [], variant_restrictions: [] } :
               this.value[index]);
       this.dialogEditVariant = true;
     },
     saveVariant() {
       if (this.currentVariantIndex < 0) {
         this.value.push(this.currentVariant);
-        this.targetFunctions.push(JSON.parse(JSON.stringify(this.currentTargetFunc)));
-        this.targetPythonStyle.push(this.currentTargetPythonStyle);
+//        this.targetFunctions.push(JSON.parse(JSON.stringify(this.currentTargetFunc)));
+//        this.targetPythonStyle.push(this.currentTargetPythonStyle);
       } else {
         this.value.splice(this.currentVariantIndex, 1, this.currentVariant);
-        this.targetFunctions.splice(this.currentVariantIndex, 1, JSON.parse(JSON.stringify(this.currentTargetFunc)));
-        this.targetPythonStyle.splice(this.currentVariantIndex, 1, this.currentTargetPythonStyle);
+//        this.targetFunctions.splice(this.currentVariantIndex, 1, JSON.parse(JSON.stringify(this.currentTargetFunc)));
+//        this.targetPythonStyle.splice(this.currentVariantIndex, 1, this.currentTargetPythonStyle);
       }
       this.closeEditVariant();
     },
@@ -213,8 +313,8 @@ export default {
     },
     deleteVariantConfirm() {
       this.value.splice(this.currentVariantIndex, 1);
-      this.targetFunctions.splice(this.currentVariantIndex, 1);
-      this.targetPythonStyle.splice(this.currentVariantIndex, 1);
+//      this.targetFunctions.splice(this.currentVariantIndex, 1);
+//      this.targetPythonStyle.splice(this.currentVariantIndex, 1);
       this.closeDeleteVariant();
     },
     closeDeleteVariant() {
@@ -244,20 +344,90 @@ export default {
       this.dialogDeleteComponent = true;
     },
     deleteComponentConfirm() {
-      this.value.splice(this.currentVariantIndex, 1);
-      this.adjustPositions();
+      this.currentVariant.variant_components.splice(this.currentVariantIndex, 1);
+      this.adjustComponentPositions();
       this.closeDeleteComponent();
     },
     closeDeleteComponent() {
       this.dialogDeleteComponent = false;
     },
-    adjustPositions() {
+    adjustComponentPositions() {
       this.currentVariant.variant_components.forEach((c, i) => {
         if (i > this.currentComponentIndex) c.position = this.currentComponentIndex;
       } );
+      this.currentVariant.variant_functions.forEach((f) => {
+        if (f.eval_after_position > this.currentComponentIndex) f.eval_after_position -= 1;
+      } );
     },
 
-    editTargetFunc() {
+    editFunction(index) {
+      this.currentFunction = Object.assign({},
+          index < 0 ?
+              { position: this.currentVariant.variant_functions.length, loss_function_description: '', variable_name: '',
+                description: '', parameter_list: '', eval_after_position: 0, aggregate: '' } :
+              this.currentVariant.variant_functions[index]);
+      this.dialogEditFunction = true;
+    },
+    saveFunction() {
+      if (this.currentFunctionIndex < 0) {
+        this.currentVariant.variant_functions.push(this.currentFunction);
+      } else {
+        this.currentVariant.variant_functions.splice(this.currentFunctionIndex, 1, this.currentFunction);
+      }
+      this.closeEditFunction();
+    },
+    closeEditFunction() {
+      this.dialogEditFunction = false;
+    },
+    deleteFunction(index) {
+      this.currentFunctionIndex = index;
+      this.dialogDeleteFunction = true;
+    },
+    deleteFunctionConfirm() {
+      this.currentVariant.variant_functions.splice(this.currentFunctionIndex, 1);
+      this.adjustFunctionPositions();
+      this.closeDeleteFunction();
+    },
+    closeDeleteFunction() {
+      this.dialogDeleteFunction = false;
+    },
+    adjustFunctionPositions() {
+      this.currentVariant.variant_functions.forEach((f, i) => {
+        if (i > this.currentFunctionIndex) f.position = this.currentFunctionIndex;
+      } );
+    },
+
+    editRestriction(index) {
+      this.currentRestriction = Object.assign({},
+          index < 0 ?
+              { restriction: '', eval_after_position: 0, description: '' } :
+              this.currentVariant.variant_restrictions[index]);
+      this.dialogEditRestriction = true;
+    },
+    saveRestriction() {
+      if (this.currentRestrictionIndex < 0) {
+        this.currentVariant.variant_restrictions.push(this.currentRestriction);
+      } else {
+        this.currentVariant.variant_restrictions.splice(this.currentRestrictionIndex, 1, this.currentRestriction);
+      }
+      this.closeEditRestriction();
+    },
+    closeEditRestriction() {
+      this.dialogEditRestriction = false;
+    },
+    deleteRestriction(index) {
+      this.currentRestrictionIndex = index;
+      this.dialogDeleteRestriction = true;
+    },
+    deleteRestrictionConfirm() {
+      this.currentVariant.variant_restrictions.splice(this.currentRestrictionIndex, 1);
+      this.closeDeleteRestriction();
+    },
+    closeDeleteRestriction() {
+      this.dialogDeleteRestriction = false;
+    },
+
+/*    editTargetFunc() {
       // ToDo: check condition
       if (this.currentTargetFunc.length < 1 && this.currentVariantIndex < this.targetFunctions.length && this.currentVariantIndex > -1) {
         this.currentTargetFunc.push(...JSON.parse(JSON.stringify(this.targetFunctions[this.currentVariantIndex])));
@@ -269,7 +439,7 @@ export default {
         this.currentVariant.target_func = this.currentTargetFunc.map(t => t.formula).join(' ');
       }
       this.dialogEditTargetFunc = false;
-    },
+    },*/
     componentViewName(api_name) {
       return this.componentTypes.find(c => c.api_name === api_name).view_name;
     },

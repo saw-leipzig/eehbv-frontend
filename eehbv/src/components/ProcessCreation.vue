@@ -15,30 +15,36 @@
             <v-divider></v-divider>
 
             <v-stepper-step :complete="def_step > 2" color="green" step="2">
+              {{$t("process_creation.labels.functions")}}
+            </v-stepper-step>
+
+            <v-divider></v-divider>
+
+            <v-stepper-step :complete="def_step > 3" color="green" step="3">
               {{$t("process_creation.labels.variants_definition")}}
             </v-stepper-step>
 
             <v-divider></v-divider>
 
-            <v-stepper-step :complete="def_step > 3" step="3" color="green">
+            <v-stepper-step :complete="def_step > 4" step="4" color="green">
               {{$t("process_creation.labels.variant_selection_definition")}}
             </v-stepper-step>
 
             <v-divider></v-divider>
 
-            <v-stepper-step :complete="def_step > 4" step="4" color="green">
+            <v-stepper-step :complete="def_step > 5" step="5" color="green">
               {{$t("process_creation.labels.parameters")}}
             </v-stepper-step>
 
             <v-divider></v-divider>
 
-            <v-stepper-step :complete="def_step > 5" step="5" color="green">
+            <v-stepper-step :complete="def_step > 6" step="6" color="green">
               {{$t("process_creation.labels.solver_definition")}}
             </v-stepper-step>
 
             <v-divider></v-divider>
 
-            <v-stepper-step step="6" color="green">
+            <v-stepper-step step="7" color="green">
               {{$t("process_creation.labels.info_texts_definition")}}
             </v-stepper-step>
           </v-stepper-header>
@@ -52,37 +58,44 @@
             </v-stepper-content>
 
             <v-stepper-content step="2">
-              <EditNewWrapper :context-new="true" :info-text="info[1]" :disabled="disabledVariants"
-                              :title="$t('process_creation.titles.variants_definition')" @ok="continueTwo" @abort="abort">
-                <VariantsDefinition v-model="variants" :process="process"></VariantsDefinition>
+              <EditNewWrapper :context-new="true" :info-text="info[1]" :disabled="disabledProcess"
+                              :title="$t('process_creation.labels.functions')" @ok="continueTwo" @abort="abort">
+                <FunctionsDefinition v-model="functions"></FunctionsDefinition>
               </EditNewWrapper>
             </v-stepper-content>
 
             <v-stepper-content step="3">
-              <EditNewWrapper :context-new="true" :info-text="info[2]"
-                              :title="process.variant_tree ? $t('process_creation.titles.variant_selection_definition_tree') : $t('process_creation.titles.variant_selection_definition_list')"
-                              @ok="continueThree" @abort="abort">
-                <VariantSelectionDefinition v-model="variant_selection" :variants="variants" :process="process"></VariantSelectionDefinition>
+              <EditNewWrapper :context-new="true" :info-text="info[2]" :disabled="disabledVariants"
+                              :title="$t('process_creation.titles.variants_definition')" @ok="continueThree" @abort="abort">
+                <VariantsDefinition v-model="variants" :process="process" :loss_functions="functions"></VariantsDefinition>
               </EditNewWrapper>
             </v-stepper-content>
 
             <v-stepper-content step="4">
-              <EditNewWrapper :context-new="true" :info-text="info[3]" :title="$t('process_definition.titles.parameters')"
+              <EditNewWrapper :context-new="true" :info-text="info[3]"
+                              :title="process.variant_tree ? $t('process_creation.titles.variant_selection_definition_tree') : $t('process_creation.titles.variant_selection_definition_list')"
                               @ok="continueFour" @abort="abort">
-                <ParameterDependencyDefinition v-model="process.process_parameters" :variants="variants"></ParameterDependencyDefinition>
+                <VariantSelectionDefinition v-model="variant_selection" :variants="variants" :process="process"></VariantSelectionDefinition>
               </EditNewWrapper>
             </v-stepper-content>
 
             <v-stepper-content step="5">
-              <EditNewWrapper :context-new="true" :info-text="info[4]" @ok="continueFive" @abort="abort">
-                <SolverDefinition v-model="solver"></SolverDefinition>
+              <EditNewWrapper :context-new="true" :info-text="info[4]" :title="$t('process_definition.titles.parameters')"
+                              @ok="continueFive" @abort="abort">
+                <ParameterDependencyDefinition v-model="process.process_parameters" :variants="variants"></ParameterDependencyDefinition>
               </EditNewWrapper>
             </v-stepper-content>
 
             <v-stepper-content step="6">
-              <EditNewWrapper :context-new="true" :info-text="info[5]"
+              <EditNewWrapper :context-new="true" :info-text="info[5]" @ok="continueSix" @abort="abort">
+                <SolverDefinition v-model="solver"></SolverDefinition>
+              </EditNewWrapper>
+            </v-stepper-content>
+
+            <v-stepper-content step="7">
+              <EditNewWrapper :context-new="true" :info-text="info[6]"
                               :title="$t('process_creation.titles.info_texts_definition')"
-                              @ok="continueSix" @abort="abort">
+                              @ok="continueSeven" @abort="abort">
                 <InfoTextsDefinition v-model="infoTexts"></InfoTextsDefinition>
               </EditNewWrapper>
             </v-stepper-content>
@@ -102,10 +115,12 @@ import VariantSelectionDefinition from "./VariantSelectionDefinition";
 import SolverDefinition from "./SolverDefinition";
 import InfoTextsDefinition from "./InfoTextsDefinition";
 import ParameterDependencyDefinition from "./ParameterDependencyDefinition";
+import FunctionsDefinition from "./FunctionsDefinition";
 
 export default {
   name: "ProcessCreation",
   components: {
+    FunctionsDefinition,
     ParameterDependencyDefinition,
     InfoTextsDefinition,
     VariantSelectionDefinition, SolverDefinition, VariantsDefinition, ProcessDefinition, EditNewWrapper},
@@ -118,6 +133,7 @@ export default {
         variant_tree: false,
         process_parameters: []
       },
+      functions: [],
       variants: [],
       variant_selection: {
         list: [],
@@ -137,6 +153,7 @@ export default {
       infoTexts: [ {type: 1, type_id: null, position: 3, text: ''}, {type: 1, type_id: null, position: 4, text: ''} ],
       info: [
           this.$t("process_creation.info.definition"),
+          this.$t("process_creation.info.functions"),
           this.$t("process_creation.info.variants"),
           this.$t("process_creation.info.selection"),
           this.$t("process_creation.info.parameters"),
@@ -157,6 +174,30 @@ export default {
         ]
       });
       this.variants.push(...[
+          { name: 'Variante 1', variant_functions: [], variant_restrictions: [],
+            variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'},
+            {position: 1, description: 'Grindermotor', variable_name: 'v_grinding_motor', component_api_name: 'motors'}] },
+          { name: 'Variante 2', variant_functions: [], variant_restrictions: [],
+            variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'},
+            {position: 1, description: 'Antriebsmotor', variable_name: 'v_forward_motor', component_api_name: 'motors'}] },
+          { name: 'Variante 3', variant_functions: [], variant_restrictions: [],
+            variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'}] },
+          { name: 'Variante 4', variant_functions: [], variant_restrictions: [],
+            variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'}] },
+          { name: 'Variante 5', variant_functions: [], variant_restrictions: [],
+            variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'}] },
+          { name: 'Variante 6', variant_functions: [], variant_restrictions: [],
+            variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'}] },
+          { name: 'Variante 7', variant_functions: [], variant_restrictions: [],
+            variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'}] },
+          { name: 'Variante 8', variant_functions: [], variant_restrictions: [],
+            variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'}] },
+          { name: 'Variante 9', variant_functions: [], variant_restrictions: [],
+            variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'}] },
+          { name: 'Variante 10', variant_functions: [], variant_restrictions: [],
+            variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'}] },
+      ]);
+/*      this.variants.push(...[
           { name: 'Variante 1', target_func: 'x', target_func_python: 'x',
             variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'},
             {position: 1, description: 'Grindermotor', variable_name: 'v_grinding_motor', component_api_name: 'motors'}] },
@@ -179,7 +220,7 @@ export default {
             variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'}] },
           { name: 'Variante 10', target_func: 'x', target_func_python: 'x',
             variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'}] },
-      ]);
+      ]);*/
     }
   },
 
@@ -200,17 +241,21 @@ export default {
       this.def_step = 3;
     },
     continueThree() {
-      this.def_step = this.process.process_parameters.some(p => p.dependent || p.restricting) ? 4 : 5;
+      this.def_step = 4;
     },
     continueFour() {
-      this.def_step = 5;
+      this.def_step = this.process.process_parameters.some(p => p.dependent || p.restricting) ? 5 : 6;
     },
     continueFive() {
       this.def_step = 6;
     },
     continueSix() {
+      this.def_step = 7;
+    },
+    continueSeven() {
       let requestData = {
         process: this.process,
+        functions: this.functions,
         variants: this.variants,
         variant_selection: {
           list: this.variant_selection.list,
@@ -218,7 +263,7 @@ export default {
         },
         infoTexts: this.infoTexts
       };
-/*      this.$http.post('processes', requestData).
+      this.$http.post('processes', requestData).
           then((response) => {
             if (response.status < 400) {
               this.$router.push({ name: 'Process' });
@@ -228,7 +273,7 @@ export default {
           }
       ).catch((error) => {
         // ToDo: error handling
-      });*/
+      });
       this.def_step = 1;
     },
     abort() {
