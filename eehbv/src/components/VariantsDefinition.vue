@@ -142,14 +142,17 @@
 
     <DialogCardEditor v-model="dialogEditFunction" @save="saveFunction" @close="closeEditFunction">
       <v-row>
-        <v-col cols="4">
+        <v-col cols="3">
           <v-text-field v-model="currentFunction.description" :label="$t('variants_definition.labels.description')"></v-text-field>
         </v-col>
-        <v-col cols="4">
+        <v-col cols="3">
           <v-text-field v-model="currentFunction.eval_after_position" type="number" label="Berechnen nach Auswahl von"></v-text-field>
         </v-col>
-        <v-col cols="4">
+        <v-col cols="3">
           <v-text-field v-model="currentFunction.aggregate" label="Aggregatname"></v-text-field>
+        </v-col>
+        <v-col cols="3">
+          <v-switch v-model="currentFunction.is_loss" label="Verlustfunktion"></v-switch>
         </v-col>
       </v-row>
       <v-row>
@@ -364,7 +367,7 @@ export default {
       this.currentFunction = Object.assign({},
           index < 0 ?
               { position: this.currentVariant.variant_functions.length, loss_function_description: '', variable_name: '',
-                description: '', parameter_list: '', eval_after_position: 0, aggregate: '' } :
+                description: '', parameter_list: '', eval_after_position: 0, aggregate: '', is_loss: true } :
               this.currentVariant.variant_functions[index]);
       this.dialogEditFunction = true;
     },
