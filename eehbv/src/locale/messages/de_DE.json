@@ -192,7 +192,12 @@
       "variable_name": "Variablenname",
       "target_function": "Zielfunktion",
       "python_function": "Python-Funktion",
-      "signature": "Funktionssignatur"
+      "signature": "Funktionssignatur",
+      "function": "Funktion",
+      "eval_after": "Auswerten nach Auswahl von",
+      "loss_function": "Verlustfunktion",
+      "restriction": "Bedingung",
+      "aggregate_name": "Aggregatname"
     }
   },
   "variant_selection_definition": {

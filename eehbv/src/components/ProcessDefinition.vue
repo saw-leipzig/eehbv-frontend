@@ -184,6 +184,7 @@ export default {
 
   methods: {
     editParam(index) {
+      this.editedParamIndex = index;
       this.editedParam = Object.assign({},
           index < 0 ?
                 { name: '', variable_name: '', unit: '', material_properties_id: null, restricting: false,

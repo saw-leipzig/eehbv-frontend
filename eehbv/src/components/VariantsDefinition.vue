@@ -57,7 +57,7 @@
 
         <v-col cols="12">
           <v-card>
-            <v-card-title>Verlustfunktionen</v-card-title>
+            <v-card-title>Funktionsaufrufe</v-card-title>
             <v-card-text>
                 <v-row v-for="func in currentVariant.variant_functions" :key="func.position">
                   <v-col cols="9">Funktion: {{func.description}}</v-col>
@@ -146,22 +146,25 @@
           <v-text-field v-model="currentFunction.description" :label="$t('variants_definition.labels.description')"></v-text-field>
         </v-col>
         <v-col cols="3">
-          <v-text-field v-model="currentFunction.eval_after_position" type="number" label="Berechnen nach Auswahl von"></v-text-field>
+          <v-select v-model="currentFunction.eval_after_position" :items="evalAfterSelection" :label="$t('variants_definition.labels.eval_after')"></v-select>
+        </v-col>
+<!--        <v-col cols="3">
+          <v-text-field v-model="currentFunction.eval_after_position" type="number" :label="$t('variants_definition.labels.eval_after')"></v-text-field>
+        </v-col>-->
+        <v-col cols="3">
+          <v-text-field v-model="currentFunction.aggregate" :label="$t('variants_definition.labels.aggregate_name')"></v-text-field>
         </v-col>
         <v-col cols="3">
-          <v-text-field v-model="currentFunction.aggregate" label="Aggregatname"></v-text-field>
-        </v-col>
-        <v-col cols="3">
-          <v-switch v-model="currentFunction.is_loss" label="Verlustfunktion"></v-switch>
+          <v-switch v-model="currentFunction.is_loss" :label="$t('variants_definition.labels.eval_after')"></v-switch>
         </v-col>
       </v-row>
       <v-row>
-<!--        <v-col cols="4">
-          <v-select v-model="currentFunction.loss_function_description" :items="functionSelection" :label="$t('variants_definition.labels.component_type')"></v-select>
-        </v-col>-->
         <v-col cols="4">
-          <v-text-field v-model="currentFunction.loss_function_description" label="Funktion"></v-text-field>
+          <v-select v-model="currentFunction.loss_function_description" :items="functionSelection" :label="$t('variants_definition.labels.function')"></v-select>
         </v-col>
+<!--        <v-col cols="4">
+          <v-text-field v-model="currentFunction.loss_function_description" :label="$t('variants_definition.labels.function')"></v-text-field>
+        </v-col>-->
         <v-col cols="4">
           <v-text-field v-model="currentFunction.variable_name" :label="$t('variants_definition.labels.variable_name')"></v-text-field>
         </v-col>
@@ -178,14 +181,14 @@
         <v-col cols="4">
           <v-text-field v-model="currentRestriction.description" :label="$t('variants_definition.labels.description')"></v-text-field>
         </v-col>
-        <v-col cols="4">
-          <v-text-field v-model="currentRestriction.eval_after_position" type="number" label="Berechnen nach Auswahl von"></v-text-field>
-        </v-col>
 <!--        <v-col cols="4">
-          <v-select v-model="currentRestriction.eval_after_position" :items="evalAfterSelection" label="Einfügen nach Auswahl von"></v-select>
+          <v-text-field v-model="currentRestriction.eval_after_position" type="number" :label="$t('variants_definition.labels.eval_after')"></v-text-field>
         </v-col>-->
         <v-col cols="4">
-          <v-text-field v-model="currentRestriction.restriction" label="Bedingung"></v-text-field>
+          <v-select v-model="currentRestriction.eval_after_position" :items="evalAfterSelection" :label="$t('variants_definition.labels.eval_after')"></v-select>
+        </v-col>
+        <v-col cols="4">
+          <v-text-field v-model="currentRestriction.restriction" :label="$t('variants_definition.labels.restriction')"></v-text-field>
         </v-col>
       </v-row>
     </DialogCardEditor>
@@ -273,6 +276,12 @@ export default {
     componentSelection() {
       return this.componentTypes.map(c => { return { text: c.view_name, value: c.api_name } });
     },
+    functionSelection() {
+      return this.loss_functions.map(f => { return { text: f.description, value: f.description} });
+    },
+    evalAfterSelection() {
+      return [ { text: '-', value: 0 }, ...this.currentVariant.variant_components.map((c, i) => { return { text: c.description, value: i+1 } })];
+    },
     variantEditTitle() {
       return this.currentVariantIndex < 0 ? this.$t('general.editing.create') : this.$t('general.editing.edit');
     },
@@ -287,6 +296,7 @@ export default {
       return variant.variant_components.map(c => c.description).join(' ');
     },
     editVariant(index) {
+      this.currentVariantIndex = index;
       this.currentVariant = Object.assign({},
           index < 0 ?
 //              { name: '', target_func: '', target_func_python: '', variant_components: [] } :
@@ -307,7 +317,8 @@ export default {
       this.closeEditVariant();
     },
     closeEditVariant() {
-      this.currentTargetFunc.splice(0);
+//      this.currentTargetFunc.splice(0);
+      this.currentVariantIndex = -1;
       this.dialogEditVariant = false;
     },
     deleteVariant(index) {
@@ -325,6 +336,7 @@ export default {
     },
 
     editComponent(index) {
+      this.currentComponentIndex = index;
       this.currentComponent = Object.assign({},
           index < 0 ?
               { position: this.currentVariant.variant_components.length, component_api_name: '', variable_name: '', description: '' } :
@@ -352,6 +364,7 @@ export default {
       this.closeDeleteComponent();
     },
     closeDeleteComponent() {
+      this.currentComponentIndex = -1;
       this.dialogDeleteComponent = false;
     },
     adjustComponentPositions() {
@@ -364,6 +377,7 @@ export default {
     },
 
     editFunction(index) {
+      this.currentFunctionIndex = index;
       this.currentFunction = Object.assign({},
           index < 0 ?
               { position: this.currentVariant.variant_functions.length, loss_function_description: '', variable_name: '',
@@ -380,6 +394,7 @@ export default {
       this.closeEditFunction();
     },
     closeEditFunction() {
+      this.currentFunctionIndex = -1;
       this.dialogEditFunction = false;
     },
     deleteFunction(index) {
@@ -401,6 +416,7 @@ export default {
     },
 
     editRestriction(index) {
+      this.currentRestrictionIndex = index;
       this.currentRestriction = Object.assign({},
           index < 0 ?
               { restriction: '', eval_after_position: 0, description: '' } :
@@ -416,6 +432,7 @@ export default {
       this.closeEditRestriction();
     },
     closeEditRestriction() {
+      this.currentRestrictionIndex = -1;
       this.dialogEditRestriction = false;
     },
     deleteRestriction(index) {

@@ -58,15 +58,12 @@ export default {
     value: {
       type: Array,
       required: true
-    },
-    process: {
-      type: Object,
-      required: true
     }
   },
 
   methods: {
     editFunction(index) {
+      this.currentFunctionIndex = index;
       this.currentFunction = Object.assign({},
           index < 0 ?
               { description: '', func: '' } :
@@ -82,6 +79,7 @@ export default {
       this.closeEditFunction();
     },
     closeEditFunction() {
+      this.currentFunctionIndex = -1;
       this.dialogEditFunction = false;
     },
     deleteFunction(index) {
