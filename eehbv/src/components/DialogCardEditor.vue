@@ -1,7 +1,11 @@
 <template>
   <v-dialog v-model="value" :max-width="maxWidth">
     <v-card>
-      <v-card-title class="headline">{{title}}</v-card-title>
+      <v-card-title class="headline">
+        {{title}}
+        <v-spacer></v-spacer>
+        <v-icon v-if="infoButton" class="mr-2" right @click="$emit('info')">mdi-information-outline</v-icon>
+      </v-card-title>
       <v-card-text>
         <slot/>
       </v-card-text>
@@ -33,6 +37,11 @@ export default {
       type: String,
       required: false,
       default: 'none'
+    },
+    infoButton: {
+      type: Boolean,
+      required: false,
+      default: false
     },
     disabledSave: {
       type: Boolean,

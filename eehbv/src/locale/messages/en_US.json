@@ -127,7 +127,8 @@
   },
   "process_creation": {
     "info": {
-      "definition": "<p>Info <em>definition of process</em><p>",
+      "definition": "<p>Info <em>definition of process</em><p><p>You can define an new optimization environment for a machine type in this menu.</p><p>Prepare this definition by following the steps of the procedure framework in the manual! Make sure that all necessary component and material property types are created before proceeding.</p><p>The <strong>Name</strong> should describe the machine type to make optimizations for. The <strong>API path</strong> for this optimization type must be given in all lower case and without spaces.</p><p>If there are different possible variants for the machine type, the <strong>Question schema for variants</strong> defines whether selection of variants in a specific optimization request should be done following a list or a tree of questions. There will also allways be a pick-list in the definition of an optimization request.</p>",
+      "process_parameters": "<p>Info <em>definition of process parameters/em><p>",
       "functions": "<p>Info <em>definition of functions</em><p>",
       "variants": "<p>Info <em>definition of variants</em><p>",
       "selection": "<p>Info <em>definition of variant selection</em><p>",
@@ -161,7 +162,7 @@
     },
     "labels": {
       "view_name": "Name",
-      "api_name": "API Path",
+      "api_name": "API path",
       "variant_tree": "Question schema for variants",
       "name": "Name",
       "unit": "Unit",

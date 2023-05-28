@@ -53,7 +53,7 @@
             <v-stepper-content step="1">
               <EditNewWrapper :context-new="true" :info-text="info[0]" :disabled="disabledProcess"
                               :title="$t('process_creation.titles.process_definition')" @ok="continueOne" @abort="abort">
-                <ProcessDefinition v-model="process"></ProcessDefinition>
+                <ProcessDefinition v-model="process" :processes="processes"></ProcessDefinition>
               </EditNewWrapper>
             </v-stepper-content>
 
@@ -116,6 +116,7 @@ import SolverDefinition from "./SolverDefinition";
 import InfoTextsDefinition from "./InfoTextsDefinition";
 import ParameterDependencyDefinition from "./ParameterDependencyDefinition";
 import FunctionsDefinition from "./FunctionsDefinition";
+import {mapGetters} from "vuex";
 
 export default {
   name: "ProcessCreation",
@@ -165,6 +166,10 @@ export default {
   },
 
   created() {
+    if (this.process.length < 1) {
+      this.$store.dispatch('initProcesses');
+    }
+
     if (this.varTesting) {  // Test variant selection settings, predefined data
       this.process = Object.assign({},{
         api_name: 'edge_banding', variant_tree: false, view_name: 'Kantenanleimmaschine',
@@ -225,6 +230,7 @@ export default {
   },
 
   computed: {
+    ...mapGetters(['processes']),
     disabledProcess() {
       return this.process.view_name === '' || this.process.api_name === '' || typeof this.process.variant_tree === 'undefined';
     },

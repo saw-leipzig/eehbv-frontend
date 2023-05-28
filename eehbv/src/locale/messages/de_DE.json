@@ -7,7 +7,7 @@
     "validation": {
       "required": "Erforderlich",
       "max20": "Darf max. 20 Zeichen lang sein",
-      "max30": "Darf max. 20 Zeichen lang sein",
+      "max30": "Darf max. 30 Zeichen lang sein",
       "max40": "Darf max. 40 Zeichen lang sein",
       "snake": "Nur Kleinbuchstaben und Unterstrich",
       "numbers": "Nur durch Kommata getrennte Zahlen",
@@ -127,7 +127,8 @@
   },
   "process_creation": {
     "info": {
-      "definition": "<p>Infotext <em>Prozessdefinition</em><p>",
+      "definition": "<p>Infotext <em>Prozessdefinition</em></p><p>Über dieses Menü können Sie eine neue Optimierungsumgebung für einen Maschinentypen anlegen.</p><p>Bereiten Sie dies vor, indem Sie die Schritte zum Voregehensmodell in der Anleitung abarbeiten! Stellen Sie sicher, dass alle benötigten Komponententypen und Materialeigenschaften angelegt sind, bevor Sie mit einer neuen Prozessdefinition fortfahren.</p><p>Der <strong>Name</strong> sollte den Maschinentypen beschreiben, für den Sie Optimerungen vornehmen wollen. Der <strong>API-Pfad</strong> sollte diesen Prozess auf englisch beschreiben und muss in Kleinbuchstaben und ohne Leerzeichen angegeben werden.</p><p>Wenn Ihr Maschinentyp in mehreren Bauvarianten vorkommt, kann über das <strong>Variantenfrageschema</strong> angebeben werden, ob bei einer Optimierungsanfrage die zu betrachtenden Varianten über eine Liste oder einen Baum von Fragen ausgewählt werden sollen. Eine Auswahlliste für die Varianten mit Checkboxen steht bei der Definition einer Optimierungsanfrage immer zur Verfügung.</p>",
+      "process_parameters": "<p>Infotext <em>Definition von Prozessparametern</em><p>",
       "functions": "<p>Infotext <em>Funktionen</em><p>",
       "variants": "<p>Infotext <em>Varientendefintion</em><p>",
       "selection": "<p>Infotext <em>Variantenauswahldefinition</em><p>",

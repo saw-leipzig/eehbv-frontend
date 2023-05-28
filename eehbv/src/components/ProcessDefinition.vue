@@ -6,7 +6,8 @@
           <v-text-field :label="$t('process_definition.labels.view_name')" v-model="value.view_name" counter="40"></v-text-field>
         </v-col>
         <v-col cols="4">
-          <v-text-field :label="$t('process_definition.labels.api_name')" v-model="value.api_name" counter="40" :rules="api_name_rules"></v-text-field>
+          <v-text-field :label="$t('process_definition.labels.api_name')" v-model="value.api_name" counter="40"
+                        :rules="api_name_rules" placeholder="xyz_abc"></v-text-field>
         </v-col>
         <v-col cols="4">
           <v-select :items="selectionOptions" v-model="value.variant_tree" :label="$t('process_definition.labels.variant_tree')"></v-select>
@@ -19,10 +20,11 @@
       </v-row>
     </v-container>
 
-    <DialogCardEditor v-model="dialogEditParam" max-width="600px" :title="parameterEditTitle" @save="saveParam" @close="closeEditParam">
+    <DialogCardEditor v-model="dialogEditParam" max-width="600px" :title="parameterEditTitle"
+                      :info-button="true" @info="infoProcessparameterOverlay = true" @save="saveParam" @close="closeEditParam">
       <v-row>
         <v-col cols="6">
-          <v-text-field :label="$t('process_definition.labels.name')" v-model="editedParam.name" counter="40" :error-messages="nameErrors"
+          <v-text-field :label="$t('process_definition.labels.name')" v-model="editedParam.name" counter="40" :error-messages="parameterNameErrors"
                         @input="$v.editedParam.name.$touch" @blur="$v.editedParam.name.$touch"></v-text-field>
         </v-col>
         <v-col cols="6">
@@ -34,7 +36,7 @@
         <v-col cols="6">
           <v-text-field :label="$t('process_definition.labels.variable_name')" v-model="editedParam.variable_name"
                         counter="40" :error-messages="varErrors" @input="$v.editedParam.variable_name.$touch"
-                        @blur="$v.editedParam.variable_name.$touch"></v-text-field>
+                        @blur="$v.editedParam.variable_name.$touch" placeholder="p_xyz_abc"></v-text-field>
         </v-col>
         <v-col cols="6">
           <v-select :items="propOptions" :label="$t('process_definition.labels.material_property')" v-model="editedParam.material_properties_id"></v-select>
@@ -61,12 +63,19 @@
         <v-col cols="6">
           <v-text-field v-model="editedParam.derived_parameter" :label="$t('process_definition.labels.derived_param')"
                         counter="20" :error-messages="derivedErrors" @input="$v.editedParam.derived_parameter.$touch"
-                        @blur="$v.editedParam.derived_parameter.$touch"></v-text-field>
+                        @blur="$v.editedParam.derived_parameter.$touch" placeholder="d_xyz_abc"></v-text-field>
         </v-col>
       </v-row>
     </DialogCardEditor>
 
     <DialogDelete v-model="dialogDeleteParam" @abort="closeDeleteParam" @delete="deleteParamConfirm"></DialogDelete>
+
+    <v-overlay :opacity="0.9" :value="infoProcessparameterOverlay" z-index="3000">
+      <v-container>
+        <div v-html="$t('process_creation.info.process_parameters')"></div>
+      </v-container>
+      <v-btn color="orange lighten-2" @click="infoProcessparameterOverlay = false">{{$t('general.dialog.close')}}</v-btn>
+    </v-overlay>
 
   </div>
 </template>
@@ -85,6 +94,14 @@ export default {
   components: {ParameterList, DialogCardEditor, DialogDelete},
 
   validations: {
+    value: {
+      api_name: { required, maxLength: maxLength(30),snake,
+        apiNameTaken(api_name) { return !this.processes.map(t => t.api_name).includes(api_name); }
+      },
+      view_name: { required, maxLength: maxLength(40),
+        viewNameTaken(view_name) { return !this.processes.map(t => t.view_name).includes(view_name); }
+      }
+    },
     editedParam: {
       name: { required, maxLength: maxLength(40) },
       unit: { maxLength: maxLength(40) },
@@ -106,6 +123,7 @@ export default {
     return {
       dialogEditParam: false,
       dialogDeleteParam: false,
+      infoProcessparameterOverlay: false,
       selectionOptions: [
         {text: this.$t('process_definition.selects.list'), value: false},
         {text: this.$t('process_definition.selects.tree'), value: true}
@@ -126,6 +144,10 @@ export default {
     value: {
       type: Object,
       required: true
+    },
+    processes: {
+      type: Array,
+      required: true
     }
   },
 
@@ -137,7 +159,24 @@ export default {
     propOptions() {
       return [{ text: ' ---', value: null }, ...this.properties.map(p => { return { text: p.property, value: p.id } })];
     },
-    nameErrors() {
+    viewNameErrors() {
+      let errors = [];
+      if (!this.$v.value.view_name.$dirty) return errors;
+      !this.$v.value.view_name.required && errors.push(this.$t('general.validation.required'));
+      !this.$v.value.view_name.maxLength && errors.push(this.$t('general.validation.max40'));
+      !this.$v.value.view_name.viewNameTaken && errors.push(this.$t('general.validation.present'));
+      return errors;
+    },
+    apiNameErrors() {
+      let errors = [];
+      if (!this.$v.value.api_name.$dirty) return errors;
+      !this.$v.value.api_name.required && errors.push(this.$t('general.validation.required'));
+      !this.$v.value.api_name.maxLength && errors.push(this.$t('general.validation.max40'));
+      !this.$v.value.api_name.snake && errors.push(this.$t('general.validation.snake'));
+      !this.$v.value.api_name.viewNameTaken && errors.push(this.$t('general.validation.present'));
+      return errors;
+    },
+    parameterNameErrors() {
       let errors = [];
       if (!this.$v.editedParam.name.$dirty) return errors;
       !this.$v.editedParam.name.required && errors.push(this.$t('general.validation.required'));
