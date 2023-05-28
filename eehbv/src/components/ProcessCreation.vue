@@ -117,6 +117,7 @@ import InfoTextsDefinition from "./InfoTextsDefinition";
 import ParameterDependencyDefinition from "./ParameterDependencyDefinition";
 import FunctionsDefinition from "./FunctionsDefinition";
 import {mapGetters} from "vuex";
+const snake = /^[a-z_]*$/;
 
 export default {
   name: "ProcessCreation",
@@ -161,7 +162,7 @@ export default {
           this.$t("process_creation.info.solver"),
           this.$t("process_creation.info.infoTexts")
       ],
-      varTesting: true
+      varTesting: false
     }
   },
 
@@ -232,7 +233,10 @@ export default {
   computed: {
     ...mapGetters(['processes']),
     disabledProcess() {
-      return this.process.view_name === '' || this.process.api_name === '' || typeof this.process.variant_tree === 'undefined';
+      return this.process.view_name === '' || this.process.api_name === '' || typeof this.process.variant_tree === 'undefined' ||
+          !snake.test(this.process.api_name) || this.processes.map(t => t.api_name).includes(this.process.api_name) ||
+          this.processes.map(t => t.view_name).includes(this.process.view_name) || this.process.view_name.length > 40 ||
+          this.process.api_name.length > 30;
     },
     disabledVariants() {
       return this.variants.length < 1;
@@ -267,6 +271,7 @@ export default {
           list: this.variant_selection.list,
           tree: this.process.variant_tree ? this.dbTree() : this.variant_selection.tree
         },
+        solver: this.solver,
         infoTexts: this.infoTexts
       };
       this.$http.post('processes', requestData).

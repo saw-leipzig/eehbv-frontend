@@ -155,7 +155,7 @@
           <v-text-field v-model="currentFunction.aggregate" :label="$t('variants_definition.labels.aggregate_name')"></v-text-field>
         </v-col>
         <v-col cols="3">
-          <v-switch v-model="currentFunction.is_loss" :label="$t('variants_definition.labels.eval_after')"></v-switch>
+          <v-switch v-model="currentFunction.is_loss" :label="$t('variants_definition.labels.target_function')"></v-switch>
         </v-col>
       </v-row>
       <v-row>

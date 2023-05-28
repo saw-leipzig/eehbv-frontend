@@ -24,7 +24,8 @@
       </v-row>
     </v-container>
 
-    <DialogCardEditor v-model="dialogEditFunction" @save="saveFunction" @close="closeEditFunction">
+    <DialogCardEditor v-model="dialogEditFunction" @save="saveFunction" @close="closeEditFunction" :title="functionEditTitle"
+            :info-button="true" @info="infoFunctionOverlay = true" >
       <v-row>
         <v-col cols="6">
           <v-text-field v-model="currentFunction.description" :label="$t('variants_definition.labels.description')"></v-text-field>
@@ -38,6 +39,14 @@
     </DialogCardEditor>
 
     <DialogDelete v-model="dialogDeleteFunction" @abort="closeDeleteFunction" @delete="deleteFunctionConfirm"></DialogDelete>
+
+    <v-overlay :opacity="0.9" :value="infoFunctionOverlay" z-index="3000">
+      <v-container>
+        <div v-html="$t('process_creation.info.add_function')"></div>
+      </v-container>
+      <v-btn color="orange lighten-2" @click="infoFunctionOverlay = false">{{$t('general.dialog.close')}}</v-btn>
+    </v-overlay>
+
   </div>
 </template>
 
@@ -50,6 +59,7 @@ export default {
   data: () => ({
     dialogEditFunction: false,
     dialogDeleteFunction: false,
+    infoFunctionOverlay: false,
     currentFunction: { description: '', func: '' },
     currentFunctionIndex: -1
   }),
@@ -58,6 +68,12 @@ export default {
     value: {
       type: Array,
       required: true
+    }
+  },
+
+  computed: {
+    functionEditTitle() {
+      return this.currentFunctionIndex < 0 ? this.$t('general.editing.create') : this.$t('general.editing.edit');
     }
   },
 
