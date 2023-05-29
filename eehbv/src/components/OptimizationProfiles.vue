@@ -82,7 +82,7 @@
 
     <DialogDelete v-model="dialogDelete" @abort="closeDelete" @delete="deleteItemConfirm"></DialogDelete>
 
-    <v-dialog v-model="variantDialog" width="400">
+    <v-dialog v-if="variants.length > 1" v-model="variantDialog" width="400">
       <template v-slot:activator="{ on, attrs }">
         <v-btn color="green" v-bind="attrs" v-on="on" :disabled="value.length < 1">{{ $t('general.dialog.next') }}</v-btn>
       </template>
@@ -95,6 +95,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-btn else color="green" @click="continueTwo(0)" :disabled="value.length < 1">{{ $t('general.dialog.next') }}</v-btn>
 
     <v-btn text @click="$emit('abort')">
       {{ $t('general.dialog.abort') }}
@@ -138,6 +139,10 @@ export default {
     },
     process: {
       type: Object,
+      required: true
+    },
+    variants: {
+      type: Array,
       required: true
     }
   },

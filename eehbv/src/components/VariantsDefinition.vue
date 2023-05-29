@@ -33,7 +33,8 @@
                       @save="saveVariant" @close="closeEditVariant">
       <v-row>
         <v-col cols="12">
-          <v-text-field v-model="currentVariant.name" :label="$t('variants_definition.labels.description')" counter="60"></v-text-field>
+          <v-text-field v-model="currentVariant.name" :label="$t('variants_definition.labels.description')"
+                        :rules="variant_name_rules" counter="255"></v-text-field>
         </v-col>
         <v-col cols="12">
           <v-card>
@@ -57,10 +58,10 @@
 
         <v-col cols="12">
           <v-card>
-            <v-card-title>Funktionsaufrufe</v-card-title>
+            <v-card-title>{{ $t('variants_definition.labels.function_calls') }}</v-card-title>
             <v-card-text>
                 <v-row v-for="func in currentVariant.variant_functions" :key="func.position">
-                  <v-col cols="9">Funktion: {{func.description}}</v-col>
+                  <v-col cols="9">{{ $t('variants_definition.labels.function') }}: {{func.description}}</v-col>
                   <v-col cols="3">
                     <v-icon small class="mr-2" @click="editFunction(func.position)">mdi-pencil</v-icon>
                     <v-icon small @click="deleteFunction(func.position)">mdi-delete</v-icon>
@@ -75,10 +76,10 @@
 
         <v-col cols="12">
           <v-card>
-            <v-card-title>Einschränkungen</v-card-title>
+            <v-card-title>{{ $t('variants_definition.labels.restrictions') }}</v-card-title>
             <v-card-text>
                 <v-row v-for="(restriction, index) in currentVariant.variant_restrictions" :key="index">
-                  <v-col cols="9">Einschränkung: {{restriction.description}}</v-col>
+                  <v-col cols="9">{{ $t('variants_definition.labels.restriction') }}: {{restriction.description}}</v-col>
                   <v-col cols="3">
                     <v-icon small class="mr-2" @click="editRestriction(index)">mdi-pencil</v-icon>
                     <v-icon small @click="deleteRestriction(index)">mdi-delete</v-icon>
@@ -143,16 +144,18 @@
     <DialogCardEditor v-model="dialogEditFunction" @save="saveFunction" @close="closeEditFunction">
       <v-row>
         <v-col cols="3">
-          <v-text-field v-model="currentFunction.description" :label="$t('variants_definition.labels.description')"></v-text-field>
+          <v-text-field v-model="currentFunction.description" :label="$t('variants_definition.labels.description')"
+                        :error-messages="funcDescErrors"
+                        @input="$v.currentFunction.description.$touch" @blur="$v.currentFunction.description.$touch"></v-text-field>
         </v-col>
         <v-col cols="3">
-          <v-select v-model="currentFunction.eval_after_position" :items="evalAfterSelection" :label="$t('variants_definition.labels.eval_after')"></v-select>
+          <v-select v-model="currentFunction.eval_after_position" :items="evalAfterSelection"
+                    :label="$t('variants_definition.labels.eval_after')"></v-select>
         </v-col>
-<!--        <v-col cols="3">
-          <v-text-field v-model="currentFunction.eval_after_position" type="number" :label="$t('variants_definition.labels.eval_after')"></v-text-field>
-        </v-col>-->
         <v-col cols="3">
-          <v-text-field v-model="currentFunction.aggregate" :label="$t('variants_definition.labels.aggregate_name')"></v-text-field>
+          <v-text-field v-model="currentFunction.aggregate" :label="$t('variants_definition.labels.aggregate_name')"
+                        :error-messages="funcAggErrors"
+                        @input="$v.currentFunction.aggregate.$touch" @blur="$v.currentFunction.aggregate.$touch"></v-text-field>
         </v-col>
         <v-col cols="3">
           <v-switch v-model="currentFunction.is_loss" :label="$t('variants_definition.labels.target_function')"></v-switch>
@@ -160,13 +163,15 @@
       </v-row>
       <v-row>
         <v-col cols="4">
-          <v-select v-model="currentFunction.loss_function_description" :items="functionSelection" :label="$t('variants_definition.labels.function')"></v-select>
+          <v-select v-model="currentFunction.loss_function_description" :items="functionSelection"
+                    :label="$t('variants_definition.labels.function')" :error-messages="funcLfDescErrors"
+                    @input="$v.currentRestriction.loss_function_description.$touch"
+                    @blur="$v.currentRestriction.loss_function_description.$touch"></v-select>
         </v-col>
-<!--        <v-col cols="4">
-          <v-text-field v-model="currentFunction.loss_function_description" :label="$t('variants_definition.labels.function')"></v-text-field>
-        </v-col>-->
         <v-col cols="4">
-          <v-text-field v-model="currentFunction.variable_name" :label="$t('variants_definition.labels.variable_name')"></v-text-field>
+          <v-text-field v-model="currentFunction.variable_name" :label="$t('variants_definition.labels.variable_name')"
+                        :error-messages="funcVarErrors"
+                        @input="$v.currentFunction.variable_name.$touch" @blur="$v.currentFunction.variable_name.$touch"></v-text-field>
         </v-col>
         <v-col cols="4">
           <v-text-field v-model="currentFunction.parameter_list" :label="$t('variants_definition.labels.signature')"></v-text-field>
@@ -179,16 +184,17 @@
     <DialogCardEditor v-model="dialogEditRestriction" @save="saveRestriction" @close="closeEditRestriction">
       <v-row>
         <v-col cols="4">
-          <v-text-field v-model="currentRestriction.description" :label="$t('variants_definition.labels.description')"></v-text-field>
+          <v-text-field v-model="currentRestriction.description" :label="$t('variants_definition.labels.description')"
+                        :error-messages="restrDescErrors"
+                        @input="$v.currentRestriction.description.$touch" @blur="$v.currentRestriction.description.$touch"></v-text-field>
         </v-col>
-<!--        <v-col cols="4">
-          <v-text-field v-model="currentRestriction.eval_after_position" type="number" :label="$t('variants_definition.labels.eval_after')"></v-text-field>
-        </v-col>-->
         <v-col cols="4">
           <v-select v-model="currentRestriction.eval_after_position" :items="evalAfterSelection" :label="$t('variants_definition.labels.eval_after')"></v-select>
         </v-col>
         <v-col cols="4">
-          <v-text-field v-model="currentRestriction.restriction" :label="$t('variants_definition.labels.restriction')"></v-text-field>
+          <v-text-field v-model="currentRestriction.restriction" :label="$t('variants_definition.labels.restriction')"
+                        :error-messages="restrRestrErrors"
+                        @input="$v.currentRestriction.restriction.$touch" @blur="$v.currentRestriction.restriction.$touch"></v-text-field>
         </v-col>
       </v-row>
     </DialogCardEditor>
@@ -208,9 +214,25 @@ import DialogCardEditor from "./DialogCardEditor";
 import {mapGetters} from "vuex";
 import FormulaEditor from "./FormulaEditor";
 import ParameterButton from "./ParameterButton";
+import {maxLength, required} from "vuelidate/lib/validators";
+
 export default {
   name: "VariantsDefinition",
   components: {ParameterButton, FormulaEditor, DialogCardEditor, DialogDelete},
+
+  validations: {
+    currentFunction: {
+      loss_function_description: { required },
+      variable_name: { required, maxLength: maxLength(20) },
+      description: { required, maxLength: maxLength(40) },
+//      parameter_list: { required },
+      aggregate: { required, maxLength: maxLength(30) }
+    },
+    currentRestriction: {
+      description: { required, maxLength: maxLength(40) },
+      restriction: { required }
+    }
+  },
 
   data: () => ({
     dialogEditVariant: false,
@@ -232,6 +254,9 @@ export default {
     currentRestriction: {},
     currentRestrictionIndex:-1,
     currentTargetFunc: [],
+    variant_name_rules: [
+      v => v.length > 0 || this.$t("general.validation.required")
+    ],
 //    targetFunctions: [],
 //    targetPythonStyle: [],
 //    currentTargetPythonStyle: false
@@ -255,8 +280,9 @@ export default {
   computed: {
     ...mapGetters(['componentTypes']),
     disabledSaveVariant() {
-      return (this.currentVariant.target_func === '' && this.currentVariant.target_func_python === '') ||
-          this.currentVariant.name === '' ||  this.currentVariant.variant_components.length < 1;
+      return this.currentVariant.name === '' ||  this.currentVariant.variant_components.length < 1
+          ||  this.currentVariant.variant_functions.length < 1;
+          //|| (this.currentVariant.target_func === '' && this.currentVariant.target_func_python === '');
     },
     disabledEditFunc() {
       return this.currentVariant.name === '' || this.currentVariant.variant_components.length < 1;
@@ -288,6 +314,46 @@ export default {
     signature() {
       return '(' + this.process.process_parameters.map(p => p.variable_name).join(', ') + ', ' +
           this.currentVariant.variant_components.map(c => c.variable_name).join(', ') + ')'
+    },
+    funcDescErrors() {
+      let errors = [];
+      if (!this.$v.currentFunction.description.$dirty) return errors;
+      !this.$v.currentFunction.description.required && errors.push(this.$t('general.validation.required'));
+      !this.$v.currentFunction.description.maxLength && errors.push(this.$t('general.validation.max40'));
+      return errors;
+    },
+    funcLfDescErrors() {
+      let errors = [];
+      if (!this.$v.currentFunction.loss_function_description.$dirty) return errors;
+      !this.$v.currentFunction.loss_function_description.required && errors.push(this.$t('general.validation.required'));
+      return errors;
+    },
+    funcVarErrors() {
+      let errors = [];
+      if (!this.$v.currentFunction.variable_name.$dirty) return errors;
+      !this.$v.currentFunction.variable_name.required && errors.push(this.$t('general.validation.required'));
+      !this.$v.currentFunction.variable_name.maxLength && errors.push(this.$t('general.validation.max20'));
+      return errors;
+    },
+    funcAggErrors() {
+      let errors = [];
+      if (!this.$v.currentFunction.aggregate.$dirty) return errors;
+      !this.$v.currentFunction.aggregate.required && errors.push(this.$t('general.validation.required'));
+      !this.$v.currentFunction.aggregate.maxLength && errors.push(this.$t('general.validation.max30'));
+      return errors;
+    },
+    restrDescErrors() {
+      let errors = [];
+      if (!this.$v.currentRestriction.description.$dirty) return errors;
+      !this.$v.currentRestriction.description.required && errors.push(this.$t('general.validation.required'));
+      !this.$v.currentRestriction.description.maxLength && errors.push(this.$t('general.validation.max40'));
+      return errors;
+    },
+    restrRestrErrors() {
+      let errors = [];
+      if (!this.$v.currentRestriction.restriction.$dirty) return errors;
+      !this.$v.currentRestriction.restriction.required && errors.push(this.$t('general.validation.required'));
+      return errors;
     }
   },
 
@@ -386,6 +452,10 @@ export default {
       this.dialogEditFunction = true;
     },
     saveFunction() {
+      this.$v.currentFunction.$touch();
+      if (this.$v.currentFunction.$invalid) {
+        return;
+      }
       if (this.currentFunctionIndex < 0) {
         this.currentVariant.variant_functions.push(this.currentFunction);
       } else {
@@ -424,6 +494,10 @@ export default {
       this.dialogEditRestriction = true;
     },
     saveRestriction() {
+      this.$v.currentRestriction.$touch();
+      if (this.$v.currentRestriction.$invalid) {
+        return;
+      }
       if (this.currentRestrictionIndex < 0) {
         this.currentVariant.variant_restrictions.push(this.currentRestriction);
       } else {

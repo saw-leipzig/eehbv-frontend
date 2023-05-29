@@ -58,7 +58,7 @@
             </v-stepper-content>
 
             <v-stepper-content step="2">
-              <EditNewWrapper :context-new="true" :info-text="info[1]" :disabled="disabledProcess"
+              <EditNewWrapper :context-new="true" :info-text="info[1]" :disabled="disabledFunctions"
                               :title="$t('process_creation.labels.functions')" @ok="continueTwo" @abort="abort">
                 <FunctionsDefinition v-model="functions"></FunctionsDefinition>
               </EditNewWrapper>
@@ -173,7 +173,7 @@ export default {
 
     if (this.varTesting) {  // Test variant selection settings, predefined data
       this.process = Object.assign({},{
-        api_name: 'edge_banding', variant_tree: false, view_name: 'Kantenanleimmaschine',
+        api_name: 'edge_banding_test', variant_tree: false, view_name: 'Kantenanleimmaschine_Test',
         process_parameters:[
             { name: 'Fräsbreite', variable_name: 'p_milling_width', unit: 'mm', material_properties_id: null,
              dependent: false, derived_parameter: null, dependency: null }
@@ -238,12 +238,18 @@ export default {
           this.processes.map(t => t.view_name).includes(this.process.view_name) || this.process.view_name.length > 40 ||
           this.process.api_name.length > 30;
     },
+    disabledFunctions() {
+      return this.functions.length < 1;
+    },
     disabledVariants() {
       return this.variants.length < 1;
     }
   },
 
   methods: {
+    specialParametersPresent() {
+      return this.process.process_parameters.some(p => p.dependent || p.restricting);
+    },
     continueOne() {
       this.def_step = 2;
     },
@@ -251,10 +257,12 @@ export default {
       this.def_step = 3;
     },
     continueThree() {
-      this.def_step = 4;
+      this.def_step = this.variants.length > 1
+          ? 4
+          : (this.specialParametersPresent() ? 5 : 6);
     },
     continueFour() {
-      this.def_step = this.process.process_parameters.some(p => p.dependent || p.restricting) ? 5 : 6;
+      this.def_step = this.specialParametersPresent() ? 5 : 6;
     },
     continueFive() {
       this.def_step = 6;

@@ -187,7 +187,7 @@ export default {
     refreshData() {
       this.$http.get('components/' + this.$route.params.type).
               then((response) => {
-                  this.componentData = [...response.data.components];
+                  this.componentData = [...response.data.components];   // slice/push
                   this.notify(this.$t('components.msg.loaded'));
           }).catch(error => {});
     },

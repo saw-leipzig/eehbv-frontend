@@ -28,12 +28,16 @@
             :info-button="true" @info="infoFunctionOverlay = true" >
       <v-row>
         <v-col cols="6">
-          <v-text-field v-model="currentFunction.description" :label="$t('variants_definition.labels.description')"></v-text-field>
+          <v-text-field v-model="currentFunction.description" :label="$t('variants_definition.labels.description')"
+                        :error-messages="descErrors"
+                        @input="$v.currentFunction.description.$touch" @blur="$v.currentFunction.description.$touch"></v-text-field>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="12">
-          <v-textarea v-model="currentFunction.func" :label="$t('variants_definition.labels.python_function')"></v-textarea>
+          <v-textarea v-model="currentFunction.func" :label="$t('variants_definition.labels.python_function')"
+                      :error-messages="funcErrors"
+                      @input="$v.currentFunction.func.$touch" @blur="$v.currentFunction.func.$touch"></v-textarea>
         </v-col>
       </v-row>
     </DialogCardEditor>
@@ -53,9 +57,18 @@
 <script>
 import DialogCardEditor from "./DialogCardEditor";
 import DialogDelete from "./DialogDelete";
+import { required, maxLength } from "vuelidate/lib/validators";
 export default {
   name: "FunctionsDefinition",
   components: {DialogDelete, DialogCardEditor},
+
+  validations: {
+    currentFunction: {
+      description: { required, maxLength: maxLength(30) },
+      func: { required }
+    }
+  },
+
   data: () => ({
     dialogEditFunction: false,
     dialogDeleteFunction: false,
@@ -74,6 +87,19 @@ export default {
   computed: {
     functionEditTitle() {
       return this.currentFunctionIndex < 0 ? this.$t('general.editing.create') : this.$t('general.editing.edit');
+    },
+    descErrors() {
+      let errors = [];
+      if (!this.$v.currentFunction.description.$dirty) return errors;
+      !this.$v.currentFunction.description.required && errors.push(this.$t('general.validation.required'));
+      !this.$v.currentFunction.description.maxLength && errors.push(this.$t('general.validation.max30'));
+      return errors;
+    },
+    funcErrors() {
+      let errors = [];
+      if (!this.$v.currentFunction.func.$dirty) return errors;
+      !this.$v.currentFunction.func.required && errors.push(this.$t('general.validation.required'));
+      return errors;
     }
   },
 
@@ -87,6 +113,10 @@ export default {
       this.dialogEditFunction = true;
     },
     saveFunction() {
+      this.$v.currentFunction.$touch();
+      if (this.$v.currentFunction.$invalid) {
+        return;
+      }
       if (this.currentFunctionIndex < 0) {
         this.value.push(this.currentFunction);
       } else {

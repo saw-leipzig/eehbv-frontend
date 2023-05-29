@@ -43,7 +43,7 @@
             </v-stepper-content>
 
             <v-stepper-content step="2">
-              <optimization-profiles v-model="profiles" :process="process" :info-texts="infoTexts" @continue="continueTwo" @abort="abort"></optimization-profiles>
+              <optimization-profiles v-model="profiles" :process="process" :variants="variants" :info-texts="infoTexts" @continue="continueTwo" @abort="abort"></optimization-profiles>
             </v-stepper-content>
 
             <v-stepper-content step="3">
@@ -150,7 +150,12 @@ export default {
     },
     continueTwo(select_type) {
       this.variant_select_type = select_type;
-      this.def_step = 3;
+      if (this.variants.length > 1) {
+        this.def_step = 3;
+      } else {
+        this.selection.push(this.variants[0].id);
+        this.def_step = 4;
+      }
     },
     continueThree(param) {
       if (param) {
