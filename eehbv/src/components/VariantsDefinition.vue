@@ -128,13 +128,19 @@
     <DialogCardEditor v-model="dialogEditComponent" @save="saveComponent" @close="closeEditComponent">
       <v-row>
         <v-col cols="4">
-          <v-select v-model="currentComponent.component_api_name" :items="componentSelection" :label="$t('variants_definition.labels.component_type')"></v-select>
+          <v-select v-model="currentComponent.component_api_name" :items="componentSelection"
+                    :label="$t('variants_definition.labels.component_type')" :error-messages="compApiErrors"
+                        @input="$v.currentComponent.component_api_name.$touch" @blur="$v.currentComponent.component_api_name.$touch"></v-select>
         </v-col>
         <v-col cols="4">
-          <v-text-field v-model="currentComponent.description" :label="$t('variants_definition.labels.description')"></v-text-field>
+          <v-text-field v-model="currentComponent.description" :label="$t('variants_definition.labels.description')"
+                        :error-messages="compDescErrors"
+                        @input="$v.currentComponent.description.$touch" @blur="$v.currentComponent.description.$touch"></v-text-field>
         </v-col>
         <v-col cols="4">
-          <v-text-field v-model="currentComponent.variable_name" :label="$t('variants_definition.labels.variable_name')"></v-text-field>
+          <v-text-field v-model="currentComponent.variable_name" placeholder="c_xyz"
+                        :label="$t('variants_definition.labels.variable_name')" :error-messages="compVarErrors"
+                        @input="$v.currentComponent.variable_name.$touch" @blur="$v.currentComponent.variable_name.$touch"></v-text-field>
         </v-col>
       </v-row>
     </DialogCardEditor>
@@ -214,13 +220,21 @@ import DialogCardEditor from "./DialogCardEditor";
 import {mapGetters} from "vuex";
 import FormulaEditor from "./FormulaEditor";
 import ParameterButton from "./ParameterButton";
-import {maxLength, required} from "vuelidate/lib/validators";
+import {helpers, maxLength, required} from "vuelidate/lib/validators";
+const snake = helpers.regex('snake', /^[a-z_]*$/);
 
 export default {
   name: "VariantsDefinition",
   components: {ParameterButton, FormulaEditor, DialogCardEditor, DialogDelete},
 
   validations: {
+    currentComponent: {
+      component_api_name: { required },
+      variable_name: { required, maxLength: maxLength(30), snake,
+        varConvention(variable_name) { return variable_name.startsWith('c_'); }
+      },
+      description: { required, maxLength: maxLength(40) }
+    },
     currentFunction: {
       loss_function_description: { required },
       variable_name: { required, maxLength: maxLength(20) },
@@ -314,6 +328,28 @@ export default {
     signature() {
       return '(' + this.process.process_parameters.map(p => p.variable_name).join(', ') + ', ' +
           this.currentVariant.variant_components.map(c => c.variable_name).join(', ') + ')'
+    },
+    compDescErrors() {
+      let errors = [];
+      if (!this.$v.currentComponent.description.$dirty) return errors;
+      !this.$v.currentComponent.description.required && errors.push(this.$t('general.validation.required'));
+      !this.$v.currentComponent.description.maxLength && errors.push(this.$t('general.validation.max40'));
+      return errors;
+    },
+    compApiErrors() {
+      let errors = [];
+      if (!this.$v.currentComponent.component_api_name.$dirty) return errors;
+      !this.$v.currentComponent.description.required && errors.push(this.$t('general.validation.required'));
+      return errors;
+    },
+    compVarErrors() {
+      let errors = [];
+      if (!this.$v.currentComponent.variable_name.$dirty) return errors;
+      !this.$v.currentComponent.variable_name.required && errors.push(this.$t('general.validation.required'));
+      !this.$v.currentComponent.variable_name.maxLength && errors.push(this.$t('general.validation.max30'));
+      !this.$v.currentComponent.variable_name.snake && errors.push(this.$t('general.validation.snake'));
+      !this.$v.currentComponent.variable_name.varConvention && errors.push(this.$t('process_definition.validation.startsWithCLowDash'));
+      return errors;
     },
     funcDescErrors() {
       let errors = [];
@@ -410,6 +446,10 @@ export default {
       this.dialogEditComponent = true;
     },
     saveComponent() {
+      this.$v.currentComponent.$touch();
+      if (this.$v.currentComponent.$invalid) {
+        return;
+      }
       if (this.currentComponentIndex < 0) {
         this.currentVariant.variant_components.push(this.currentComponent);
       } else {

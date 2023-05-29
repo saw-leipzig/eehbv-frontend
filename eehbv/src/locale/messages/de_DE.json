@@ -185,7 +185,8 @@
     },
     "validation": {
       "startsWithPLowDash": "Muss mit p_ beginnen",
-      "startsWithDLowDash": "Muss mit d_ beginnen"
+      "startsWithDLowDash": "Muss mit d_ beginnen",
+      "startsWithCLowDash": "Muss mit c_ beginnen"
     }
   },
   "variants_definition": {
