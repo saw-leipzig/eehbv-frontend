@@ -274,7 +274,14 @@ export default {
       let requestData = {
         process: this.process,
         functions: this.functions,
-        variants: this.variants,
+        //variants: this.variants,
+        variants: this.variants.map(v => { return { name: v.name, variant_components: v.variant_components,
+          variant_restrictions: v.variant_restrictions,
+          variant_functions: v.variant_functions.map(f => { return {position: f.position, is_loss: f.is_loss,
+            loss_function_description: f.loss_function_description, variable_name: f.variable_name, description: f.description,
+            eval_after_position: f.eval_after_position, aggregate: f.aggregate,
+            parameter_list: '(' + f.parameter_list.map(p => p.value).join(', ') + ')'}})
+        }; }),
         variant_selection: {
           list: this.variant_selection.list,
           tree: this.process.variant_tree ? this.dbTree() : this.variant_selection.tree

@@ -40,6 +40,11 @@
                       @input="$v.currentFunction.func.$touch" @blur="$v.currentFunction.func.$touch"></v-textarea>
         </v-col>
       </v-row>
+      <v-row>
+        <v-col cols="12">
+          <v-textarea v-model="currentFunction.doc" :label="$t('variants_definition.labels.function_doc')"></v-textarea>
+        </v-col>
+      </v-row>
     </DialogCardEditor>
 
     <DialogDelete v-model="dialogDeleteFunction" @abort="closeDeleteFunction" @delete="deleteFunctionConfirm"></DialogDelete>
@@ -73,7 +78,7 @@ export default {
     dialogEditFunction: false,
     dialogDeleteFunction: false,
     infoFunctionOverlay: false,
-    currentFunction: { description: '', func: '' },
+    currentFunction: { description: '', func: '', doc: '' },
     currentFunctionIndex: -1
   }),
 
@@ -108,7 +113,7 @@ export default {
       this.currentFunctionIndex = index;
       this.currentFunction = Object.assign({},
           index < 0 ?
-              { description: '', func: '' } :
+              { description: '', func: '', doc: '' } :
               this.value[index]);
       this.dialogEditFunction = true;
     },

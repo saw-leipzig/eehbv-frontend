@@ -130,7 +130,7 @@
         <v-col cols="4">
           <v-select v-model="currentComponent.component_api_name" :items="componentSelection"
                     :label="$t('variants_definition.labels.component_type')" :error-messages="compApiErrors"
-                        @input="$v.currentComponent.component_api_name.$touch" @blur="$v.currentComponent.component_api_name.$touch"></v-select>
+                    @input="$v.currentComponent.component_api_name.$touch" @blur="$v.currentComponent.component_api_name.$touch"></v-select>
         </v-col>
         <v-col cols="4">
           <v-text-field v-model="currentComponent.description" :label="$t('variants_definition.labels.description')"
@@ -147,7 +147,7 @@
 
     <DialogDelete v-model="dialogDeleteComponent" @abort="closeDeleteComponent" @delete="deleteComponentConfirm"></DialogDelete>
 
-    <DialogCardEditor v-model="dialogEditFunction" @save="saveFunction" @close="closeEditFunction">
+    <DialogCardEditor v-model="dialogEditFunction" @save="saveFunction" @close="closeEditFunction" :disabled-save="disabledSaveFunc">
       <v-row>
         <v-col cols="3">
           <v-text-field v-model="currentFunction.description" :label="$t('variants_definition.labels.description')"
@@ -171,18 +171,28 @@
         <v-col cols="4">
           <v-select v-model="currentFunction.loss_function_description" :items="functionSelection"
                     :label="$t('variants_definition.labels.function')" :error-messages="funcLfDescErrors"
-                    @input="$v.currentRestriction.loss_function_description.$touch"
-                    @blur="$v.currentRestriction.loss_function_description.$touch"></v-select>
+                    @input="$v.currentFunction.loss_function_description.$touch"
+                    @blur="$v.currentFunction.loss_function_description.$touch"></v-select>
         </v-col>
         <v-col cols="4">
           <v-text-field v-model="currentFunction.variable_name" :label="$t('variants_definition.labels.variable_name')"
-                        :error-messages="funcVarErrors"
+                        placeholder="l_xyz" :error-messages="funcVarErrors"
                         @input="$v.currentFunction.variable_name.$touch" @blur="$v.currentFunction.variable_name.$touch"></v-text-field>
         </v-col>
         <v-col cols="4">
           <v-text-field v-model="currentFunction.parameter_list" :label="$t('variants_definition.labels.signature')"></v-text-field>
         </v-col>
       </v-row>
+      <v-row>
+        <v-col cols="12">
+          <v-textarea v-model="functionCall" :label="$t('variants_definition.labels.call')" :disabled="true"></v-textarea>
+        </v-col>
+      </v-row>
+<!--      <v-row>
+        <v-col cols="12">
+          <v-textarea v-model="selectedFunctionDoc" :label="$t('variants_definition.labels.function_doc')" :disabled="true"></v-textarea>
+        </v-col>
+      </v-row>-->
     </DialogCardEditor>
 
     <DialogDelete v-model="dialogDeleteFunction" @abort="closeDeleteFunction" @delete="deleteFunctionConfirm"></DialogDelete>
@@ -237,7 +247,7 @@ export default {
     },
     currentFunction: {
       loss_function_description: { required },
-      variable_name: { required, maxLength: maxLength(20) },
+      variable_name: { required, maxLength: maxLength(20), snake },
       description: { required, maxLength: maxLength(40) },
 //      parameter_list: { required },
       aggregate: { required, maxLength: maxLength(30) }
@@ -263,8 +273,11 @@ export default {
     currentVariantIndex: -1,
     currentComponent: { position: 0, component_api_name: '', variable_name: '', description: '' },
     currentComponentIndex: -1,
-    currentFunction: {},
+    currentFunction: { position: 0, loss_function_description: '', variable_name: '',
+                description: '', parameter_list: [], eval_after_position: 0, aggregate: '', is_loss: true },
     currentFunctionIndex: -1,
+    currentParameter: {},
+    currentParameterIndex: -1,
     currentRestriction: {},
     currentRestrictionIndex:-1,
     currentTargetFunc: [],
@@ -301,6 +314,11 @@ export default {
     disabledEditFunc() {
       return this.currentVariant.name === '' || this.currentVariant.variant_components.length < 1;
     },
+    disabledSaveFunc() {
+      return this.currentFunction.description === '' || this.currentFunction.aggregate === '' ||
+          this.currentFunction.loss_function_description === '' || this.currentFunction.variable_name === '' ||
+          this.currentFunction.parameter_list.length < 1;
+    },
     functionParams() {
       return [ this.process.process_parameters.map(p => { return { formula: p.variable_name, view: p.name + ' [' + p.unit + ']' }}),
         this.currentVariant.variant_components.map(c => {
@@ -322,12 +340,20 @@ export default {
     evalAfterSelection() {
       return [ { text: '-', value: 0 }, ...this.currentVariant.variant_components.map((c, i) => { return { text: c.description, value: i+1 } })];
     },
+    selectedFunctionDoc() {
+      return this.currentFunction.loss_function_description === '' ?
+          '' :
+          this.loss_functions.filter(f => this.currentFunction.loss_function_description === f.description)[0].doc;
+    },
     variantEditTitle() {
       return this.currentVariantIndex < 0 ? this.$t('general.editing.create') : this.$t('general.editing.edit');
     },
     signature() {
       return '(' + this.process.process_parameters.map(p => p.variable_name).join(', ') + ', ' +
           this.currentVariant.variant_components.map(c => c.variable_name).join(', ') + ')'
+    },
+    functionCall() {
+      return this.currentFunction.variable_name + ' = (' + this.currentFunction.parameter_list.map(p => p.name) + ')';
     },
     compDescErrors() {
       let errors = [];
@@ -369,6 +395,7 @@ export default {
       if (!this.$v.currentFunction.variable_name.$dirty) return errors;
       !this.$v.currentFunction.variable_name.required && errors.push(this.$t('general.validation.required'));
       !this.$v.currentFunction.variable_name.maxLength && errors.push(this.$t('general.validation.max20'));
+      !this.$v.currentFunction.variable_name.snake && errors.push(this.$t('general.validation.snake'));
       return errors;
     },
     funcAggErrors() {
@@ -487,7 +514,7 @@ export default {
       this.currentFunction = Object.assign({},
           index < 0 ?
               { position: this.currentVariant.variant_functions.length, loss_function_description: '', variable_name: '',
-                description: '', parameter_list: '', eval_after_position: 0, aggregate: '', is_loss: true } :
+                description: '', parameter_list: [], eval_after_position: 0, aggregate: '', is_loss: true } :
               this.currentVariant.variant_functions[index]);
       this.dialogEditFunction = true;
     },
