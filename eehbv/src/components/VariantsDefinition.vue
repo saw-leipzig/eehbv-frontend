@@ -147,7 +147,8 @@
 
     <DialogDelete v-model="dialogDeleteComponent" @abort="closeDeleteComponent" @delete="deleteComponentConfirm"></DialogDelete>
 
-    <DialogCardEditor v-model="dialogEditFunction" @save="saveFunction" @close="closeEditFunction" :disabled-save="disabledSaveFunc">
+    <DialogCardEditor v-model="dialogEditFunction" @save="saveFunction" @close="closeEditFunction"
+                      :info-button="true" @info="infoFunctionOverlay = true" :disabled-save="disabledSaveFunc">
       <v-row>
         <v-col cols="3">
           <v-text-field v-model="currentFunction.description" :label="$t('variants_definition.labels.description')"
@@ -159,6 +160,12 @@
                     :label="$t('variants_definition.labels.eval_after')"></v-select>
         </v-col>
         <v-col cols="3">
+          <v-combobox v-model="currentFunction.aggregate"
+                      :items="aggregateOptions"
+                      :label="$t('variants_definition.labels.aggregate_name')"
+                      :error-messages="funcAggErrors" @input="$v.currentFunction.aggregate.$touch" @blur="$v.currentFunction.aggregate.$touch"
+                      type="text"
+          ></v-combobox>
           <v-text-field v-model="currentFunction.aggregate" :label="$t('variants_definition.labels.aggregate_name')"
                         :error-messages="funcAggErrors"
                         @input="$v.currentFunction.aggregate.$touch" @blur="$v.currentFunction.aggregate.$touch"></v-text-field>
@@ -180,22 +187,46 @@
                         @input="$v.currentFunction.variable_name.$touch" @blur="$v.currentFunction.variable_name.$touch"></v-text-field>
         </v-col>
         <v-col cols="4">
-          <v-text-field v-model="currentFunction.parameter_list" :label="$t('variants_definition.labels.signature')"></v-text-field>
+          <v-btn color="green" @click="dialogEditParams = true" :disabled="disabledEditParams">Parameter bearbeiten</v-btn>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="12">
-          <v-textarea v-model="functionCall" :label="$t('variants_definition.labels.call')" :disabled="true"></v-textarea>
+          <v-textarea rows="3" v-model="functionCall" :label="$t('variants_definition.labels.call')" :disabled="true"></v-textarea>
         </v-col>
       </v-row>
-<!--      <v-row>
+      <v-row>
         <v-col cols="12">
-          <v-textarea v-model="selectedFunctionDoc" :label="$t('variants_definition.labels.function_doc')" :disabled="true"></v-textarea>
+          <v-textarea rows="3" v-model="functionCallView" :label="$t('variants_definition.labels.call')" :disabled="true"></v-textarea>
         </v-col>
-      </v-row>-->
+      </v-row>
     </DialogCardEditor>
 
     <DialogDelete v-model="dialogDeleteFunction" @abort="closeDeleteFunction" @delete="deleteFunctionConfirm"></DialogDelete>
+
+    <DialogCardEditor v-model="dialogEditParams" title="Parameter bearbeiten" @save="setParams" @close="dismissParams">
+      <v-row>
+        <v-col cols="12">
+          <v-textarea rows="3" v-model="selectedFunctionDoc" :label="$t('variants_definition.labels.function_doc')" :disabled="true"></v-textarea>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12">
+          Parameter hinzufügen <ParameterButton :params="functionParams" :tick="true" @click="addParam"></ParameterButton>
+        </v-col>
+      </v-row>
+      <v-row v-for="(param, index) in currentFunction.parameter_list" :key="index">
+        <v-col cols="5">
+          <v-text-field v-model="param.name" :disabled="true"></v-text-field>
+        </v-col>
+        <v-col cols="5">
+          <v-text-field v-model="param.value" :disabled="true"></v-text-field>
+        </v-col>
+        <v-col cols="2">
+          <v-icon small @click="deleteParam(index)">mdi-delete</v-icon>
+        </v-col>
+      </v-row>
+    </DialogCardEditor>
 
     <DialogCardEditor v-model="dialogEditRestriction" @save="saveRestriction" @close="closeEditRestriction">
       <v-row>
@@ -216,6 +247,18 @@
     </DialogCardEditor>
 
     <DialogDelete v-model="dialogDeleteRestriction" @abort="closeDeleteRestriction" @delete="deleteRestrictionConfirm"></DialogDelete>
+
+    <v-dialog v-model="dialogRestrictionFormula" max-width="600px">
+      <FormulaEditor :title="$t('variants_definition.labels.restriction')" v-model="currentRestriction.restriction"
+                     :parameters="functionParams" :inequality="true" @closeDialog="closeRestrictionFormula"></FormulaEditor>
+    </v-dialog>
+
+    <v-overlay :opacity="0.9" :value="infoFunctionOverlay" z-index="3000">
+      <v-container>
+        <div v-html="$t('process_creation.info.function_call')"></div>
+      </v-container>
+      <v-btn color="orange lighten-2" @click="infoFunctionOverlay = false">{{$t('general.dialog.close')}}</v-btn>
+    </v-overlay>
 
 <!--    <v-dialog v-model="dialogEditTargetFunc" max-width="600px">
       <FormulaEditor :title="$t('variants_definition.labels.target_function')" v-model="currentTargetFunc" :inequality="false"
@@ -267,6 +310,8 @@ export default {
     dialogDeleteFunction: false,
     dialogEditRestriction: false,
     dialogDeleteRestriction: false,
+    dialogEditParams: false,
+    dialogRestrictionFormula: false,
 //    dialogEditTargetFunc: false,
 //    currentVariant: { name: '', target_func: '', target_func_python: '', variant_components: [] },
     currentVariant: { name: '', variant_components: [], variant_functions: [], variant_restrictions: [] },
@@ -276,14 +321,13 @@ export default {
     currentFunction: { position: 0, loss_function_description: '', variable_name: '',
                 description: '', parameter_list: [], eval_after_position: 0, aggregate: '', is_loss: true },
     currentFunctionIndex: -1,
-    currentParameter: {},
-    currentParameterIndex: -1,
     currentRestriction: {},
     currentRestrictionIndex:-1,
     currentTargetFunc: [],
     variant_name_rules: [
       v => v.length > 0 || this.$t("general.validation.required")
     ],
+    infoFunctionOverlay: false,
 //    targetFunctions: [],
 //    targetPythonStyle: [],
 //    currentTargetPythonStyle: false
@@ -319,8 +363,12 @@ export default {
           this.currentFunction.loss_function_description === '' || this.currentFunction.variable_name === '' ||
           this.currentFunction.parameter_list.length < 1;
     },
+    disabledEditParams() {
+      return this.currentFunction.loss_function_description === '';
+    },
     functionParams() {
-      return [ this.process.process_parameters.map(p => { return { formula: p.variable_name, view: p.name + ' [' + p.unit + ']' }}),
+      return [ [this.currentVariant.variant_functions.map(f => { return { formula: f.variable_name, view: f.description }}),
+          this.process.process_parameters.map(p => { return { formula: p.variable_name, view: p.name + ' [' + p.unit + ']' }})].flat(),
         this.currentVariant.variant_components.map(c => {
           return { formula: c.variable_name, view: c.description,
             parameters: this.componentTypes.filter(t => t.api_name === c.component_api_name).
@@ -345,6 +393,14 @@ export default {
           '' :
           this.loss_functions.filter(f => this.currentFunction.loss_function_description === f.description)[0].doc;
     },
+    aggregateOptions() {
+      let options = [...new Set(
+          [...this.currentVariant.variant_functions.map(f => f.aggregate),
+            ...this.value.map(v => v.variant_functions.map(vf => vf.aggregate)).flat()
+          ]
+      )];
+      return options.map(o => { return { text: o, value: o } });
+    },
     variantEditTitle() {
       return this.currentVariantIndex < 0 ? this.$t('general.editing.create') : this.$t('general.editing.edit');
     },
@@ -352,8 +408,12 @@ export default {
       return '(' + this.process.process_parameters.map(p => p.variable_name).join(', ') + ', ' +
           this.currentVariant.variant_components.map(c => c.variable_name).join(', ') + ')'
     },
+    functionCallView() {
+      return this.currentFunction.description + ' = ' + this.currentFunction.loss_function_description +
+          '(' + this.currentFunction.parameter_list.map(p => p.name).join(', ') + ')';
+    },
     functionCall() {
-      return this.currentFunction.variable_name + ' = (' + this.currentFunction.parameter_list.map(p => p.name) + ')';
+      return this.currentFunction.variable_name + ' = target_func(' + this.currentFunction.parameter_list.map(p => p.value).join(', ') + ')';
     },
     compDescErrors() {
       let errors = [];
@@ -550,6 +610,20 @@ export default {
       this.currentVariant.variant_functions.forEach((f, i) => {
         if (i > this.currentFunctionIndex) f.position = this.currentFunctionIndex;
       } );
+    },
+
+    addParam(val) {
+      this.currentFunction.parameter_list.push({ name: val.view, value: val.formula });
+    },
+    deleteParam(index) {
+      this.currentFunction.parameter_list.splice(index, 1);
+    },
+    setParams() {
+      this.dialogEditParams = false;
+    },
+    dismissParams() {
+      this.currentFunction.parameter_list.splice(0, this.currentFunction.parameter_list.length);
+      this.dialogEditParams = false;
     },
 
     editRestriction(index) {

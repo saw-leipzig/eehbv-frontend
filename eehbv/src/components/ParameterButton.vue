@@ -40,6 +40,11 @@ export default {
       type: Boolean,
       required: false,
       default: false
+    },
+    tick: {
+      type: Boolean,
+      required: false,
+      default: true
     }
   },
 
@@ -77,7 +82,9 @@ export default {
       this.$emit('click',
           item.id.startsWith('0') ?
               { formula: item.formula, view: item.view, state: 'V' } :
-              { formula: parent.formula + '[' +item.formula + ']', view: parent.view + '[' + item.view + ']', state: 'V'}
+              ( this.tick ?
+                  { formula: parent.formula + "['" +item.formula + "']", view: parent.view + "['" + item.view + "']", state: 'V' } :
+                  { formula: parent.formula + '[' +item.formula + ']', view: parent.view + '[' + item.view + ']', state: 'V' })
       );
       this.menu = false;
     },

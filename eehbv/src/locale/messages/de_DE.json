@@ -133,6 +133,7 @@
       "add_function": "<p><em>Funktion bearbeiten</em></p><p>Die <strong>Beschreibung</strong> sollte angeben, was die Funktion berechnen kann.</p><p>Die <strong>Python-Funktion</strong> muss ein nach Python-Regeln formatiertes Modul sein. Es kann Importe und mehrere Funktionen enthalten. Aber es muss eine Funktion mit dem Namen <code>target_func</code> und beliebiger Signatur vorhanden sein, die der Einstiegspunkt in die Berechnung ist. Es ist empfehlenswert, das Modul in einem externen Editor zu schreiben und in dieses Feld zu kopieren.</p><p>Unter <strong>Dokumentation</strong> kann eine Beschreibung der zu übergebenden Parameter und ihrer Einheiten hinterlegt werden, um diese bei der Definition der Funktionsaufrufe direkt zur Verfügung zu haben.</p>",
       "variants": "<p>Infotext <em>Varientendefintion</em></p>",
       "variant": "<p>Infotext <em>Definition einer Variante</em></p>",
+      "function_call": "<p><em>Funktionsaufruf bearbeiten</em></p>",
       "selection": "<p>Infotext <em>Variantenauswahldefinition</em></p>",
       "parameters": "<p>Infotext <em>Parameter-Abhängigkeiten</em></p>",
       "solver": "<p>Infotext <em>Solver</em></p>",

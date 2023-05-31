@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="value" max-width="400px">
+  <v-dialog v-model="value" max-width="390px">
     <v-card>
       <v-card-title class="headline">{{$t('general.dialog.confirm_delete')}}</v-card-title>
       <v-card-actions>

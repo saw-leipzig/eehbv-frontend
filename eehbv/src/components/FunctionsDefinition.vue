@@ -36,13 +36,14 @@
       <v-row>
         <v-col cols="12">
           <v-textarea v-model="currentFunction.func" :label="$t('variants_definition.labels.python_function')"
-                      :error-messages="funcErrors"
+                      placeholder="def target_func(a, b):\n   return a * b" :error-messages="funcErrors"
                       @input="$v.currentFunction.func.$touch" @blur="$v.currentFunction.func.$touch"></v-textarea>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="12">
-          <v-textarea v-model="currentFunction.doc" :label="$t('variants_definition.labels.function_doc')"></v-textarea>
+          <v-textarea v-model="currentFunction.doc" placeholder="a: width / mm, b: height / mm"
+                      :label="$t('variants_definition.labels.function_doc')"></v-textarea>
         </v-col>
       </v-row>
     </DialogCardEditor>

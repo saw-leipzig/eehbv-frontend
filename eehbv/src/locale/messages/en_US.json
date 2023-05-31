@@ -133,6 +133,7 @@
       "add_function": "<p><em>Edit function</em></p><p>The <strong>description</strong> should indicate what the function can compute.</p><p>The <strong>Python function</strong> has to be a module properly formatted in Python style. It can contain imports and several function definitions. But there must be one function with the name <code>target_func</code> and an arbitrary signature which will be the entry point for this module. It is strongly suggested to write the functions in an external editor and copy the text into this field.</p><p>A description of the parameters and their units can be given in <strong>Documentation</strong> for reference in the later definition of function calls.</p>",
       "variants": "<p>Info <em>definition of variants</em></p>",
       "variant": "<p>Info <em>definition of variant</em></p>",
+      "function_call": "<p><em>Edit function call</em></p>",
       "selection": "<p>Info <em>definition of variant selection</em></p>",
       "parameters": "<p>Info <em>definition of parameter dependencies</em></p>",
       "solver": "<p>Info <em>Solver</em></p>",
