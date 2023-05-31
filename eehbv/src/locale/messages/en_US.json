@@ -231,6 +231,9 @@
     "labels": {
       "define_opt": "Define Optimization",
       "process_list": "Process list"
+    },
+    "tooltip": {
+      "delete": "Delete process type. Attention: Can not be revoked!"
     }
   },
   "optimization": {

@@ -231,6 +231,9 @@
     "labels": {
       "define_opt": "Optimierung definieren",
       "process_list": "Prozessliste"
+    },
+    "tooltip": {
+      "delete": "Prozesstyp löschen. Achtung: Kann nicht rückgängig gemacht werden!"
     }
   },
   "optimization": {
