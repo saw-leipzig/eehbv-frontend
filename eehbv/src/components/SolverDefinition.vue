@@ -1,7 +1,12 @@
 <template>
   <div>
     <h2>{{$t('solver_definition.labels.code')}}</h2>
-    <v-textarea v-model="value"></v-textarea>
+    <v-row>
+      <v-col cols="12">
+        <v-switch v-model="value.use_solver" :label="$t('solver_definition.labels.custom')"></v-switch>
+      </v-col>
+    </v-row>
+    <v-textarea v-model="value.code"></v-textarea>
   </div>
 </template>
 
@@ -14,7 +19,7 @@ export default {
 
   props: {
     value: {
-      type: String,
+      type: Object,
       required: true
     }
   }

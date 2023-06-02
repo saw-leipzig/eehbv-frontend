@@ -238,10 +238,19 @@
         <v-col cols="4">
           <v-select v-model="currentRestriction.eval_after_position" :items="evalAfterSelection" :label="$t('variants_definition.labels.eval_after')"></v-select>
         </v-col>
-        <v-col cols="4">
+<!--        <v-col cols="4">
           <v-text-field v-model="currentRestriction.restriction" :label="$t('variants_definition.labels.restriction')"
                         :error-messages="restrRestrErrors"
                         @input="$v.currentRestriction.restriction.$touch" @blur="$v.currentRestriction.restriction.$touch"></v-text-field>
+        </v-col>-->
+        <v-col cols="2">
+          <v-btn color="green" @click="dialogRestrictionFormula = true">Bedingung bearbeiten</v-btn>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12">
+          <v-text-field v-model="conditionView" :label="$t('variants_definition.labels.restriction')"
+                        :disabled="true"></v-text-field>
         </v-col>
       </v-row>
     </DialogCardEditor>
@@ -249,7 +258,7 @@
     <DialogDelete v-model="dialogDeleteRestriction" @abort="closeDeleteRestriction" @delete="deleteRestrictionConfirm"></DialogDelete>
 
     <v-dialog v-model="dialogRestrictionFormula" max-width="600px">
-      <FormulaEditor :title="$t('variants_definition.labels.restriction')" v-model="currentRestriction.restriction"
+      <FormulaEditor :title="$t('variants_definition.labels.restriction')" v-model="currentRestriction.restriction_model"
                      :parameters="functionParams" :inequality="true" @closeDialog="closeRestrictionFormula"></FormulaEditor>
     </v-dialog>
 
@@ -321,7 +330,7 @@ export default {
     currentFunction: { position: 0, loss_function_description: '', variable_name: '',
                 description: '', parameter_list: [], eval_after_position: 0, aggregate: '', is_loss: true },
     currentFunctionIndex: -1,
-    currentRestriction: {},
+    currentRestriction: { description: '', restriction: '', restriction_model: [] },
     currentRestrictionIndex:-1,
     currentTargetFunc: [],
     variant_name_rules: [
@@ -365,6 +374,9 @@ export default {
     },
     disabledEditParams() {
       return this.currentFunction.loss_function_description === '';
+    },
+    disabledSaveRestr() {
+      return this.currentRestriction.description === '' || this.currentRestriction.restriction_model.length < 1;
     },
     functionParams() {
       return [ [this.currentVariant.variant_functions.map(f => { return { formula: f.variable_name, view: f.description }}),
@@ -414,6 +426,9 @@ export default {
     },
     functionCall() {
       return this.currentFunction.variable_name + ' = target_func(' + this.currentFunction.parameter_list.map(p => p.value).join(', ') + ')';
+    },
+    conditionView() {
+      return '0 ' + this.currentRestriction.restriction_model.map(p => p.formula).join(' ');
     },
     compDescErrors() {
       let errors = [];
@@ -630,7 +645,7 @@ export default {
       this.currentRestrictionIndex = index;
       this.currentRestriction = Object.assign({},
           index < 0 ?
-              { restriction: '', eval_after_position: 0, description: '' } :
+              { restriction: '', eval_after_position: 0, description: '', restriction_model: [] } :
               this.currentVariant.variant_restrictions[index]);
       this.dialogEditRestriction = true;
     },
@@ -661,6 +676,16 @@ export default {
     closeDeleteRestriction() {
       this.dialogDeleteRestriction = false;
     },
+    closeRestrictionFormula(val) {
+      if (val) {
+        this.currentRestriction.restriction = this.conditionView;
+            //JSON.parse(JSON.stringify(this.currentCondition));
+      }
+      this.dialogRestrictionFormula = false;
+    },
+/*    conditionView(condition) {
+      return '0 ' + condition.map(p => p.formula).join(' ');
+    },*/
 
 /*    editTargetFunc() {
       // ToDo: check condition

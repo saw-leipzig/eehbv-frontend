@@ -227,7 +227,8 @@
   },
   "solver_definition": {
     "labels": {
-      "code": "Solver-Code"
+      "code": "Solver-Code",
+      "custom": "Benutze spezifischen Solver"
     }
   },
   "process_overview": {

@@ -151,7 +151,7 @@ export default {
           ]
         }]
       },
-      solver: '',
+      solver: { code: '', use_solver: false },
       infoTexts: [ {type: 1, type_id: null, position: 3, text: ''}, {type: 1, type_id: null, position: 4, text: ''} ],
       info: [
           this.$t("process_creation.info.definition"),

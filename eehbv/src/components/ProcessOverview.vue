@@ -34,7 +34,7 @@
         </v-row>
       </v-container>
 
-      <v-row v-if="userRole > 2">
+      <v-row v-if="userRole > 1">
         <v-col cols="10"></v-col>
         <v-col cols="2">
           <v-tooltip top color="red">
@@ -42,7 +42,7 @@
               <v-btn color="red" @click="dialogDeleteProcess = true" v-bind="attrs" v-on="on"><v-icon>mdi-delete</v-icon></v-btn>
             </template>
             <v-icon>mdi-alert-outline</v-icon>
-            <span>Prozesstyp löschen. Achtung: Kann nicht rückgängig gemacht werden!</span>
+            <span>{{ $t('process_creation.tooltip.delete') }}</span>
           </v-tooltip>
         </v-col>
       </v-row>
