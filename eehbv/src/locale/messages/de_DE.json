@@ -34,7 +34,9 @@
     },
     "bool": {
       "yes": "Ja",
-      "no": "Nein"
+      "no": "Nein",
+      "true": "wahr",
+      "false": "falsch"
     },
     "domain": {
       "property": "Eigenschaft",
@@ -113,6 +115,9 @@
       "manufacturer": "Hersteller",
       "model": "Modell",
       "price": "Preis"
+    },
+    "tooltip": {
+      "delete": "Komponententyp löschen. Achtung: Kann nicht rückgängig gemacht werden!"
     }
   },
   "material_properties": {

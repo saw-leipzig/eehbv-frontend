@@ -51,8 +51,7 @@
                         @blur="$v.editedParam.defaults.$touch"></v-text-field>
         </v-col>
       </v-row>
-      <v-row>
-        <!-- ToDo: Tooltips -->
+<!--      <v-row>
         <v-col cols="6">
           <v-switch v-model="editedParam.general" :label="$t('process_definition.labels.general')"></v-switch>
         </v-col>
@@ -66,7 +65,7 @@
                         counter="20" :error-messages="derivedErrors" @input="$v.editedParam.derived_parameter.$touch"
                         @blur="$v.editedParam.derived_parameter.$touch" placeholder="d_xyz_abc"></v-text-field>
         </v-col>
-      </v-row>
+      </v-row>-->
     </DialogCardEditor>
 
     <DialogDelete v-model="dialogDeleteParam" @abort="closeDeleteParam" @delete="deleteParamConfirm"></DialogDelete>
@@ -104,11 +103,11 @@ export default {
       material_properties_id: {},
       defaults: { maxLength: maxLength(30), numbers },
       dependent: {},
-      derived_parameter: { maxLength: maxLength(40), snake,
-        derConvention(derived_parameter) { return !this.editedParam.dependent ||
-            (derived_parameter !== null && derived_parameter.startsWith('d_'));
-      }
-      }
+/*      derived_parameter: { maxLength: maxLength(40), snake,
+          derConvention(derived_parameter) { return !this.editedParam.dependent ||
+              (derived_parameter !== null && derived_parameter.startsWith('d_'));
+        }
+      }*/
     }
   },
 
@@ -134,8 +133,8 @@ export default {
       ],
       editedParamIndex: -1,
       editedParam: {
-        name: '', variable_name: '', unit: '', material_properties_id: null,
-        dependent: false, derived_parameter: null, dependency: null
+        name: '', variable_name: '', unit: '', material_properties_id: null//,
+        //dependent: false, derived_parameter: null, dependency: null
       }
     }
   },
@@ -182,14 +181,14 @@ export default {
       !this.$v.editedParam.defaults.numbers && errors.push(this.$t('general.validation.numbers'));
       return errors;
     },
-    derivedErrors() {
+/*    derivedErrors() {
       let errors = [];
       if (!this.$v.editedParam.derived_parameter.$dirty) return errors;
       !this.$v.editedParam.derived_parameter.maxLength && errors.push(this.$t('general.validation.max20'));
       !this.$v.editedParam.derived_parameter.snake && errors.push(this.$t('general.validation.snake'));
       !this.$v.editedParam.derived_parameter.derConvention && errors.push(this.$t('process_definition.validation.startsWithDLowDash'));
       return errors;
-    },
+    },*/
     unitErrors() {
       let errors = [];
       if (!this.$v.editedParam.name.$dirty) return errors;
@@ -209,9 +208,11 @@ export default {
       this.editedParamIndex = index;
       this.editedParam = Object.assign({},
           index < 0 ?
-                { name: '', variable_name: '', unit: '', material_properties_id: null, restricting: false,
-                  dependent: false, derived_parameter: null, min_column: null, max_column: null, dependency: null } :
+                { name: '', variable_name: '', unit: '', material_properties_id: null } :
                 this.value.process_parameters[index]);
+/*                { name: '', variable_name: '', unit: '', material_properties_id: null, restricting: false,
+                  dependent: false, derived_parameter: null, min_column: null, max_column: null, dependency: null } :
+                this.value.process_parameters[index]);*/
       this.editedParamIndex = index;
       this.dialogEditParam = true;
     },

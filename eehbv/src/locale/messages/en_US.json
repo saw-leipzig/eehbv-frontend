@@ -34,7 +34,9 @@
     },
     "bool": {
       "yes": "Yes",
-      "no": "No"
+      "no": "No",
+      "true": "true",
+      "false": "false"
     },
     "domain": {
       "property": "Property",
@@ -113,6 +115,9 @@
       "manufacturer": "Manufacturer",
       "model": "Model",
       "price": "Price"
+    },
+    "tooltip": {
+      "delete": "Delete component type. Attention: Can not be revoked!"
     }
   },
   "material_properties": {

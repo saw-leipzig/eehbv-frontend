@@ -88,6 +88,17 @@
     </DialogCardEditor>
 
     <component-button></component-button>
+    <!-- ToDo: implement delete logic
+    <div v-if="showDeleteType" class="text-right">
+      <v-tooltip top color="red">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn color="red" @click="dialogDeleteType = true" v-bind="attrs" v-on="on"><v-icon>mdi-delete</v-icon></v-btn>
+        </template>
+        <v-icon>mdi-alert-outline</v-icon>
+        <span>{{ $t('component_overview.tooltip.delete') }}</span>
+      </v-tooltip>
+    </div>-->
+
   </v-container>
 </template>
 
@@ -108,12 +119,14 @@ export default {
     dialogModel: false,
     dialogDelete: false,
     dialogImport: false,
+    dialogDeleteType: false,
     editedIndex: -1,
     editedItem: {
     },
     defaultItem: {
     },
     componentData: [],
+    usedComponents: [],
     importFile: null
   }),
 
@@ -144,6 +157,9 @@ export default {
     },
     manufacturers() {
       return this.componentData.map(c => { return { text: c.manufacturer, value: c.manufacturer } });
+    },
+    showDeleteType() {
+      return this.userRole > 1 && !this.usedComponents.includes(this.comp.api_name);
     }
   },
 
@@ -188,6 +204,11 @@ export default {
       this.$http.get('components/' + this.$route.params.type).
               then((response) => {
                   this.componentData = [...response.data.components];   // slice/push
+                  this.notify(this.$t('components.msg.loaded'));
+          }).catch(error => {});
+      this.$http.get('processes/used-component-types').
+              then((response) => {
+                  this.usedComponents = [...response.data];   // slice/push
                   this.notify(this.$t('components.msg.loaded'));
           }).catch(error => {});
     },

@@ -34,7 +34,7 @@
       <v-row>
         <v-col cols="12">
           <v-text-field v-model="currentVariant.name" :label="$t('variants_definition.labels.description')"
-                        :rules="variant_name_rules" counter="255"></v-text-field>
+                        counter="255"></v-text-field>
         </v-col>
         <v-col cols="12">
           <v-card>
@@ -166,9 +166,6 @@
                       :error-messages="funcAggErrors" @input="$v.currentFunction.aggregate.$touch" @blur="$v.currentFunction.aggregate.$touch"
                       type="text"
           ></v-combobox>
-          <v-text-field v-model="currentFunction.aggregate" :label="$t('variants_definition.labels.aggregate_name')"
-                        :error-messages="funcAggErrors"
-                        @input="$v.currentFunction.aggregate.$touch" @blur="$v.currentFunction.aggregate.$touch"></v-text-field>
         </v-col>
         <v-col cols="3">
           <v-switch v-model="currentFunction.is_loss" :label="$t('variants_definition.labels.target_function')"></v-switch>
@@ -211,8 +208,17 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="12">
-          Parameter hinzufügen <ParameterButton :params="functionParams" :tick="true" @click="addParam"></ParameterButton>
+        <v-col cols="3">
+          Parameter hinzufügen
+        </v-col>
+        <v-col cols="3">
+          <ParameterButton :params="functionParams" :tick="true" @click="addParam"></ParameterButton>
+        </v-col>
+        <v-col cols="3">
+          <FunctionButton :boolVals="true" @click="addBoolParam"></FunctionButton>
+        </v-col>
+        <v-col cols="3">
+          <v-text-field type="number" v-model="paramNumber" append-icon="mdi-check" @click:append="addNumberParam"></v-text-field>
         </v-col>
       </v-row>
       <v-row v-for="(param, index) in currentFunction.parameter_list" :key="index">
@@ -279,6 +285,7 @@
 <script>
 import DialogDelete from "./DialogDelete";
 import DialogCardEditor from "./DialogCardEditor";
+import FunctionButton from "./FunctionButton";
 import {mapGetters} from "vuex";
 import FormulaEditor from "./FormulaEditor";
 import ParameterButton from "./ParameterButton";
@@ -287,7 +294,7 @@ const snake = helpers.regex('snake', /^[a-z_]*$/);
 
 export default {
   name: "VariantsDefinition",
-  components: {ParameterButton, FormulaEditor, DialogCardEditor, DialogDelete},
+  components: {FunctionButton, ParameterButton, FormulaEditor, DialogCardEditor, DialogDelete},
 
   validations: {
     currentComponent: {
@@ -333,9 +340,7 @@ export default {
     currentRestriction: { description: '', restriction: '', restriction_model: [] },
     currentRestrictionIndex:-1,
     currentTargetFunc: [],
-    variant_name_rules: [
-      v => v.length > 0 || this.$t("general.validation.required")
-    ],
+    paramNumber: 0,
     infoFunctionOverlay: false,
 //    targetFunctions: [],
 //    targetPythonStyle: [],
@@ -628,6 +633,13 @@ export default {
     },
 
     addParam(val) {
+      this.currentFunction.parameter_list.push({ name: val.view, value: val.formula });
+    },
+    addNumberParam(val) {
+      this.currentFunction.parameter_list.push({ name: val, value: val });
+      this.paramNumber = 0;
+    },
+    addBoolParam(val) {
       this.currentFunction.parameter_list.push({ name: val.view, value: val.formula });
     },
     deleteParam(index) {

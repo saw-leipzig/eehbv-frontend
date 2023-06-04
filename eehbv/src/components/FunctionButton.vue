@@ -2,7 +2,7 @@
   <v-menu :disabled="disabled" open-on-hover offset-y>
     <template v-slot:activator="{ on, attrs}">
       <v-btn :disabled="disabled" icon v-bind="attrs" v-on="on">
-        <v-icon>{{trigonometric ? 'mdi-alpha' : 'mdi-function'}}</v-icon>
+        <v-icon>{{trigonometric ? 'mdi-alpha' : (boolVals ? 'mdi-yin-yang' : 'mdi-function')}}</v-icon>
       </v-btn>
     </template>
     <v-list>
@@ -34,12 +34,21 @@ export default {
         { formula: 'arccos(', view: 'arccos', state: 'O' },
         { formula: 'arctan(', view: 'arctan', state: 'O' },
         { formula: 'cot(', view: 'cot', state: 'O' }
+      ],
+      boolValues: [
+        { formula: 'True', view: this.$t('general.bool.true'), state: 'V' },
+        { formula: 'False', view: this.$t('general.bool.false'), state: 'V' }
       ]
     }
   },
 
   props: {
     trigonometric: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    boolVals: {
       type: Boolean,
       required: false,
       default: false
@@ -53,7 +62,7 @@ export default {
 
   computed: {
     functions() {
-      return this.trigonometric ? this.trigonometricFunctions : this.basicFunctions;
+      return this.trigonometric ? this.trigonometricFunctions : (this.boolVals ? this.boolValues : this.basicFunctions);
     }
   }
 }

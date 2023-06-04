@@ -2,7 +2,8 @@
   <v-card>
     <v-card-title v-if="showTitle">{{$t('process_definition.titles.parameters')}}</v-card-title>
     <v-card-text>
-      <v-card v-for="(param, index) in parameters" :key="index" v-if="!showDep || !showEdit || param.restricting || param.dependent">
+<!--      <v-card v-for="(param, index) in parameters" :key="index" v-if="!showDep || !showEdit || param.restricting || param.dependent">-->
+      <v-card v-for="(param, index) in parameters" :key="index" v-if="!showEdit">
         <v-container>
           <v-row>
             <v-col cols="3">{{ $t('process_definition.labels.name') }}: {{ param.name }}</v-col>
@@ -18,13 +19,14 @@
           </v-row>
           <v-row>
             <v-col cols="3">{{ $t('process_definition.labels.general') }} : {{ boolText(param.general) }}</v-col>
-            <v-col cols="3">{{ $t('process_definition.labels.dependent') }} : {{ boolText(param.dependent) }}</v-col>
+            <v-col cols="3"></v-col>
+<!--            <v-col cols="3">{{ $t('process_definition.labels.dependent') }} : {{ boolText(param.dependent) }}</v-col>-->
             <v-col cols="6">{{ $t('process_definition.labels.defaults') }} : {{ param.defaults }}</v-col>
           </v-row>
-          <v-row v-if="param.dependent">
+<!--          <v-row v-if="param.dependent">
             <v-col cols="3">{{$t('process_definition.labels.derived_param') }} : {{ param.derived_parameter }}</v-col>
             <v-col cols="9" v-if="showDep">{{$t('process_definition.labels.dependency') }} : {{ param.dependency }}</v-col>
-          </v-row>
+          </v-row>-->
         </v-container>
       </v-card>
     </v-card-text>

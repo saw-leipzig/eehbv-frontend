@@ -82,24 +82,27 @@
 
     <DialogDelete v-model="dialogDelete" @abort="closeDelete" @delete="deleteItemConfirm"></DialogDelete>
 
-    <v-dialog v-if="variants.length > 1" v-model="variantDialog" width="400">
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn color="green" v-bind="attrs" v-on="on" :disabled="value.length < 1">{{ $t('general.dialog.next') }}</v-btn>
-      </template>
+    <div v-if="variants.length > 1">
+      <v-dialog v-model="variantDialog" width="400">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn color="green" v-bind="attrs" v-on="on" :disabled="value.length < 1">{{ $t('general.dialog.next') }}</v-btn>
+        </template>
 
-      <v-card>
-        <v-card-title>{{ $t('process_creation.labels.variant_selection_definition') }}</v-card-title>
-        <v-card-actions>
-          <v-btn @click="continueTwo(0)">{{ $t('optimization.labels.pick_list') }}</v-btn>
-          <v-btn @click="continueTwo(1)">{{ $t('optimization.labels.questions') }}</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    <v-btn else color="green" @click="continueTwo(0)" :disabled="value.length < 1">{{ $t('general.dialog.next') }}</v-btn>
+        <v-card>
+          <v-card-title>{{ $t('process_creation.labels.variant_selection_definition') }}</v-card-title>
+          <v-card-actions>
+            <v-btn @click="continueTwo(0)">{{ $t('optimization.labels.pick_list') }}</v-btn>
+            <v-btn @click="continueTwo(1)">{{ $t('optimization.labels.questions') }}</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <v-btn text @click="$emit('abort')">{{ $t('general.dialog.abort') }}</v-btn>
+    </div>
+    <div v-else>
+      <v-btn else color="green" @click="continueTwo(0)" :disabled="value.length < 1">{{ $t('general.dialog.next') }}</v-btn>
+      <v-btn text @click="$emit('abort')">{{ $t('general.dialog.abort') }}</v-btn>
+    </div>
 
-    <v-btn text @click="$emit('abort')">
-      {{ $t('general.dialog.abort') }}
-    </v-btn>
   </div>
 </template>
 

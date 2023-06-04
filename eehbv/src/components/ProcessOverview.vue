@@ -42,7 +42,7 @@
               <v-btn color="red" @click="dialogDeleteProcess = true" v-bind="attrs" v-on="on"><v-icon>mdi-delete</v-icon></v-btn>
             </template>
             <v-icon>mdi-alert-outline</v-icon>
-            <span>{{ $t('process_creation.tooltip.delete') }}</span>
+            <span>{{ $t('process_overview.tooltip.delete') }}</span>
           </v-tooltip>
         </v-col>
       </v-row>

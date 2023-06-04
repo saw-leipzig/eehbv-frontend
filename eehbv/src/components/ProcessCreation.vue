@@ -32,11 +32,11 @@
 
             <v-divider></v-divider>
 
-            <v-stepper-step :complete="def_step > 5" step="5" color="green">
+<!--            <v-stepper-step :complete="def_step > 5" step="5" color="green">
               {{$t("process_creation.labels.parameters")}}
             </v-stepper-step>
 
-            <v-divider></v-divider>
+            <v-divider></v-divider>-->
 
             <v-stepper-step :complete="def_step > 6" step="6" color="green">
               {{$t("process_creation.labels.solver_definition")}}
@@ -79,12 +79,12 @@
               </EditNewWrapper>
             </v-stepper-content>
 
-            <v-stepper-content step="5">
+<!--            <v-stepper-content step="5">
               <EditNewWrapper :context-new="true" :info-text="info[4]" :title="$t('process_definition.titles.parameters')"
                               @ok="continueFive" @abort="abort">
                 <ParameterDependencyDefinition v-model="process.process_parameters" :variants="variants"></ParameterDependencyDefinition>
               </EditNewWrapper>
-            </v-stepper-content>
+            </v-stepper-content>-->
 
             <v-stepper-content step="6">
               <EditNewWrapper :context-new="true" :info-text="info[5]" @ok="continueSix" @abort="abort">
@@ -175,8 +175,8 @@ export default {
       this.process = Object.assign({},{
         api_name: 'edge_banding_test', variant_tree: false, view_name: 'Kantenanleimmaschine_Test',
         process_parameters:[
-            { name: 'Fräsbreite', variable_name: 'p_milling_width', unit: 'mm', material_properties_id: null,
-             dependent: false, derived_parameter: null, dependency: null }
+            { name: 'Fräsbreite', variable_name: 'p_milling_width', unit: 'mm', material_properties_id: null }//,
+//             dependent: false, derived_parameter: null, dependency: null }
         ]
       });
       this.variants.push(...[
@@ -259,10 +259,10 @@ export default {
     continueThree() {
       this.def_step = this.variants.length > 1
           ? 4
-          : (this.specialParametersPresent() ? 5 : 6);
+          : 6;// (this.specialParametersPresent() ? 5 : 6);
     },
     continueFour() {
-      this.def_step = this.specialParametersPresent() ? 5 : 6;
+      this.def_step = 6;// this.specialParametersPresent() ? 5 : 6;
     },
     continueFive() {
       this.def_step = 6;
