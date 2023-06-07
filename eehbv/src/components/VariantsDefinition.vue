@@ -69,7 +69,7 @@
                 </v-row>
             </v-card-text>
               <v-card-actions>
-                <v-btn color="green" @click="editFunction(-1)"><v-icon>mdi-plus</v-icon></v-btn>
+                <v-btn color="green" @click="editFunction(-1)" :disabled="disabledEditFunc"><v-icon>mdi-plus</v-icon></v-btn>
               </v-card-actions>
           </v-card>
         </v-col>
@@ -221,7 +221,7 @@
           <v-text-field type="number" v-model="paramNumber" append-icon="mdi-check" @click:append="addNumberParam"></v-text-field>
         </v-col>
       </v-row>
-      <v-row v-for="(param, index) in currentFunction.parameter_list" :key="index">
+      <v-row v-for="(param, index) in currentFunction.parameter_list_model" :key="index">
         <v-col cols="5">
           <v-text-field v-model="param.name" :disabled="true"></v-text-field>
         </v-col>
@@ -234,7 +234,7 @@
       </v-row>
     </DialogCardEditor>
 
-    <DialogCardEditor v-model="dialogEditRestriction" @save="saveRestriction" @close="closeEditRestriction">
+    <DialogCardEditor v-model="dialogEditRestriction" @save="saveRestriction" @close="closeEditRestriction" :disabled-save="disabledSaveRestr">
       <v-row>
         <v-col cols="4">
           <v-text-field v-model="currentRestriction.description" :label="$t('variants_definition.labels.description')"
@@ -244,11 +244,6 @@
         <v-col cols="4">
           <v-select v-model="currentRestriction.eval_after_position" :items="evalAfterSelection" :label="$t('variants_definition.labels.eval_after')"></v-select>
         </v-col>
-<!--        <v-col cols="4">
-          <v-text-field v-model="currentRestriction.restriction" :label="$t('variants_definition.labels.restriction')"
-                        :error-messages="restrRestrErrors"
-                        @input="$v.currentRestriction.restriction.$touch" @blur="$v.currentRestriction.restriction.$touch"></v-text-field>
-        </v-col>-->
         <v-col cols="2">
           <v-btn color="green" @click="dialogRestrictionFormula = true">Bedingung bearbeiten</v-btn>
         </v-col>
@@ -275,10 +270,6 @@
       <v-btn color="orange lighten-2" @click="infoFunctionOverlay = false">{{$t('general.dialog.close')}}</v-btn>
     </v-overlay>
 
-<!--    <v-dialog v-model="dialogEditTargetFunc" max-width="600px">
-      <FormulaEditor :title="$t('variants_definition.labels.target_function')" v-model="currentTargetFunc" :inequality="false"
-                     :parameters="functionParams" :signature="'f' + signature + ' ='" @closeDialog="closeTargetFunc"></FormulaEditor>
-    </v-dialog>-->
   </div>
 </template>
 
@@ -328,23 +319,18 @@ export default {
     dialogDeleteRestriction: false,
     dialogEditParams: false,
     dialogRestrictionFormula: false,
-//    dialogEditTargetFunc: false,
-//    currentVariant: { name: '', target_func: '', target_func_python: '', variant_components: [] },
     currentVariant: { name: '', variant_components: [], variant_functions: [], variant_restrictions: [] },
     currentVariantIndex: -1,
     currentComponent: { position: 0, component_api_name: '', variable_name: '', description: '' },
     currentComponentIndex: -1,
-    currentFunction: { position: 0, loss_function_description: '', variable_name: '',
-                description: '', parameter_list: [], eval_after_position: 0, aggregate: '', is_loss: true },
+    currentFunction: { position: 0, loss_function_description: '', variable_name: '', description: '',
+                parameter_list: '', parameter_list_model: [], eval_after_position: 0, aggregate: '', is_loss: true },
     currentFunctionIndex: -1,
     currentRestriction: { description: '', restriction: '', restriction_model: [] },
     currentRestrictionIndex:-1,
     currentTargetFunc: [],
     paramNumber: 0,
     infoFunctionOverlay: false,
-//    targetFunctions: [],
-//    targetPythonStyle: [],
-//    currentTargetPythonStyle: false
   }),
 
   props: {
@@ -367,7 +353,6 @@ export default {
     disabledSaveVariant() {
       return this.currentVariant.name === '' ||  this.currentVariant.variant_components.length < 1
           ||  this.currentVariant.variant_functions.length < 1;
-          //|| (this.currentVariant.target_func === '' && this.currentVariant.target_func_python === '');
     },
     disabledEditFunc() {
       return this.currentVariant.name === '' || this.currentVariant.variant_components.length < 1;
@@ -375,7 +360,7 @@ export default {
     disabledSaveFunc() {
       return this.currentFunction.description === '' || this.currentFunction.aggregate === '' ||
           this.currentFunction.loss_function_description === '' || this.currentFunction.variable_name === '' ||
-          this.currentFunction.parameter_list.length < 1;
+          this.currentFunction.parameter_list_model.length < 1;
     },
     disabledEditParams() {
       return this.currentFunction.loss_function_description === '';
@@ -413,7 +398,7 @@ export default {
     aggregateOptions() {
       let options = [...new Set(
           [...this.currentVariant.variant_functions.map(f => f.aggregate),
-            ...this.value.map(v => v.variant_functions.map(vf => vf.aggregate)).flat()
+            ...this.value.map(v => v.variant_functions.map(vf => vf.aggregate)).flat(2)
           ]
       )];
       return options.map(o => { return { text: o, value: o } });
@@ -421,16 +406,15 @@ export default {
     variantEditTitle() {
       return this.currentVariantIndex < 0 ? this.$t('general.editing.create') : this.$t('general.editing.edit');
     },
-    signature() {
-      return '(' + this.process.process_parameters.map(p => p.variable_name).join(', ') + ', ' +
-          this.currentVariant.variant_components.map(c => c.variable_name).join(', ') + ')'
-    },
     functionCallView() {
       return this.currentFunction.description + ' = ' + this.currentFunction.loss_function_description +
-          '(' + this.currentFunction.parameter_list.map(p => p.name).join(', ') + ')';
+          '(' + this.currentFunction.parameter_list_model.map(p => p.name).join(', ') + ')';
     },
     functionCall() {
-      return this.currentFunction.variable_name + ' = target_func(' + this.currentFunction.parameter_list.map(p => p.value).join(', ') + ')';
+      return this.currentFunction.variable_name + ' = target_func' + this.signatureView;
+    },
+    signatureView() {
+      return '(' + this.currentFunction.parameter_list_model.map(p => p.value).join(', ') + ')';
     },
     conditionView() {
       return '0 ' + this.currentRestriction.restriction_model.map(p => p.formula).join(' ');
@@ -594,7 +578,7 @@ export default {
       this.currentFunction = Object.assign({},
           index < 0 ?
               { position: this.currentVariant.variant_functions.length, loss_function_description: '', variable_name: '',
-                description: '', parameter_list: [], eval_after_position: 0, aggregate: '', is_loss: true } :
+                description: '', parameter_list: '', parameter_list_model: [], eval_after_position: 0, aggregate: '', is_loss: true } :
               this.currentVariant.variant_functions[index]);
       this.dialogEditFunction = true;
     },
@@ -633,23 +617,24 @@ export default {
     },
 
     addParam(val) {
-      this.currentFunction.parameter_list.push({ name: val.view, value: val.formula });
+      this.currentFunction.parameter_list_model.push({ name: val.view, value: val.formula });
     },
-    addNumberParam(val) {
-      this.currentFunction.parameter_list.push({ name: val, value: val });
+    addNumberParam() {
+      this.currentFunction.parameter_list_model.push({ name: this.paramNumber, value: this.paramNumber });
       this.paramNumber = 0;
     },
     addBoolParam(val) {
-      this.currentFunction.parameter_list.push({ name: val.view, value: val.formula });
+      this.currentFunction.parameter_list_model.push({ name: val.view, value: val.formula });
     },
     deleteParam(index) {
-      this.currentFunction.parameter_list.splice(index, 1);
+      this.currentFunction.parameter_list_model.splice(index, 1);
     },
     setParams() {
+      this.currentFunction.parameter_list = this.signatureView
       this.dialogEditParams = false;
     },
     dismissParams() {
-      this.currentFunction.parameter_list.splice(0, this.currentFunction.parameter_list.length);
+      this.currentFunction.parameter_list_model.splice(0, this.currentFunction.parameter_list_model.length);
       this.dialogEditParams = false;
     },
 
@@ -695,32 +680,8 @@ export default {
       }
       this.dialogRestrictionFormula = false;
     },
-/*    conditionView(condition) {
-      return '0 ' + condition.map(p => p.formula).join(' ');
-    },*/
-
-/*    editTargetFunc() {
-      // ToDo: check condition
-      if (this.currentTargetFunc.length < 1 && this.currentVariantIndex < this.targetFunctions.length && this.currentVariantIndex > -1) {
-        this.currentTargetFunc.push(...JSON.parse(JSON.stringify(this.targetFunctions[this.currentVariantIndex])));
-      }
-      this.dialogEditTargetFunc = true;
-    },
-    closeTargetFunc(save) {
-      if (save) {
-        this.currentVariant.target_func = this.currentTargetFunc.map(t => t.formula).join(' ');
-      }
-      this.dialogEditTargetFunc = false;
-    },*/
     componentViewName(api_name) {
       return this.componentTypes.find(c => c.api_name === api_name).view_name;
-    },
-    addParameter(val) {
-      this.currentVariant.target_func_python += val.formula;
-    },
-    insertSignature() {
-      console.log('SIG - ' + this.currentVariant.target_func_python);
-      this.currentVariant.target_func_python += 'def target_func' + this.signature + ':';
     }
   }
 }

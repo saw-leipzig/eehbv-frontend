@@ -28,9 +28,7 @@ export default {
     ...mapGetters(['userRole', 'componentTypes'])
   },
   created() {
-    if (this.componentTypes.length < 1) {
-      this.$store.dispatch('initComponents');
-    }
+    this.$store.dispatch('initComponents');
   },
 
   methods: {

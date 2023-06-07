@@ -6,6 +6,7 @@
     },
     "validation": {
       "required": "Erforderlich",
+      "max15": "Darf max. 15 Zeichen lang sein",
       "max20": "Darf max. 20 Zeichen lang sein",
       "max30": "Darf max. 30 Zeichen lang sein",
       "max40": "Darf max. 40 Zeichen lang sein",

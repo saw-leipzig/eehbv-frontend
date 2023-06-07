@@ -1,110 +1,102 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col cols="12"><h2>{{$t("process_creation.titles.new_process")}}</h2></v-col>
-    </v-row>
+  <div>
+    <v-container>
+      <v-row>
+        <v-col cols="12"><h2>{{$t("process_creation.titles.new_process")}}</h2></v-col>
+      </v-row>
 
-    <v-row>
-      <v-col cols="12">
-        <v-stepper v-model="def_step">
-          <v-stepper-header>
-            <v-stepper-step :complete="def_step > 1" color="green" step="1">
-              {{$t("process_creation.labels.process_definition")}}
-            </v-stepper-step>
+      <v-row>
+        <v-col cols="12">
+          <v-stepper v-model="def_step">
+            <v-stepper-header>
+              <v-stepper-step :complete="def_step > 1" color="green" step="1" @click="jumpStep(1)">
+                {{$t("process_creation.labels.process_definition")}}
+              </v-stepper-step>
 
-            <v-divider></v-divider>
+              <v-divider></v-divider>
 
-            <v-stepper-step :complete="def_step > 2" color="green" step="2">
-              {{$t("process_creation.labels.functions")}}
-            </v-stepper-step>
+              <v-stepper-step :complete="def_step > 2" color="green" step="2" @click="jumpStep(2)">
+                {{$t("process_creation.labels.functions")}}
+              </v-stepper-step>
 
-            <v-divider></v-divider>
+              <v-divider></v-divider>
 
-            <v-stepper-step :complete="def_step > 3" color="green" step="3">
-              {{$t("process_creation.labels.variants_definition")}}
-            </v-stepper-step>
+              <v-stepper-step :complete="def_step > 3" color="green" step="3" @click="jumpStep(3)">
+                {{$t("process_creation.labels.variants_definition")}}
+              </v-stepper-step>
 
-            <v-divider></v-divider>
+              <v-divider></v-divider>
 
-            <v-stepper-step :complete="def_step > 4" step="4" color="green">
-              {{$t("process_creation.labels.variant_selection_definition")}}
-            </v-stepper-step>
+              <v-stepper-step :complete="def_step > 4" step="4" color="green" @click="jumpStep(4)">
+                {{$t("process_creation.labels.variant_selection_definition")}}
+              </v-stepper-step>
 
-            <v-divider></v-divider>
+              <v-divider></v-divider>
 
-<!--            <v-stepper-step :complete="def_step > 5" step="5" color="green">
-              {{$t("process_creation.labels.parameters")}}
-            </v-stepper-step>
+              <v-stepper-step :complete="def_step > 5" step="5" color="green" @click="jumpStep(5)">
+                {{$t("process_creation.labels.solver_definition")}}
+              </v-stepper-step>
 
-            <v-divider></v-divider>-->
+              <v-divider></v-divider>
 
-            <v-stepper-step :complete="def_step > 6" step="6" color="green">
-              {{$t("process_creation.labels.solver_definition")}}
-            </v-stepper-step>
+              <v-stepper-step step="6" color="green" @click="jumpStep(6)">
+                {{$t("process_creation.labels.info_texts_definition")}}
+              </v-stepper-step>
+            </v-stepper-header>
 
-            <v-divider></v-divider>
+            <v-stepper-items>
+              <v-stepper-content step="1">
+                <EditNewWrapper :context-new="true" :info-text="info[0]" :disabled="disabledProcess"
+                                :title="$t('process_creation.titles.process_definition')" @ok="continueOne" @abort="abort">
+                  <ProcessDefinition v-model="process" :processes="processes"></ProcessDefinition>
+                </EditNewWrapper>
+              </v-stepper-content>
 
-            <v-stepper-step step="7" color="green">
-              {{$t("process_creation.labels.info_texts_definition")}}
-            </v-stepper-step>
-          </v-stepper-header>
+              <v-stepper-content step="2">
+                <EditNewWrapper :context-new="true" :info-text="info[1]" :disabled="disabledFunctions"
+                                :title="$t('process_creation.labels.functions')" @ok="continueTwo" @abort="abort">
+                  <FunctionsDefinition v-model="functions"></FunctionsDefinition>
+                </EditNewWrapper>
+              </v-stepper-content>
 
-          <v-stepper-items>
-            <v-stepper-content step="1">
-              <EditNewWrapper :context-new="true" :info-text="info[0]" :disabled="disabledProcess"
-                              :title="$t('process_creation.titles.process_definition')" @ok="continueOne" @abort="abort">
-                <ProcessDefinition v-model="process" :processes="processes"></ProcessDefinition>
-              </EditNewWrapper>
-            </v-stepper-content>
+              <v-stepper-content step="3">
+                <EditNewWrapper :context-new="true" :info-text="info[2]" :disabled="disabledVariants"
+                                :title="$t('process_creation.titles.variants_definition')" @ok="continueThree" @abort="abort">
+                  <VariantsDefinition v-model="variants" :process="process" :loss_functions="functions"></VariantsDefinition>
+                </EditNewWrapper>
+              </v-stepper-content>
 
-            <v-stepper-content step="2">
-              <EditNewWrapper :context-new="true" :info-text="info[1]" :disabled="disabledFunctions"
-                              :title="$t('process_creation.labels.functions')" @ok="continueTwo" @abort="abort">
-                <FunctionsDefinition v-model="functions"></FunctionsDefinition>
-              </EditNewWrapper>
-            </v-stepper-content>
+              <v-stepper-content step="4">
+                <EditNewWrapper :context-new="true" :info-text="info[3]"
+                                :title="process.variant_tree ? $t('process_creation.titles.variant_selection_definition_tree') : $t('process_creation.titles.variant_selection_definition_list')"
+                                @ok="continueFour" @abort="abort">
+                  <VariantSelectionDefinition v-model="variant_selection" :variants="variants" :process="process"></VariantSelectionDefinition>
+                </EditNewWrapper>
+              </v-stepper-content>
 
-            <v-stepper-content step="3">
-              <EditNewWrapper :context-new="true" :info-text="info[2]" :disabled="disabledVariants"
-                              :title="$t('process_creation.titles.variants_definition')" @ok="continueThree" @abort="abort">
-                <VariantsDefinition v-model="variants" :process="process" :loss_functions="functions"></VariantsDefinition>
-              </EditNewWrapper>
-            </v-stepper-content>
+              <v-stepper-content step="5">
+                <EditNewWrapper :context-new="true" :info-text="info[4]" @ok="continueFive" @abort="abort">
+                  <SolverDefinition v-model="solver"></SolverDefinition>
+                </EditNewWrapper>
+              </v-stepper-content>
 
-            <v-stepper-content step="4">
-              <EditNewWrapper :context-new="true" :info-text="info[3]"
-                              :title="process.variant_tree ? $t('process_creation.titles.variant_selection_definition_tree') : $t('process_creation.titles.variant_selection_definition_list')"
-                              @ok="continueFour" @abort="abort">
-                <VariantSelectionDefinition v-model="variant_selection" :variants="variants" :process="process"></VariantSelectionDefinition>
-              </EditNewWrapper>
-            </v-stepper-content>
+              <v-stepper-content step="6">
+                <EditNewWrapper :context-new="true" :info-text="info[5]"
+                                :title="$t('process_creation.titles.info_texts_definition')"
+                                @ok="continueSix" @abort="abort">
+                  <InfoTextsDefinition v-model="infoTexts"></InfoTextsDefinition>
+                </EditNewWrapper>
+              </v-stepper-content>
 
-<!--            <v-stepper-content step="5">
-              <EditNewWrapper :context-new="true" :info-text="info[4]" :title="$t('process_definition.titles.parameters')"
-                              @ok="continueFive" @abort="abort">
-                <ParameterDependencyDefinition v-model="process.process_parameters" :variants="variants"></ParameterDependencyDefinition>
-              </EditNewWrapper>
-            </v-stepper-content>-->
+            </v-stepper-items>
+          </v-stepper>
+        </v-col>
+      </v-row>
+    </v-container>
 
-            <v-stepper-content step="6">
-              <EditNewWrapper :context-new="true" :info-text="info[5]" @ok="continueSix" @abort="abort">
-                <SolverDefinition v-model="solver"></SolverDefinition>
-              </EditNewWrapper>
-            </v-stepper-content>
-
-            <v-stepper-content step="7">
-              <EditNewWrapper :context-new="true" :info-text="info[6]"
-                              :title="$t('process_creation.titles.info_texts_definition')"
-                              @ok="continueSeven" @abort="abort">
-                <InfoTextsDefinition v-model="infoTexts"></InfoTextsDefinition>
-              </EditNewWrapper>
-            </v-stepper-content>
-
-          </v-stepper-items>
-        </v-stepper>
-      </v-col>
-    </v-row>
-  </v-container>
+    <DialogDelete v-model="dialogInfoJump" :show-abort="false" @delete="dialogInfoJump = false" delete-btn-text="OK"
+                  title="Löschen oder ändern Sie keine Einträge, die bereits genutzt werden!"></DialogDelete>
+  </div>
 </template>
 
 <script>
@@ -117,18 +109,22 @@ import InfoTextsDefinition from "./InfoTextsDefinition";
 import ParameterDependencyDefinition from "./ParameterDependencyDefinition";
 import FunctionsDefinition from "./FunctionsDefinition";
 import {mapGetters} from "vuex";
+import DialogDelete from "./DialogDelete";
 const snake = /^[a-z_]*$/;
 
 export default {
   name: "ProcessCreation",
   components: {
+    DialogDelete,
     FunctionsDefinition,
     ParameterDependencyDefinition,
     InfoTextsDefinition,
     VariantSelectionDefinition, SolverDefinition, VariantsDefinition, ProcessDefinition, EditNewWrapper},
   data () {
     return {
+      dialogInfoJump: false,
       def_step: 1,
+      max_step: 1,
       process: {
         view_name: '',
         api_name: '',
@@ -158,7 +154,6 @@ export default {
           this.$t("process_creation.info.functions"),
           this.$t("process_creation.info.variants"),
           this.$t("process_creation.info.selection"),
-          this.$t("process_creation.info.parameters"),
           this.$t("process_creation.info.solver"),
           this.$t("process_creation.info.infoTexts")
       ],
@@ -175,8 +170,7 @@ export default {
       this.process = Object.assign({},{
         api_name: 'edge_banding_test', variant_tree: false, view_name: 'Kantenanleimmaschine_Test',
         process_parameters:[
-            { name: 'Fräsbreite', variable_name: 'p_milling_width', unit: 'mm', material_properties_id: null }//,
-//             dependent: false, derived_parameter: null, dependency: null }
+            { name: 'Fräsbreite', variable_name: 'p_milling_width', unit: 'mm', material_properties_id: null, defaults: '', generaL: false }
         ]
       });
       this.variants.push(...[
@@ -247,41 +241,45 @@ export default {
   },
 
   methods: {
-    specialParametersPresent() {
-      return this.process.process_parameters.some(p => p.dependent || p.restricting);
+    setMaxStep() {
+      if (this.max_step < this.def_step) {
+        this.max_step = this.def_step;
+      }
     },
     continueOne() {
       this.def_step = 2;
+      this.setMaxStep();
     },
     continueTwo() {
       this.def_step = 3;
+      this.setMaxStep();
     },
     continueThree() {
       this.def_step = this.variants.length > 1
           ? 4
-          : 6;// (this.specialParametersPresent() ? 5 : 6);
+          : 5;
+      this.setMaxStep();
     },
     continueFour() {
-      this.def_step = 6;// this.specialParametersPresent() ? 5 : 6;
+      this.def_step = 5;
+      this.setMaxStep();
     },
     continueFive() {
       this.def_step = 6;
+      this.setMaxStep();
     },
     continueSix() {
-      this.def_step = 7;
-    },
-    continueSeven() {
       let requestData = {
         process: this.process,
         functions: this.functions,
-        //variants: this.variants,
-        variants: this.variants.map(v => { return { name: v.name, variant_components: v.variant_components,
+        variants: this.variants,
+/*        variants: this.variants.map(v => { return { name: v.name, variant_components: v.variant_components,
           variant_restrictions: v.variant_restrictions,
           variant_functions: v.variant_functions.map(f => { return {position: f.position, is_loss: f.is_loss,
             loss_function_description: f.loss_function_description, variable_name: f.variable_name, description: f.description,
             eval_after_position: f.eval_after_position, aggregate: f.aggregate,
             parameter_list: '(' + f.parameter_list.map(p => p.value).join(', ') + ')'}})
-        }; }),
+        }; }),*/
         variant_selection: {
           list: this.variant_selection.list,
           tree: this.process.variant_tree ? this.dbTree() : this.variant_selection.tree
@@ -304,6 +302,12 @@ export default {
     },
     abort() {
       this.$router.push({ name: 'Process' });
+    },
+    jumpStep(val) {
+      if (this.max_step >= val && (val !== 4 || this.variants.length > 1)) {
+        this.def_step = val;
+        this.dialogInfoJump = true;
+      }
     },
     dbTree() {
       return {
