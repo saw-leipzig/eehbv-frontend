@@ -3,6 +3,7 @@
     <v-row v-if="userRole > 1">
       <v-col cols="12">
         <v-btn :to="{ name: 'ProcessCreation' }">{{$t('process_creation.titles.new_process')}}</v-btn>
+        <v-btn :to="{ name: 'ProcessUpload' }">{{$t("process_upload.titles.json_upload")}}</v-btn>
       </v-col>
     </v-row>
     <v-row>

@@ -88,16 +88,18 @@
     </DialogCardEditor>
 
     <component-button></component-button>
-    <!-- ToDo: implement delete logic
+    <!-- ToDo: implement delete logic -->
     <div v-if="showDeleteType" class="text-right">
       <v-tooltip top color="red">
         <template v-slot:activator="{ on, attrs }">
           <v-btn color="red" @click="dialogDeleteType = true" v-bind="attrs" v-on="on"><v-icon>mdi-delete</v-icon></v-btn>
         </template>
         <v-icon>mdi-alert-outline</v-icon>
-        <span>{{ $t('component_overview.tooltip.delete') }}</span>
+        <span>{{ $t('components.tooltip.delete')}}</span>
       </v-tooltip>
-    </div>-->
+    </div>
+
+    <DialogDelete v-model="dialogDeleteType" @abort="closeDeleteType" @delete="deleteTypeConfirm"></DialogDelete>
 
   </v-container>
 </template>
@@ -283,6 +285,16 @@ export default {
     },
     closeImport() {
       this.dialogImport = false;
+    },
+    closeDeleteType() {
+      this.dialogDeleteType = false;
+    },
+    deleteTypeConfirm() {
+      this.$http.delete('component-types/' + this.$route.params.type).
+          then((response) => {
+            this.closeDeleteType();
+            this.$router.push({ name: 'Component' });
+      });
     }
   }
 }

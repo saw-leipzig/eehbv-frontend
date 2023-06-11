@@ -13,6 +13,7 @@ import ProcessOverview from "../components/ProcessOverview";
 import Optimization from "../components/Optimization";
 import ComponentCreation from "../components/ComponentCreation";
 import ProcessCreation from "../components/ProcessCreation";
+import ProcessUpload from "../components/ProcessUpload";
 import OptimizationResult from "../components/OptimizationResult";
 
 Vue.use(VueRouter)
@@ -63,6 +64,11 @@ const routes = [
     path: '/processes/create',
     name: 'ProcessCreation',
     component: ProcessCreation
+  },
+  {
+    path: '/processes/upload',
+    name: 'ProcessUpload',
+    component: ProcessUpload
   },
   {
     path: '/processes/:type',

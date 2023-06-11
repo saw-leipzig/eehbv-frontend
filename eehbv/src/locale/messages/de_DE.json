@@ -131,6 +131,15 @@
       "add_property": "Materialeigenschaft hinzufügen"
     }
   },
+  "process_upload": {
+    "titles": {
+      "json_upload": "JSON-Upload Prozesstyp"
+    },
+    "labels": {
+      "json": "Prozesstyp-Definition JSON",
+      "upload": "Hochladen"
+    }
+  },
   "process_creation": {
     "info": {
       "definition": "<p>Infotext <em>Prozessdefinition</em></p><p>Über dieses Menü können Sie eine neue Optimierungsumgebung für einen Maschinentypen anlegen.</p><p>Bereiten Sie dies vor, indem Sie die Schritte zum Voregehensmodell in der Anleitung abarbeiten! Stellen Sie sicher, dass alle benötigten Komponententypen und Materialeigenschaften angelegt sind, bevor Sie mit einer neuen Prozessdefinition fortfahren.</p><p>Der <strong>Name</strong> sollte den Maschinentypen beschreiben, für den Sie Optimerungen vornehmen wollen. Der <strong>API-Pfad</strong> sollte diesen Prozess auf englisch beschreiben und muss in Kleinbuchstaben und ohne Leerzeichen angegeben werden.</p><p>Wenn Ihr Maschinentyp in mehreren Bauvarianten vorkommt, kann über das <strong>Variantenfrageschema</strong> angebeben werden, ob bei einer Optimierungsanfrage die zu betrachtenden Varianten über eine Liste oder einen Baum von Fragen ausgewählt werden sollen. Eine Auswahlliste für die Varianten mit Checkboxen steht bei der Definition einer Optimierungsanfrage immer zur Verfügung.</p>",

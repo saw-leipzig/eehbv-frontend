@@ -9,8 +9,9 @@
                 <v-row>
                   <v-col cols="10">{{ $t('variants_definition.labels.description') }}: {{ variant.name }}</v-col>
                   <v-col cols="2">
-                    <v-icon small class="mr-2" @click="editVariant(index)">mdi-pencil</v-icon>
+                    <v-icon small class="mr-2" @click="editVariant(index, false)">mdi-pencil</v-icon>
                     <v-icon small @click="deleteVariant(index)">mdi-delete</v-icon>
+                    <v-icon small @click="editVariant(index, true)">mdi-content-copy</v-icon>
                   </v-col>
                 </v-row>
                 <v-row>
@@ -23,7 +24,7 @@
       </v-row>
       <v-row>
         <v-spacer></v-spacer>
-        <v-btn color="green" @click="editVariant(-1)"><v-icon>mdi-plus</v-icon></v-btn>
+        <v-btn color="green" @click="editVariant(-1, false)"><v-icon>mdi-plus</v-icon></v-btn>
       </v-row>
     </v-container>
 
@@ -46,12 +47,15 @@
                 <v-col cols="3">{{ $t('variants_definition.labels.variable_name') }}: {{component.variable_name}}</v-col>
                 <v-col cols="3">
                   <v-icon small class="mr-2" @click="editComponent(component.position)">mdi-pencil</v-icon>
-                  <v-icon small @click="deleteComponent(component.position)">mdi-delete</v-icon>
+                  <v-icon small @click="deleteComponent(component.position)" :disabled="disabledDeleteComp(component.position)">mdi-delete</v-icon>
+                  <v-icon small @click="componentUp(component.position)" :disabled="component.position === 0">mdi-arrow-up-thin</v-icon>
+                  <v-icon small @click="componentDown(component.position)"
+                          :disabled="component.position === currentVariant.variant_components.length - 1">mdi-arrow-down-thin</v-icon>
                 </v-col>
               </v-row>
             </v-card-text>
             <v-card-actions>
-              <v-btn color="green" @click="editComponent(-1)"><v-icon>mdi-plus</v-icon></v-btn>
+              <v-btn color="green" @click="editComponent(-1)" :disabled="disabledEditComp"><v-icon>mdi-plus</v-icon></v-btn>
             </v-card-actions>
           </v-card>
         </v-col>
@@ -65,6 +69,9 @@
                   <v-col cols="3">
                     <v-icon small class="mr-2" @click="editFunction(func.position)">mdi-pencil</v-icon>
                     <v-icon small @click="deleteFunction(func.position)">mdi-delete</v-icon>
+                    <v-icon small @click="functionUp(func.position)" :disabled="func.position === 0">mdi-arrow-up-thin</v-icon>
+                    <v-icon small @click="functionDown(func.position)"
+                            :disabled="func.position === currentVariant.variant_functions.length - 1">mdi-arrow-down-thin</v-icon>
                   </v-col>
                 </v-row>
             </v-card-text>
@@ -83,45 +90,17 @@
                   <v-col cols="3">
                     <v-icon small class="mr-2" @click="editRestriction(index)">mdi-pencil</v-icon>
                     <v-icon small @click="deleteRestriction(index)">mdi-delete</v-icon>
+                    <v-icon small @click="restrictionUp(index)" :disabled="index === 0">mdi-arrow-up-thin</v-icon>
+                    <v-icon small @click="restrictionDown(index)"
+                            :disabled="index === currentVariant.variant_restrictions.length - 1">mdi-arrow-down-thin</v-icon>
                   </v-col>
                 </v-row>
             </v-card-text>
               <v-card-actions>
-                <v-btn color="green" @click="editRestriction(-1)"><v-icon>mdi-plus</v-icon></v-btn>
+                <v-btn color="green" @click="editRestriction(-1)" :disabled="disabledEditRestr"><v-icon>mdi-plus</v-icon></v-btn>
               </v-card-actions>
           </v-card>
         </v-col>
-
-<!--        <v-col cols="12">
-          <v-card>
-            <v-card-title>{{ $t('variants_definition.labels.target_function') }}</v-card-title>
-            <v-card-text>
-              <v-textarea v-if="currentTargetPythonStyle" v-model="currentVariant.target_func_python" :disabled="disabledEditFunc"></v-textarea>
-              <v-textarea v-else v-model="currentVariant.target_func" :disabled="true"></v-textarea>
-            </v-card-text>
-            <v-card-actions>
-              <v-row>
-                <v-col cols="3">
-                  <v-switch v-model="currentTargetPythonStyle" color="green" :label="$t('variants_definition.labels.python_function')"></v-switch>
-                </v-col>
-                <v-col cols="3">
-                  <v-btn color="green" :disabled="disabledEditFunc || !currentTargetPythonStyle" text @click="insertSignature">
-                    {{ $t('variants_definition.labels.signature') }}
-                  </v-btn>
-                </v-col>
-                <v-col cols="3">
-                  <ParameterButton :disabled="disabledEditFunc || !currentTargetPythonStyle"
-                                   :params="functionParams" @click="addParameter"></ParameterButton>
-                </v-col>
-                <v-col cols="3">
-                  <v-btn color="green" :disabled="disabledEditFunc || currentTargetPythonStyle" text @click="editTargetFunc">
-                    {{ $t('general.editing.do') }}
-                  </v-btn>
-                </v-col>
-              </v-row>
-            </v-card-actions>
-          </v-card>
-        </v-col>-->
       </v-row>
     </DialogCardEditor>
 
@@ -139,6 +118,7 @@
         </v-col>
         <v-col cols="4">
           <v-text-field v-model="currentComponent.variable_name" placeholder="c_xyz"
+                        :disabled="currentComponentIndex !== -1 && componentUsed(currentComponentIndex)"
                         :label="$t('variants_definition.labels.variable_name')" :error-messages="compVarErrors"
                         @input="$v.currentComponent.variable_name.$touch" @blur="$v.currentComponent.variable_name.$touch"></v-text-field>
         </v-col>
@@ -354,8 +334,15 @@ export default {
       return this.currentVariant.name === '' ||  this.currentVariant.variant_components.length < 1
           ||  this.currentVariant.variant_functions.length < 1;
     },
+    disabledEditComp() {
+      return this.currentVariant.name === '';
+    },
     disabledEditFunc() {
       return this.currentVariant.name === '' || this.currentVariant.variant_components.length < 1;
+    },
+    disabledEditRestr() {
+      return this.currentVariant.name === '' || this.currentVariant.variant_components.length < 1
+          || this.currentVariant.variant_functions.length < 1;
     },
     disabledSaveFunc() {
       return this.currentFunction.description === '' || this.currentFunction.aggregate === '' ||
@@ -488,29 +475,26 @@ export default {
     componentList(variant) {
       return variant.variant_components.map(c => c.description).join(' ');
     },
-    editVariant(index) {
-      this.currentVariantIndex = index;
+    editVariant(index, copy) {
+      this.currentVariantIndex = copy ? -1 : index;
       this.currentVariant = Object.assign({},
           index < 0 ?
-//              { name: '', target_func: '', target_func_python: '', variant_components: [] } :
-              { name: '', target_func: '', variant_components: [], variant_functions: [], variant_restrictions: [] } :
+              { name: '', variant_components: [], variant_functions: [], variant_restrictions: [] } :
               this.value[index]);
+      if (copy) {
+        this.currentVariant.name = '';
+      }
       this.dialogEditVariant = true;
     },
     saveVariant() {
       if (this.currentVariantIndex < 0) {
         this.value.push(this.currentVariant);
-//        this.targetFunctions.push(JSON.parse(JSON.stringify(this.currentTargetFunc)));
-//        this.targetPythonStyle.push(this.currentTargetPythonStyle);
       } else {
         this.value.splice(this.currentVariantIndex, 1, this.currentVariant);
-//        this.targetFunctions.splice(this.currentVariantIndex, 1, JSON.parse(JSON.stringify(this.currentTargetFunc)));
-//        this.targetPythonStyle.splice(this.currentVariantIndex, 1, this.currentTargetPythonStyle);
       }
       this.closeEditVariant();
     },
     closeEditVariant() {
-//      this.currentTargetFunc.splice(0);
       this.currentVariantIndex = -1;
       this.dialogEditVariant = false;
     },
@@ -520,8 +504,6 @@ export default {
     },
     deleteVariantConfirm() {
       this.value.splice(this.currentVariantIndex, 1);
-//      this.targetFunctions.splice(this.currentVariantIndex, 1);
-//      this.targetPythonStyle.splice(this.currentVariantIndex, 1);
       this.closeDeleteVariant();
     },
     closeDeleteVariant() {
@@ -571,6 +553,50 @@ export default {
       this.currentVariant.variant_functions.forEach((f) => {
         if (f.eval_after_position > this.currentComponentIndex) f.eval_after_position -= 1;
       } );
+      this.currentVariant.variant_restrictions.forEach((r) => {
+        if (r.eval_after_position > this.currentComponentIndex) r.eval_after_position -= 1;
+      } );
+    },
+    disabledDeleteComp(index) {
+      return this.currentVariant.variant_functions.some(f => f.eval_after_position === index + 1) ||
+          this.currentVariant.variant_restrictions.some(r => r.eval_after_position === index + 1) ||
+          this.componentUsed(index);
+    },
+    componentUsed(index) {
+      return this.currentVariant.variant_functions.
+            some(f => f.parameter_list_model.map(p => p.value.split('[')[0]).
+                      includes(this.currentVariant.variant_components[index].variable_name)) ||
+          this.currentVariant.variant_restrictions.
+            some(r => r.restriction_model.map(r => r.value.split('[')[0]).
+                      includes(this.currentVariant.variant_components[index].variable_name))
+    },
+    componentUp(index) {
+      this.currentVariant.variant_components[index - 1].position += 1;
+      this.currentVariant.variant_components[index].position -= 1;
+      this.currentVariant.variant_functions.forEach((f) => {
+        if (f.eval_after_position === index) f.eval_after_position += 1;
+        if (f.eval_after_position === index + 1) f.eval_after_position -= 1;
+      } );
+      this.currentVariant.variant_restrictions.forEach((r) => {
+        if (r.eval_after_position === index) r.eval_after_position += 1;
+        if (r.eval_after_position === index + 1) r.eval_after_position -= 1;
+      } );
+      let moved = this.currentVariant.variant_components.splice(index, 1);
+      this.currentVariant.variant_components.splice(index - 1, 0, ...moved);
+    },
+    componentDown(index) {
+      this.currentVariant.variant_components[index + 1].position -= 1;
+      this.currentVariant.variant_components[index].position += 1;
+      this.currentVariant.variant_functions.forEach((f) => {
+        if (f.eval_after_position === index + 2) f.eval_after_position -= 1;
+        if (f.eval_after_position === index + 1) f.eval_after_position += 1;
+      } );
+      this.currentVariant.variant_restrictions.forEach((r) => {
+        if (r.eval_after_position === index + 2) r.eval_after_position -= 1;
+        if (r.eval_after_position === index + 1) r.eval_after_position += 1;
+      } );
+      let moved = this.currentVariant.variant_components.splice(index, 1);
+      this.currentVariant.variant_components.splice(index + 1, 0, ...moved);
     },
 
     editFunction(index) {
@@ -614,6 +640,18 @@ export default {
       this.currentVariant.variant_functions.forEach((f, i) => {
         if (i > this.currentFunctionIndex) f.position = this.currentFunctionIndex;
       } );
+    },
+    functionUp(index) {
+      this.currentVariant.variant_functions[index - 1].position += 1;
+      this.currentVariant.variant_functions[index].position -= 1;
+      let moved = this.currentVariant.variant_functions.splice(index, 1);
+      this.currentVariant.variant_functions.splice(index - 1, 0, ...moved);
+    },
+    functionDown(index) {
+      this.currentVariant.variant_functions[index + 1].position -= 1;
+      this.currentVariant.variant_functions[index].position += 1;
+      let moved = this.currentVariant.variant_functions.splice(index, 1);
+      this.currentVariant.variant_functions.splice(index + 1, 0, ...moved);
     },
 
     addParam(val) {
@@ -679,6 +717,18 @@ export default {
             //JSON.parse(JSON.stringify(this.currentCondition));
       }
       this.dialogRestrictionFormula = false;
+    },
+    restrictionUp(index) {
+      this.currentVariant.variant_restrictions[index - 1].position += 1;
+      this.currentVariant.variant_restrictions[index].position -= 1;
+      let moved = this.currentVariant.variant_restrictions.splice(index, 1);
+      this.currentVariant.variant_restrictions.splice(index - 1, 0, ...moved);
+    },
+    restrictionDown(index) {
+      this.currentVariant.variant_restrictions[index + 1].position -= 1;
+      this.currentVariant.variant_restrictions[index].position += 1;
+      let moved = this.currentVariant.variant_restrictions.splice(index, 1);
+      this.currentVariant.variant_restrictions.splice(index + 1, 0, ...moved);
     },
     componentViewName(api_name) {
       return this.componentTypes.find(c => c.api_name === api_name).view_name;

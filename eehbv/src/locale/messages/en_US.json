@@ -131,6 +131,15 @@
       "add_property": "Add material property"
     }
   },
+  "process_upload": {
+    "titles": {
+      "json_upload": "JSON-Upload process type"
+    },
+    "labels": {
+      "json": "Definition of process type JSON",
+      "upload": "Upload"
+    }
+  },
   "process_creation": {
     "info": {
       "definition": "<p>Info <em>definition of process</em><p><p>You can define an new optimization environment for a machine type in this menu.</p><p>Prepare this definition by following the steps of the procedure framework in the manual! Make sure that all necessary component and material property types are created before proceeding.</p><p>The <strong>Name</strong> should describe the machine type to make optimizations for. The <strong>API path</strong> for this optimization type must be given in all lower case and without spaces.</p><p>If there are different possible variants for the machine type, the <strong>Question schema for variants</strong> defines whether selection of variants in a specific optimization request should be done following a list or a tree of questions. There will also allways be a pick-list in the definition of an optimization request.</p>",
