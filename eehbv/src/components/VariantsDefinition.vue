@@ -107,17 +107,17 @@
     <DialogCardEditor v-model="dialogEditComponent" @save="saveComponent" @close="closeEditComponent">
       <v-row>
         <v-col cols="4">
-          <v-select v-model="currentComponent.component_api_name" :items="componentSelection"
+          <v-select v-model="currentComponent.component_api_name" :items="componentSelection" counter="40"
                     :label="$t('variants_definition.labels.component_type')" :error-messages="compApiErrors"
                     @input="$v.currentComponent.component_api_name.$touch" @blur="$v.currentComponent.component_api_name.$touch"></v-select>
         </v-col>
         <v-col cols="4">
           <v-text-field v-model="currentComponent.description" :label="$t('variants_definition.labels.description')"
-                        :error-messages="compDescErrors"
+                        counter="40" :error-messages="compDescErrors"
                         @input="$v.currentComponent.description.$touch" @blur="$v.currentComponent.description.$touch"></v-text-field>
         </v-col>
         <v-col cols="4">
-          <v-text-field v-model="currentComponent.variable_name" placeholder="c_xyz"
+          <v-text-field v-model="currentComponent.variable_name" placeholder="c_xyz" counter="30"
                         :disabled="currentComponentIndex !== -1 && componentUsed(currentComponentIndex)"
                         :label="$t('variants_definition.labels.variable_name')" :error-messages="compVarErrors"
                         @input="$v.currentComponent.variable_name.$touch" @blur="$v.currentComponent.variable_name.$touch"></v-text-field>
@@ -132,7 +132,7 @@
       <v-row>
         <v-col cols="3">
           <v-text-field v-model="currentFunction.description" :label="$t('variants_definition.labels.description')"
-                        :error-messages="funcDescErrors"
+                        counter="40" :error-messages="funcDescErrors"
                         @input="$v.currentFunction.description.$touch" @blur="$v.currentFunction.description.$touch"></v-text-field>
         </v-col>
         <v-col cols="3">
@@ -140,7 +140,7 @@
                     :label="$t('variants_definition.labels.eval_after')"></v-select>
         </v-col>
         <v-col cols="3">
-          <v-combobox v-model="currentFunction.aggregate"
+          <v-combobox v-model="currentFunction.aggregate" counter="30"
                       :items="aggregateOptions"
                       :label="$t('variants_definition.labels.aggregate_name')"
                       :error-messages="funcAggErrors" @input="$v.currentFunction.aggregate.$touch" @blur="$v.currentFunction.aggregate.$touch"
@@ -160,7 +160,7 @@
         </v-col>
         <v-col cols="4">
           <v-text-field v-model="currentFunction.variable_name" :label="$t('variants_definition.labels.variable_name')"
-                        placeholder="l_xyz" :error-messages="funcVarErrors"
+                        counter="20" placeholder="l_xyz" :error-messages="funcVarErrors"
                         @input="$v.currentFunction.variable_name.$touch" @blur="$v.currentFunction.variable_name.$touch"></v-text-field>
         </v-col>
         <v-col cols="4">
@@ -184,7 +184,7 @@
     <DialogCardEditor v-model="dialogEditParams" title="Parameter bearbeiten" @save="setParams" @close="dismissParams">
       <v-row>
         <v-col cols="12">
-          <v-textarea rows="3" v-model="selectedFunctionDoc" :label="$t('variants_definition.labels.function_doc')" :disabled="true"></v-textarea>
+          <v-textarea rows="5" v-model="selectedFunctionDoc" :label="$t('variants_definition.labels.function_doc')" :disabled="true"></v-textarea>
         </v-col>
       </v-row>
       <v-row>
@@ -218,7 +218,7 @@
       <v-row>
         <v-col cols="4">
           <v-text-field v-model="currentRestriction.description" :label="$t('variants_definition.labels.description')"
-                        :error-messages="restrDescErrors"
+                        counter="40" :error-messages="restrDescErrors"
                         @input="$v.currentRestriction.description.$touch" @blur="$v.currentRestriction.description.$touch"></v-text-field>
         </v-col>
         <v-col cols="4">
@@ -564,10 +564,10 @@ export default {
     },
     componentUsed(index) {
       return this.currentVariant.variant_functions.
-            some(f => f.parameter_list_model.map(p => p.value.split('[')[0]).
+            some(f => f.parameter_list_model.map(p => (typeof p.value === 'string') && p.value.split('[')[0]).
                       includes(this.currentVariant.variant_components[index].variable_name)) ||
           this.currentVariant.variant_restrictions.
-            some(r => r.restriction_model.map(r => r.value.split('[')[0]).
+            some(r => r.restriction_model.map(r => (typeof r.value === 'string') && r.value.split('[')[0]).
                       includes(this.currentVariant.variant_components[index].variable_name))
     },
     componentUp(index) {

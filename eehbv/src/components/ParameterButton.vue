@@ -6,7 +6,7 @@
         <v-icon right>mdi-menu-right</v-icon>
       </v-btn>
     </template>
-    <v-card>
+    <v-card class="overflow-y-auto" max-height="400" v-scroll.self="none">
       <v-treeview :activatable="true" :items="treeParameters" item-text="view" item-key="id" item-disabled="disabled"
                   item-children="parameters" return-object dense @update:active="click"></v-treeview>
 <!--      <v-card-actions>
@@ -90,7 +90,8 @@ export default {
     },
     parentClicked(id) {
       return (id.startsWith('0') && id.length < 3) || (id.startsWith('1') && id.length < 5);
-    }
+    },
+    none() {}
   }
 }
 </script>

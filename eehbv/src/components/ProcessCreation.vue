@@ -157,7 +157,7 @@ export default {
           this.$t("process_creation.info.solver"),
           this.$t("process_creation.info.infoTexts")
       ],
-      varTesting: false
+      varTesting: true
     }
   },
 
@@ -169,58 +169,422 @@ export default {
     if (this.varTesting) {  // Test variant selection settings, predefined data
       this.process = Object.assign({},{
         api_name: 'edge_banding_test', variant_tree: false, view_name: 'Kantenanleimmaschine_Test',
-        process_parameters:[
-            { name: 'Fräsbreite', variable_name: 'p_milling_width', unit: 'mm', material_properties_id: null, defaults: '', generaL: false }
+        process_parameters: [
+          {
+            "name": "Vorschubgeschwindigkeit",
+            "variable_name": "p_feed_speed",
+            "unit": "m / min",
+            "material_properties_id": null,
+            "defaults": "",
+            "general": false
+          },
+          {
+            "name": "Werkstückdicke",
+            "variable_name": "p_width",
+            "unit": "mm",
+            "material_properties_id": null,
+            "defaults": "",
+            "general": false
+          },
+          {
+            "name": "Werkstücklänge",
+            "variable_name": "p_length",
+            "unit": "cm",
+            "material_properties_id": null,
+            "defaults": "",
+            "general": false
+          },
+          {
+            "name": "Breite Kantenband",
+            "variable_name": "p_width_band",
+            "unit": "mm",
+            "material_properties_id": null,
+            "defaults": "",
+            "general": false
+          },
+          {
+            "name": "Dicke Kantenband",
+            "variable_name": "p_thickness_band",
+            "unit": "mm",
+            "material_properties_id": null,
+            "defaults": "",
+            "general": false
+          },
+          {
+            "name": "Werkstücklücke",
+            "variable_name": "p_gap",
+            "unit": "cm",
+            "material_properties_id": null,
+            "defaults": "",
+            "general": false
+          },
+          {
+            "name": "Abnutzungsfaktor Fräsen",
+            "variable_name": "p_wear_factor",
+            "unit": "",
+            "material_properties_id": null,
+            "defaults": "",
+            "general": false
+          },
+          {
+            "name": "Spez. Schnittkraftkonstante",
+            "variable_name": "p_kc05",
+            "unit": "N/mm^1.5",
+            "material_properties_id": 2,
+            "defaults": "",
+            "general": false
+          },
+          {
+            "name": "Spez. Schnittkraftkonst. Band",
+            "variable_name": "p_kc05_band",
+            "unit": "N/mm^1.5",
+            "material_properties_id": 2,
+            "defaults": "",
+            "general": false
+          },
+          {
+            "name": "Zahnzahl Vorfräse",
+            "variable_name": "p_pre_teeth",
+            "unit": "",
+            "material_properties_id": null,
+            "defaults": "3",
+            "general": false
+          },
+          {
+            "name": "Frästiefe Vorfräse",
+            "variable_name": "p_pre_depth",
+            "unit": "mm",
+            "material_properties_id": null,
+            "defaults": "3",
+            "general": false
+          },
+          {
+            "name": "Winkel kappa Vorfräse",
+            "variable_name": "p_pre_ang_kappa",
+            "unit": "°",
+            "material_properties_id": null,
+            "defaults": "90",
+            "general": false
+          },
+          {
+            "name": "Winkel lambda Vorfräse",
+            "variable_name": "p_pre_ang_lambda",
+            "unit": "°",
+            "material_properties_id": null,
+            "defaults": "65",
+            "general": false
+          },
+          {
+            "name": "Drehzahl Vorfräse",
+            "variable_name": "p_pre_n",
+            "unit": "1/min",
+            "material_properties_id": null,
+            "defaults": "9000",
+            "general": false
+          },
+          {
+            "name": "Werkzeugdurchm. Vorfräse",
+            "variable_name": "p_pre_diameter",
+            "unit": "mm",
+            "material_properties_id": null,
+            "defaults": "125",
+            "general": false
+          },
+          {
+            "name": "Zahnzahl Kappsäge",
+            "variable_name": "p_trim_teeth",
+            "unit": "",
+            "material_properties_id": null,
+            "defaults": "24",
+            "general": false
+          },
+          {
+            "name": "Winkel kappa Kappsäge",
+            "variable_name": "p_trim_ang_kappa",
+            "unit": "°",
+            "material_properties_id": null,
+            "defaults": "65",
+            "general": false
+          },
+          {
+            "name": "Winkel lambda Kappsäge",
+            "variable_name": "p_trim_ang_lambda",
+            "unit": "°",
+            "material_properties_id": null,
+            "defaults": "5",
+            "general": false
+          },
+          {
+            "name": "Drehzahl Kappsäge",
+            "variable_name": "p_trim_n",
+            "unit": "1/min",
+            "material_properties_id": null,
+            "defaults": "12000",
+            "general": false
+          },
+          {
+            "name": "Werkzeugdurchm. Kappsäge",
+            "variable_name": "p_trim_diameter",
+            "unit": "mm",
+            "material_properties_id": null,
+            "defaults": "120",
+            "general": false
+          },
+          {
+            "name": "Blattdicke Kappsäge",
+            "variable_name": "p_trim_width",
+            "unit": "mm",
+            "material_properties_id": null,
+            "defaults": "3.2",
+            "general": false
+          },
+          {
+            "name": "Winkel Führung Kappsäge",
+            "variable_name": "p_trim_angle",
+            "unit": "°",
+            "material_properties_id": null,
+            "defaults": "45",
+            "general": true
+          },
+          {
+            "name": "Zahnzahl Bündigfräser",
+            "variable_name": "p_flush_teeth",
+            "unit": "",
+            "material_properties_id": null,
+            "defaults": "3",
+            "general": false
+          },
+          {
+            "name": "Winkel kappa Bündigfräser",
+            "variable_name": "p_flush_ang_kappa",
+            "unit": "°",
+            "material_properties_id": null,
+            "defaults": "90",
+            "general": false
+          },
+          {
+            "name": "Winkel lambda Bündigfräser",
+            "variable_name": "p_flush_ang_lambda",
+            "unit": "°",
+            "material_properties_id": null,
+            "defaults": "65",
+            "general": false
+          },
+          {
+            "name": "Drehzahl Bündigfräse",
+            "variable_name": "p_flush_n",
+            "unit": "1/min",
+            "material_properties_id": null,
+            "defaults": "12000",
+            "general": false
+          },
+          {
+            "name": "Werkzeugdurchm. Bündigfräser",
+            "variable_name": "p_flush_diameter",
+            "unit": "mm",
+            "material_properties_id": null,
+            "defaults": "80",
+            "general": false
+          },
+          {
+            "name": "Zahnzahl Radienfräser",
+            "variable_name": "p_round_teeth",
+            "unit": "",
+            "material_properties_id": null,
+            "defaults": "4",
+            "general": false
+          },
+          {
+            "name": "Fräsradius Radienfräser",
+            "variable_name": "p_round_radius",
+            "unit": "mm",
+            "material_properties_id": null,
+            "defaults": "",
+            "general": false
+          },
+          {
+            "name": "Werkzeugdurchm. Radienfräser",
+            "variable_name": "p_round_diameter",
+            "unit": "mm",
+            "material_properties_id": null,
+            "defaults": "125",
+            "general": false
+          },
+          {
+            "name": "Einstellwinkel Ziehklinge",
+            "variable_name": "p_scraper_ang",
+            "unit": "°",
+            "material_properties_id": null,
+            "defaults": "90",
+            "general": true
+          },
+          {
+            "name": "Eingriff Ziehklinge",
+            "variable_name": "p_scraper_depth",
+            "unit": "mm",
+            "material_properties_id": null,
+            "defaults": "0.2",
+            "general": true
+          },
+          {
+            "name": "Spannfederpunkt x1",
+            "variable_name": "p_feed_x1",
+            "unit": "m",
+            "material_properties_id": null,
+            "defaults": "",
+            "general": true
+          },
+          {
+            "name": "Spannfederpunkt y1",
+            "variable_name": "p_feed_y1",
+            "unit": "m",
+            "material_properties_id": null,
+            "defaults": "",
+            "general": true
+          },
+          {
+            "name": "Spannfederpunkt x3",
+            "variable_name": "p_feed_x3",
+            "unit": "m",
+            "material_properties_id": null,
+            "defaults": "",
+            "general": true
+          },
+          {
+            "name": "Spannfederpunkt y3",
+            "variable_name": "p_feed_y3",
+            "unit": "m",
+            "material_properties_id": null,
+            "defaults": "",
+            "general": true
+          },
+          {
+            "name": "Federkonstante Spannfedern",
+            "variable_name": "p_feed_kc",
+            "unit": "N/m",
+            "material_properties_id": null,
+            "defaults": "49660",
+            "general": true
+          },
+          {
+            "name": "Reibungskoeffizient Förderband",
+            "variable_name": "p_feed_mu",
+            "unit": "",
+            "material_properties_id": null,
+            "defaults": "6",
+            "general": true
+          },
+          {
+            "name": "Transferbandlänge",
+            "variable_name": "p_feed_l",
+            "unit": "m",
+            "material_properties_id": null,
+            "defaults": "6.5",
+            "general": true
+          },
+          {
+            "name": "Abstand Band-Federelemente",
+            "variable_name": "p_feed_spring_dist",
+            "unit": "m",
+            "material_properties_id": null,
+            "defaults": "0.07",
+            "general": true
+          },
+          {
+            "name": "Spannweg Werkstück",
+            "variable_name": "p_feed_delta_x",
+            "unit": "m",
+            "material_properties_id": null,
+            "defaults": "0.004",
+            "general": true
+          },
+          {
+            "name": "Vorspannung Band-Spannfeder",
+            "variable_name": "p_feed_f0",
+            "unit": "N",
+            "material_properties_id": null,
+            "defaults": "200",
+            "general": true
+          },
+          {
+            "name": "Durchmesser Riemenscheiben",
+            "variable_name": "p_feed_disc_diam",
+            "unit": "m",
+            "material_properties_id": null,
+            "defaults": "0.2",
+            "general": true
+          }
         ]
       });
       this.variants.push(...[
-          { name: 'Variante 1', variant_functions: [], variant_restrictions: [],
-            variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'},
-            {position: 1, description: 'Grindermotor', variable_name: 'v_grinding_motor', component_api_name: 'motors'}] },
-          { name: 'Variante 2', variant_functions: [], variant_restrictions: [],
-            variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'},
-            {position: 1, description: 'Antriebsmotor', variable_name: 'v_forward_motor', component_api_name: 'motors'}] },
-          { name: 'Variante 3', variant_functions: [], variant_restrictions: [],
-            variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'}] },
-          { name: 'Variante 4', variant_functions: [], variant_restrictions: [],
-            variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'}] },
-          { name: 'Variante 5', variant_functions: [], variant_restrictions: [],
-            variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'}] },
-          { name: 'Variante 6', variant_functions: [], variant_restrictions: [],
-            variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'}] },
-          { name: 'Variante 7', variant_functions: [], variant_restrictions: [],
-            variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'}] },
-          { name: 'Variante 8', variant_functions: [], variant_restrictions: [],
-            variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'}] },
-          { name: 'Variante 9', variant_functions: [], variant_restrictions: [],
-            variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'}] },
-          { name: 'Variante 10', variant_functions: [], variant_restrictions: [],
-            variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'}] },
+        {
+          "name": "Var 1",
+          "variant_components": [
+            {
+              "position": 0,
+              "component_api_name": "motors",
+              "variable_name": "c_pre_motor",
+              "description": "Vorfräsmotor"
+            },
+            {
+              "position": 1,
+              "component_api_name": "transformers",
+              "variable_name": "c_pre_converter",
+              "description": "Vorfräsumrichter"
+            },
+            {
+              "position": 2,
+              "component_api_name": "motors",
+              "variable_name": "c_trim_motor",
+              "description": "Kappmotor"
+            },
+            {
+              "position": 3,
+              "component_api_name": "transformers",
+              "variable_name": "c_trim_converter",
+              "description": "Kappumrichter"
+            },
+            {
+              "position": 4,
+              "component_api_name": "motors",
+              "variable_name": "c_flush_motor",
+              "description": "Bündigfräsmotor"
+            },
+            {
+              "position": 5,
+              "component_api_name": "transformers",
+              "variable_name": "c_flush_converter",
+              "description": "Bündigfräsumrichter"
+            },
+            {
+              "position": 6,
+              "component_api_name": "motors",
+              "variable_name": "c_round_motor",
+              "description": "Radienfräsmotor"
+            },
+            {
+              "position": 7,
+              "component_api_name": "transformers",
+              "variable_name": "c_round_converter",
+              "description": "Radienfräsumrichter"
+            },
+            {
+              "position": 8,
+              "component_api_name": "gears",
+              "variable_name": "c_feed_gears",
+              "description": "Getriebe Bandvorschub"
+            },
+            {
+              "position": 9,
+              "component_api_name": "motors",
+              "variable_name": "c_feed_motor",
+              "description": "Bandvorschubmotor"
+            }
+          ],
+          "variant_functions": [],
+          "variant_restrictions": []
+        }
       ]);
-/*      this.variants.push(...[
-          { name: 'Variante 1', target_func: 'x', target_func_python: 'x',
-            variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'},
-            {position: 1, description: 'Grindermotor', variable_name: 'v_grinding_motor', component_api_name: 'motors'}] },
-          { name: 'Variante 2', target_func: 'x', target_func_python: 'x',
-            variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'},
-            {position: 1, description: 'Antriebsmotor', variable_name: 'v_forward_motor', component_api_name: 'motors'}] },
-          { name: 'Variante 3', target_func: 'x', target_func_python: 'x',
-            variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'}] },
-          { name: 'Variante 4', target_func: 'x', target_func_python: 'x',
-            variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'}] },
-          { name: 'Variante 5', target_func: 'x', target_func_python: 'x',
-            variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'}] },
-          { name: 'Variante 6', target_func: 'x', target_func_python: 'x',
-            variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'}] },
-          { name: 'Variante 7', target_func: 'x', target_func_python: 'x',
-            variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'}] },
-          { name: 'Variante 8', target_func: 'x', target_func_python: 'x',
-            variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'}] },
-          { name: 'Variante 9', target_func: 'x', target_func_python: 'x',
-            variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'}] },
-          { name: 'Variante 10', target_func: 'x', target_func_python: 'x',
-            variant_components: [{position: 0, description: 'Fräsmotor', variable_name: 'v_milling_motor', component_api_name: 'motors'}] },
-      ]);*/
     }
   },
 
