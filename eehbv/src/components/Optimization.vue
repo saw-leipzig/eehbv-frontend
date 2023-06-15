@@ -175,6 +175,7 @@ export default {
     },
     startOptimization() {
       this.dialogDescription = false;
+      Object.keys(this.general_parameters).forEach(key => this.general_parameters[key] = Number(this.general_parameters[key]));
       let requestData = {
         description: this.description,
         result_settings: this.result_settings,

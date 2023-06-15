@@ -388,7 +388,7 @@ export default {
             ...this.value.map(v => v.variant_functions.map(vf => vf.aggregate)).flat(2)
           ]
       )];
-      return options.map(o => { return { text: o, value: o } });
+      return options; // options.map(o => { return { text: o, value: o } });
     },
     variantEditTitle() {
       return this.currentVariantIndex < 0 ? this.$t('general.editing.create') : this.$t('general.editing.edit');
@@ -612,6 +612,9 @@ export default {
       this.$v.currentFunction.$touch();
       if (this.$v.currentFunction.$invalid) {
         return;
+      }
+      if (typeof this.currentFunction.aggregate === 'object') {
+        this.currentFunction.aggregate = this.currentFunction.aggregate.value;
       }
       if (this.currentFunctionIndex < 0) {
         this.currentVariant.variant_functions.push(this.currentFunction);
