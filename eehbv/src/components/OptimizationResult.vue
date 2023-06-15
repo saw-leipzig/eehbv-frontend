@@ -123,6 +123,7 @@ export default {
   data () {
     return {
       result: [],
+      errorMessage: '',
       polling: null,
       expanded: [],
       costExpanded: [],
@@ -258,6 +259,9 @@ export default {
               if (response.data.status  !== undefined &&
                   (response.data.status === 'processing' || response.data.status === 'pending')) {
                 // ToDo: update timer
+              } else if (response.data.status  !== undefined && response.data.status === 'failed') {
+                this.errorMessage = response.data.message;
+                clearInterval(this.polling);
               } else {
                 this.result = [...response.data.result];
                 if (this.request === undefined || this.request === null) {
@@ -425,7 +429,7 @@ export default {
       this.processData = this.process;
     }
     // ToDo: replace polling with server-sent Events or WebSocket
-    this.polling = setInterval(this.checkResult, 1000);
+    this.polling = setInterval(this.checkResult, 5000);
   }
 }
 </script>

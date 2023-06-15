@@ -157,7 +157,7 @@ export default {
           this.$t("process_creation.info.solver"),
           this.$t("process_creation.info.infoTexts")
       ],
-      varTesting: true
+      varTesting: false
     }
   },
 
