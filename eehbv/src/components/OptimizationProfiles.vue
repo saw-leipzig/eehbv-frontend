@@ -43,7 +43,7 @@
       </v-overlay>
     </v-card>
 
-    <DialogCardEditor v-model="editDialog" max-width="600px" :title="formTitle"
+    <DialogCardEditor v-model="editDialog" max-width="850px" :title="formTitle"
                       @save="save" @close="close" :disabled-save="editedItem['portion'] <= 0">
       <v-container>
         <v-row>

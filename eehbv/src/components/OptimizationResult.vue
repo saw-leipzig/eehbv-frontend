@@ -40,33 +40,39 @@
           <v-card-title>{{ $t('optimization.titles.result') }}</v-card-title>
           <v-card-text>
 
-            <div v-if="result.length === 0">
+            <div v-if="errorMessage !== ''">{{errorMessage}}</div>
+            <div v-else-if="result.length === 0">
               <v-progress-circular indeterminate color="green" size="70" width="7"></v-progress-circular>
             </div>
             <div v-else>
-              <v-card-title>{{ $t('optimization.titles.energy_optimization') }}</v-card-title>
+              <div v-if="result[currentVariantIndex].deepest_failed_restriction.restriction !== ''">
+                Fehlgeschlagene Bedingug: {{result[currentVariantIndex].deepest_failed_restriction.restriction}}
+              </div>
+              <div>
+                <v-card-title>{{ $t('optimization.titles.energy_optimization') }}</v-card-title>
 
-              <v-data-table :headers="optHeaders" :items="optRows" :single-expand="false" :expanded.sync="expanded"
-                            item-key="key" show-expand class="elevation-1">
-                <!-- ToDo: Select item for Sankey diagram (use slot item or body and build table itself?!) -->
-                <template v-slot:item.col0="{ item, index }">
-                  <div @click="selectCell(index, 0, false)">{{ item.col0 }}</div>
-                </template>
-                <template v-if="result.length > 1"  v-slot:item.col1="{ item, index }">
-                  <div @click="selectCell(index, 1, false)">{{ item.col1 }}</div>
-                </template>
-                <template v-if="result.length > 2"  v-slot:item.col2="{ item, index }">
-                  <div @click="selectCell(index, 2, false)">{{ item.col2 }}</div>
-                </template>
-                <template v-if="result.length > 3"  v-slot:item.col3="{ item, index }">
-                  <div @click="selectCell(index, 3, false)">{{ item.col3 }}</div>
-                </template>
+                <v-data-table :headers="optHeaders" :items="optRows" :single-expand="false" :expanded.sync="expanded"
+                              item-key="key" show-expand class="elevation-1">
+                  <!-- ToDo: Select item for Sankey diagram (use slot item or body and build table itself?!) -->
+                  <template v-slot:item.col0="{ item, index }">
+                    <div @click="selectCell(index, 0, false)">{{ item.col0 }}</div>
+                  </template>
+                  <template v-if="result.length > 1"  v-slot:item.col1="{ item, index }">
+                    <div @click="selectCell(index, 1, false)">{{ item.col1 }}</div>
+                  </template>
+                  <template v-if="result.length > 2"  v-slot:item.col2="{ item, index }">
+                    <div @click="selectCell(index, 2, false)">{{ item.col2 }}</div>
+                  </template>
+                  <template v-if="result.length > 3"  v-slot:item.col3="{ item, index }">
+                    <div @click="selectCell(index, 3, false)">{{ item.col3 }}</div>
+                  </template>
 
-                <template v-slot:expanded-item="{ headers, item }">
-                  <td></td><td></td>
-                  <td v-for="k in result.length" :key="k" v-html="item['info' + k]"></td>
-                </template>
-              </v-data-table>
+                  <template v-slot:expanded-item="{ headers, item }">
+                    <td></td><td></td>
+                    <td v-for="k in result.length" :key="k" v-html="item['info' + k]"></td>
+                  </template>
+                </v-data-table>
+              </div>
             </div>
             <div id="div_opt"></div>
 
