@@ -45,9 +45,13 @@
               <v-progress-circular indeterminate color="green" size="70" width="7"></v-progress-circular>
             </div>
             <div v-else>
-              <div v-if="result[currentVariantIndex].deepest_failed_restriction.restriction !== ''">
-                Fehlgeschlagene Bedingug: {{result[currentVariantIndex].deepest_failed_restriction.restriction}}
+              <div v-if="result[currentVariantIndex].opts.length === 0">
+                Bei der Optimierungsberechnung trat ein unerwarteter Fehler auf. Entweder haben Sie unzulässige Eingaben
+                gemacht oder das Prozessmodell ist fehlerhaft:
+                <br/>
+                {{result[currentVariantIndex].deepest_failed_restriction.restriction}}
               </div>
+              <div>{{result[currentVariantIndex].info}}</div>
               <div>
                 <v-card-title>{{ $t('optimization.titles.energy_optimization') }}</v-card-title>
 
@@ -435,7 +439,7 @@ export default {
       this.processData = this.process;
     }
     // ToDo: replace polling with server-sent Events or WebSocket
-    this.polling = setInterval(this.checkResult, 5000);
+    this.polling = setInterval(this.checkResult, 1000);
   }
 }
 </script>

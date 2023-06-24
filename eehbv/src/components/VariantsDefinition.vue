@@ -106,21 +106,29 @@
 
     <DialogCardEditor v-model="dialogEditComponent" @save="saveComponent" @close="closeEditComponent">
       <v-row>
-        <v-col cols="4">
+        <v-col cols="3">
           <v-select v-model="currentComponent.component_api_name" :items="componentSelection" counter="40"
                     :label="$t('variants_definition.labels.component_type')" :error-messages="compApiErrors"
                     @input="$v.currentComponent.component_api_name.$touch" @blur="$v.currentComponent.component_api_name.$touch"></v-select>
         </v-col>
-        <v-col cols="4">
+        <v-col cols="3">
           <v-text-field v-model="currentComponent.description" :label="$t('variants_definition.labels.description')"
                         counter="40" :error-messages="compDescErrors"
                         @input="$v.currentComponent.description.$touch" @blur="$v.currentComponent.description.$touch"></v-text-field>
         </v-col>
-        <v-col cols="4">
+        <v-col cols="3">
           <v-text-field v-model="currentComponent.variable_name" placeholder="c_xyz" counter="30"
                         :disabled="currentComponentIndex !== -1 && componentUsed(currentComponentIndex)"
                         :label="$t('variants_definition.labels.variable_name')" :error-messages="compVarErrors"
                         @input="$v.currentComponent.variable_name.$touch" @blur="$v.currentComponent.variable_name.$touch"></v-text-field>
+        </v-col>
+        <v-col cols="3">
+          <v-combobox v-model="currentComponent.aggregate" counter="30"
+                      :items="aggregateOptions"
+                      :label="$t('variants_definition.labels.aggregate_name')"
+                      :error-messages="compAggErrors" @input="$v.currentComponent.aggregate.$touch" @blur="$v.currentComponent.aggregate.$touch"
+                      type="text"
+          ></v-combobox>
         </v-col>
       </v-row>
     </DialogCardEditor>
@@ -273,7 +281,8 @@ export default {
       variable_name: { required, maxLength: maxLength(30), snake,
         varConvention(variable_name) { return variable_name.startsWith('c_'); }
       },
-      description: { required, maxLength: maxLength(40) }
+      description: { required, maxLength: maxLength(40) },
+      aggregate: { required, maxLength: maxLength(30) }
     },
     currentFunction: {
       loss_function_description: { required },
@@ -301,7 +310,7 @@ export default {
     dialogRestrictionFormula: false,
     currentVariant: { name: '', variant_components: [], variant_functions: [], variant_restrictions: [] },
     currentVariantIndex: -1,
-    currentComponent: { position: 0, component_api_name: '', variable_name: '', description: '' },
+    currentComponent: { position: 0, component_api_name: '', variable_name: '', description: '', aggregate: '' },
     currentComponentIndex: -1,
     currentFunction: { position: 0, loss_function_description: '', variable_name: '', description: '',
                 parameter_list: '', parameter_list_model: [], eval_after_position: 0, aggregate: '', is_loss: true },
@@ -383,12 +392,13 @@ export default {
           this.loss_functions.filter(f => this.currentFunction.loss_function_description === f.description)[0].doc;
     },
     aggregateOptions() {
-      let options = [...new Set(
+      return [...new Set(
           [...this.currentVariant.variant_functions.map(f => f.aggregate),
-            ...this.value.map(v => v.variant_functions.map(vf => vf.aggregate)).flat(2)
+            ...this.value.map(v => v.variant_functions.map(vf => vf.aggregate)).flat(2),
+            ...this.currentVariant.variant_components.map(c => c.aggregate),
+            ...this.value.map(v => v.variant_components.map(vc => vc.aggregate)).flat(2)
           ]
       )];
-      return options; // options.map(o => { return { text: o, value: o } });
     },
     variantEditTitle() {
       return this.currentVariantIndex < 0 ? this.$t('general.editing.create') : this.$t('general.editing.edit');
@@ -426,6 +436,13 @@ export default {
       !this.$v.currentComponent.variable_name.maxLength && errors.push(this.$t('general.validation.max30'));
       !this.$v.currentComponent.variable_name.snake && errors.push(this.$t('general.validation.snake'));
       !this.$v.currentComponent.variable_name.varConvention && errors.push(this.$t('process_definition.validation.startsWithCLowDash'));
+      return errors;
+    },
+    compAggErrors() {
+      let errors = [];
+      if (!this.$v.currentComponent.aggregate.$dirty) return errors;
+      !this.$v.currentComponent.aggregate.required && errors.push(this.$t('general.validation.required'));
+      !this.$v.currentComponent.aggregate.maxLength && errors.push(this.$t('general.validation.max30'));
       return errors;
     },
     funcDescErrors() {
@@ -513,9 +530,10 @@ export default {
     editComponent(index) {
       this.currentComponentIndex = index;
       this.currentComponent = Object.assign({},
-          index < 0 ?
-              { position: this.currentVariant.variant_components.length, component_api_name: '', variable_name: '', description: '' } :
-              this.currentVariant.variant_components[index]);
+          index < 0
+              ? { position: this.currentVariant.variant_components.length, component_api_name: '', variable_name: '',
+                description: '', aggregate: '' }
+              : this.currentVariant.variant_components[index]);
       this.dialogEditComponent = true;
     },
     saveComponent() {
