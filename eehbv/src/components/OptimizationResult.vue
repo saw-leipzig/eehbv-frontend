@@ -78,6 +78,43 @@
                 </v-data-table>
               </div>
             </div>
+
+            <br/>
+            <v-card v-if="result.length > 0 && result[currentVariantIndex].opts.length > 0 && requestData.process_profiles.length > 1">
+              <v-card-title>Verbrauch pro Profil / kWh</v-card-title>
+              <v-card-text>
+                <v-simple-table dense>
+                  <template v-slot:default>
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th class="text-right" v-for="(k, index) in requestData.process_profiles" :key="index">
+                          Profil {{index + 1}} ({{k.portion}} h)
+                        </th>
+                        <th class="text-right">Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="k in Object.keys(result[currentVariantIndex].opts[currentOptIndex].partials)" :key="k">
+                        <td>{{k}}</td>
+                        <td class="text-right" v-for="(p, index) in result[currentVariantIndex].opts[currentOptIndex].partials[k].per_profile" :key="index">
+                          {{p}}
+                        </td>
+                        <td class="text-right">{{result[currentVariantIndex].opts[currentOptIndex].partials[k].value}}</td>
+                      </tr>
+                      <tr>
+                        <td>Gesamtenergieverbrauch</td>
+                        <td class="text-right" v-for="(p, index) in requestData.process_profiles" :key="index">
+                          {{energyPerProfile(index)}}
+                        </td>
+                        <td class="text-right">{{result[currentVariantIndex].opts[currentOptIndex].total}}</td>
+                      </tr>
+                    </tbody>
+                  </template>
+                </v-simple-table>
+              </v-card-text>
+            </v-card>
+
             <div id="div_opt"></div>
 
             <div id="div_amortization"></div>
@@ -261,6 +298,12 @@ export default {
         this.currentVariantIndex = col;
         this.drawSankey(this.optSankey, true, 'svg_opt', '#div_opt');
       }
+    },
+    energyPerProfile(index) {
+      let keys = Object.keys(this.result[0].opts[0].partials);
+      let sum = 0;
+      keys.forEach(k => sum += this.result[this.currentVariantIndex].opts[this.currentOptIndex].partials[k].per_profile[index]);
+      return sum;
     },
     checkResult() {
       this.$http.get('problems/result/' + this.timestamp).

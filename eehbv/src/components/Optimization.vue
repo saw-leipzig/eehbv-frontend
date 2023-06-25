@@ -93,7 +93,7 @@ export default {
       selection: [],
       variants_conditions: [],
       result_settings: {
-        n_list: 10,
+        n_list: 3,
         costs_opt: {
           exec: false,
           price_kwh: 0.23,

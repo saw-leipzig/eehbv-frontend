@@ -36,7 +36,7 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="2"><v-btn icon :disabled="disabledV" @click="addConst('π')"><v-icon>mdi-pi</v-icon></v-btn></v-col>
+        <v-col cols="2"><v-btn icon :disabled="disabledV" @click="addConst('pi')"><v-icon>mdi-pi</v-icon></v-btn></v-col>
         <v-col cols="2"><v-btn icon :disabled="disabledV" @click="addConst('e')">e</v-btn></v-col>
         <v-col cols="2"></v-col>
         <v-col cols="2"></v-col>
