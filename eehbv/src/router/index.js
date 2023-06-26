@@ -66,6 +66,11 @@ const routes = [
     component: ProcessCreation
   },
   {
+    path: '/processes/edit/:id',
+    name: 'ProcessEdit',
+    component: ProcessCreation
+  },
+  {
     path: '/processes/upload',
     name: 'ProcessUpload',
     component: ProcessUpload

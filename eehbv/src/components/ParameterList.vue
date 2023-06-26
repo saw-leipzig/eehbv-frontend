@@ -2,8 +2,7 @@
   <v-card>
     <v-card-title v-if="showTitle">{{$t('process_definition.titles.parameters')}}</v-card-title>
     <v-card-text>
-<!--      <v-card v-for="(param, index) in parameters" :key="index" v-if="!showDep || !showEdit || param.restricting || param.dependent">-->
-      <v-card v-for="(param, index) in parameters" :key="index" v-if="showEdit">
+      <v-card v-for="(param, index) in parameters" :key="index">
         <v-container>
           <v-row>
             <v-col cols="3">{{ $t('process_definition.labels.name') }}: {{ param.name }}</v-col>
@@ -13,8 +12,8 @@
             </v-col>
             <v-col cols="2">{{ $t('process_definition.labels.unit') }}: {{ param.unit }}</v-col>
             <v-col cols="1" v-if="showEdit">
-              <v-icon small class="mr-2" @click="$emit('edit', index)">mdi-pencil</v-icon>
-              <v-icon small v-if="showDelete" @click="$emit('delete', index)">mdi-delete</v-icon>
+              <v-icon small class="mr-2" @click="$emit('edit', index)" :disabled="editDisabled(param)">mdi-pencil</v-icon>
+              <v-icon small v-if="showDelete" @click="$emit('delete', index)" :disabled="editDisabled(param)">mdi-delete</v-icon>
             </v-col>
           </v-row>
           <v-row>
@@ -68,11 +67,29 @@ export default {
       type: Boolean,
       required: false,
       default: true
+    },
+    variants: {
+      type: Array,
+      required: false,
+      default() {
+          return []
+      }
     }
   },
 
   computed: {
     ...mapGetters(['propertyById'])
+  },
+
+  methods: {
+    editDisabled(param) {
+      return this.variants.length > 0 &&
+          (this.variants.some(v => v.variant_functions.some(f =>
+                  f.parameter_list_model.some(p => p.value === param.variable_name))) ||
+          this.variants.some(v => v.variant_restrictions.some(r =>
+              r.restriction_model.some(m => m.formula === param.variable_name)))
+      );
+    }
   }
 }
 </script>

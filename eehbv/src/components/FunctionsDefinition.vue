@@ -10,7 +10,7 @@
                   <v-col cols="10">Funktion: {{ func.description }}</v-col>
                   <v-col cols="2">
                     <v-icon small class="mr-2" @click="editFunction(index)">mdi-pencil</v-icon>
-                    <v-icon small @click="deleteFunction(index)">mdi-delete</v-icon>
+                    <v-icon small @click="deleteFunction(index)" :disabled="disabledDelete(index)">mdi-delete</v-icon>
                   </v-col>
                 </v-row>
               </v-container>
@@ -87,6 +87,10 @@ export default {
     value: {
       type: Array,
       required: true
+    },
+    variants: {
+      type: Array,
+      required: true
     }
   },
 
@@ -110,6 +114,9 @@ export default {
   },
 
   methods: {
+    disabledDelete(index) {
+      return this.variants.length > 0 && this.variants.some(v => v.variant_functions.some(f => f.loss_function_description === this.value[index].description));
+    },
     editFunction(index) {
       this.currentFunctionIndex = index;
       this.currentFunction = Object.assign({},

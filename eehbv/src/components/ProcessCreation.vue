@@ -2,7 +2,7 @@
   <div>
     <v-container>
       <v-row>
-        <v-col cols="12"><h2>{{$t("process_creation.titles.new_process")}}</h2></v-col>
+        <v-col cols="12"><h2>{{processId > 0 ? 'Prozess bearbeiten' : $t("process_creation.titles.new_process")}}</h2></v-col>
       </v-row>
 
       <v-row>
@@ -48,14 +48,14 @@
               <v-stepper-content step="1">
                 <EditNewWrapper :context-new="true" :info-text="info[0]" :disabled="disabledProcess"
                                 :title="$t('process_creation.titles.process_definition')" @ok="continueOne" @abort="abort">
-                  <ProcessDefinition v-model="process" :processes="processes"></ProcessDefinition>
+                  <ProcessDefinition v-model="process" :processes="processes" :edited="processId > 0" :variants="variants"></ProcessDefinition>
                 </EditNewWrapper>
               </v-stepper-content>
 
               <v-stepper-content step="2">
                 <EditNewWrapper :context-new="true" :info-text="info[1]" :disabled="disabledFunctions"
                                 :title="$t('process_creation.labels.functions')" @ok="continueTwo" @abort="abort">
-                  <FunctionsDefinition v-model="functions"></FunctionsDefinition>
+                  <FunctionsDefinition v-model="functions" :variants="variants"></FunctionsDefinition>
                 </EditNewWrapper>
               </v-stepper-content>
 
@@ -122,6 +122,7 @@ export default {
     VariantSelectionDefinition, SolverDefinition, VariantsDefinition, ProcessDefinition, EditNewWrapper},
   data () {
     return {
+      processId: -1,
       dialogInfoJump: false,
       def_step: 1,
       max_step: 1,
@@ -157,11 +158,24 @@ export default {
           this.$t("process_creation.info.solver"),
           this.$t("process_creation.info.infoTexts")
       ],
-      varTesting: true
+      varTesting: false
     }
   },
 
   created() {
+    if (!this.$route.path.includes('create')) {
+      this.processId = this.$route.params.id;
+      this.$http.get('processes/' + this.processId + '/full').
+              then((response) => {
+                this.process = Object.assign({}, response.data.process);
+                this.functions.push(...response.data.functions);
+                this.variants.push(...response.data.variants);
+                this.variant_selection = Object.assign({}, response.data.variant_selection);
+                this.solver = Object.assign({}, response.data.solver);
+                this.infoTexts.splice(0, 2, ...response.data.infoTexts)
+          }).catch(error => {});
+    }
+
     if (this.process.length < 1) {
       this.$store.dispatch('initProcesses');
     }
@@ -639,8 +653,9 @@ export default {
     ...mapGetters(['processes']),
     disabledProcess() {
       return this.process.view_name === '' || this.process.api_name === '' || typeof this.process.variant_tree === 'undefined' ||
-          !snake.test(this.process.api_name) || this.processes.map(t => t.api_name).includes(this.process.api_name) ||
-          this.processes.map(t => t.view_name).includes(this.process.view_name) || this.process.view_name.length > 40 ||
+          !snake.test(this.process.api_name) || this.process.view_name.length > 40 ||
+          (this.processId < 0 && this.processes.map(t => t.api_name).includes(this.process.api_name)) ||
+          (this.processId < 0 && this.processes.map(t => t.view_name).includes(this.process.view_name)) ||
           this.process.api_name.length > 30;
     },
     disabledFunctions() {
@@ -698,17 +713,29 @@ export default {
         solver: this.solver,
         infoTexts: this.infoTexts
       };
-      this.$http.post('processes', requestData).
-          then((response) => {
-            if (response.status < 400) {
-              this.$router.push({ name: 'Process' });
-            } else {
-              // ToDo: error handling
+      if (this.processId > 0) {
+        this.$http.put('processes/' + this.processId, requestData).then((response) => {
+              if (response.status < 400) {
+                this.$router.push({name: 'Process'});
+              } else {
+                // ToDo: error handling
+              }
             }
-          }
-      ).catch((error) => {
-        // ToDo: error handling
-      });
+        ).catch((error) => {
+          // ToDo: error handling
+        });
+      } else {
+        this.$http.post('processes', requestData).then((response) => {
+              if (response.status < 400) {
+                this.$router.push({name: 'Process'});
+              } else {
+                // ToDo: error handling
+              }
+            }
+        ).catch((error) => {
+          // ToDo: error handling
+        });
+      }
       this.def_step = 1;
     },
     abort() {

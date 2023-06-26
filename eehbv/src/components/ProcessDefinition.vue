@@ -16,7 +16,7 @@
       </v-row>
       <v-row>
         <v-col cols="12">
-          <ParameterList :parameters="value.process_parameters" @edit="editParam" @delete="deleteParam"></ParameterList>
+          <ParameterList :parameters="value.process_parameters" @edit="editParam" @delete="deleteParam" :variants="variants"></ParameterList>
         </v-col>
       </v-row>
     </v-container>
@@ -109,12 +109,12 @@ export default {
       view_name_rules: [
         v => v.length <= 40 || this.$t("general.validation.max40"),
         v => v.length > 0 || this.$t("general.validation.required"),
-        v => !this.processes.map(t => t.view_name).includes(v) || this.$t('general.validation.present')
+        v => this.edited || !this.processes.map(t => t.view_name).includes(v) || this.$t('general.validation.present')
       ],
       api_name_rules: [
         v => v.length <= 30 || this.$t("general.validation.max30"),
         v => v.length > 0 || this.$t("general.validation.required"),
-        v => !this.processes.map(t => t.api_name).includes(v) || this.$t('general.validation.present'),
+        v => this.edited || !this.processes.map(t => t.api_name).includes(v) || this.$t('general.validation.present'),
         v => snake.test(v) || this.$t('general.validation.snake')
       ],
       editedParamIndex: -1,
@@ -131,6 +131,14 @@ export default {
     },
     processes: {
       type: Array,
+      required: true
+    },
+    variants: {
+      type: Array,
+      required: true
+    },
+    edited: {
+      type: Boolean,
       required: true
     }
   },
