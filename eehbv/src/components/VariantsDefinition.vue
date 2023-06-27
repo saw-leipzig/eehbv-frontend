@@ -269,11 +269,12 @@ import {mapGetters} from "vuex";
 import FormulaEditor from "./FormulaEditor";
 import ParameterButton from "./ParameterButton";
 import {helpers, maxLength, required} from "vuelidate/lib/validators";
+import ListButton from "./ListButton";
 const snake = helpers.regex('snake', /^[a-z_]*$/);
 
 export default {
   name: "VariantsDefinition",
-  components: {FunctionButton, ParameterButton, FormulaEditor, DialogCardEditor, DialogDelete},
+  components: {ListButton, FunctionButton, ParameterButton, FormulaEditor, DialogCardEditor, DialogDelete},
 
   validations: {
     currentComponent: {
@@ -320,6 +321,7 @@ export default {
     currentTargetFunc: [],
     paramNumber: 0,
     infoFunctionOverlay: false,
+    selectedForCopy: ""
   }),
 
   props: {
@@ -497,11 +499,19 @@ export default {
       this.currentVariant = Object.assign({},
           index < 0 ?
               { name: '', variant_components: [], variant_functions: [], variant_restrictions: [] } :
-              this.value[index]);
+              (copy ? this.copyVariant(this.value[index]) :  this.value[index]));
       if (copy) {
         this.currentVariant.name = '';
       }
       this.dialogEditVariant = true;
+    },
+    copyVariant(variant) {
+      return {
+        name: '',
+        variant_components: [...variant.variant_components.map(c => {let cc = JSON.parse(JSON.stringify(c)); delete cc.id; delete cc.variants_id; return cc;})],
+        variant_functions: [...variant.variant_functions.map(f => {let ff = JSON.parse(JSON.stringify(f)); delete ff.id; delete ff.variants_id; return ff;})],
+        variant_restrictions: [...variant.variant_restrictions.map(r => {let rr = JSON.parse(JSON.stringify(r)); delete rr.id; delete rr.variants_id; return rr;})]
+      }
     },
     saveVariant() {
       if (this.currentVariantIndex < 0) {
