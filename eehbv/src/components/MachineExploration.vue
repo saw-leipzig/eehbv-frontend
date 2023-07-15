@@ -1,0 +1,179 @@
+<template>
+  <div>
+    <v-container>
+      <v-row>
+        <v-col cols="12"><h2 v-text="'Maschinenexploration ' + process.view_name + ' - ' + variant.name"></h2></v-col>
+      </v-row>
+
+      <v-row>
+        <v-col cols="12">
+          <v-expansion-panels>
+            <v-expansion-panel>
+              <v-expansion-panel-header>{{ machineDefinition.name }}</v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <v-expansion-panels>
+                  <v-expansion-panel v-for="comp in Object.keys(machineDefinition.components)" :key="comp">
+                    <v-expansion-panel-header>{{ comp }}</v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                      <div><b>Hersteller: </b>{{ machineDefinition.components[comp].manufacturer }}</div>
+                      <div><b>Modell: </b> {{ machineDefinition.components[comp].name }}</div>
+                    </v-expansion-panel-content>
+                  </v-expansion-panel>
+                </v-expansion-panels>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col cols="12">
+          <v-tabs>
+            <v-tab>Parameterbereiche</v-tab>
+            <v-tab>Optimierung</v-tab>
+
+            <v-tab-item>
+              <v-row>
+                <v-col cols="4">
+                  <v-card class="overflow-y-auto" max-height="400" v-scroll.self="none">
+                    <v-expansion-panels>
+                      <v-expansion-panel>
+                        <v-expansion-panel-header>Prozessparameter</v-expansion-panel-header>
+                        <v-expansion-panel-content>
+                          <div v-for="param in process.parameters" v-if="!param.general" :key="param.name">
+                            <v-combobox v-if="param.material_properties_id != null"
+                                        v-model="parameters[param.variable_name]"
+                                        :items="parameterPropOptions(param.material_properties_id)"
+                                        :label="param.name + ' [' + param.unit + ']'"
+                                        type="text"
+                                        @change="explore"
+                            ></v-combobox>
+                            <v-combobox v-else-if="param.defaults.includes(',')"
+                                        v-model="parameters[param.variable_name]"
+                                        :items="parameterOptions(param.defaults)"
+                                        :label="param.name + ' [' + param.unit + ']'"
+                                        type="text"
+                                        @change="explore"
+                            ></v-combobox>
+                            <v-text-field v-else
+                                          v-model="parameters[param.variable_name]"
+                                          :label="param.name + ' [' + param.unit + ']'"
+                                          type="number"
+                                          @change="explore"
+                            ></v-text-field>
+                          </div>
+                        </v-expansion-panel-content>
+                      </v-expansion-panel>
+                      <v-expansion-panel>
+                        <v-expansion-panel-header>Generelle Prozessparameter</v-expansion-panel-header>
+                        <v-expansion-panel-content>
+                          <div v-for="param in process.parameters" v-if="param.general" :key="param.name">
+                            <v-combobox v-if="param.material_properties_id != null"
+                                        v-model="parameters[param.variable_name]"
+                                        :items="parameterPropOptions(param.material_properties_id)"
+                                        :label="param.name + ' [' + param.unit + ']'"
+                                        type="text"
+                                        @change="explore"
+                            ></v-combobox>
+                            <v-combobox v-else-if="param.defaults.includes(',')"
+                                        v-model="parameters[param.variable_name]"
+                                        :items="parameterOptions(param.defaults)"
+                                        :label="param.name + ' [' + param.unit + ']'"
+                                        type="text"
+                                        @change="explore"
+                            ></v-combobox>
+                            <v-text-field v-else
+                                          v-model="parameters[param.variable_name]"
+                                          :label="param.name + ' [' + param.unit + ']'"
+                                          type="number"
+                                          @change="explore"
+                            ></v-text-field>
+                          </div>
+                        </v-expansion-panel-content>
+                      </v-expansion-panel>
+                    </v-expansion-panels>
+                  </v-card>
+                </v-col>
+                <v-col cols="8">Ergebnisanzeige</v-col>
+              </v-row>
+            </v-tab-item>
+
+            <v-tab-item></v-tab-item>
+          </v-tabs>
+        </v-col>
+      </v-row>
+
+    </v-container>
+  </div>
+</template>
+
+<script>
+import paramValues from "../mixins/paramValues";
+
+export default {
+  name: "MachineExploration",
+  mixins: [ paramValues ],
+
+  data() {
+    return {
+      variant: {},
+      process: {},
+      parameters: {}
+    }
+  },
+
+  props: {
+    machineDefinition: {
+      type: Object,
+      required: true
+    },
+    processId: {
+      type: Number,
+      required: true
+    },
+    variantId: {
+      type: Number,
+      required: true
+    },
+    variantName: {
+      type: String,
+      required: true
+    }
+  },
+
+  created() {
+    this.initialize();
+  },
+
+  methods: {
+    initialize() {
+      this.$http.get('variants/' + this.variantId).
+              then((response) => {
+                  this.variant = Object.assign({}, response.data);
+          });
+      this.$http.get('processes/' + this.processId).
+              then((response) => {
+                  this.process = Object.assign({}, response.data);
+                  let defItem = {};
+                  this.process.parameters.forEach(p => {
+                    defItem[p.variable_name] = p.defaults === '' ? 0 : p.defaults.split(',')[0];
+                  });
+                  this.parameters = Object.assign({}, defItem);
+          });
+    },
+    explore() {
+      let model = {
+        variant: this.variantId,
+        machine: this.machineDefinition.components,
+        parameters: this.parameters
+      };
+      this.$http.post('machines/' + this.variantId + '/explore', model).
+          then((response) => {})
+    }
+  }
+}
+</script>
+
+<style scoped>
+
+</style>

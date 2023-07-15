@@ -15,6 +15,7 @@ import ComponentCreation from "../components/ComponentCreation";
 import ProcessCreation from "../components/ProcessCreation";
 import ProcessUpload from "../components/ProcessUpload";
 import OptimizationResult from "../components/OptimizationResult";
+import MachineExploration from "../views/pages/MachineExploration";
 
 Vue.use(VueRouter)
 
@@ -91,6 +92,12 @@ const routes = [
     path: '/processes/:type/optimization_result/:timestamp',
     name: 'OptimizationResult',
     component: OptimizationResult,
+    props: true
+  },
+  {
+    path: '/processes/:api/machine_exploration/:variantId',
+    name: 'MachineExploration',
+    component: MachineExploration,
     props: true
   },
   {

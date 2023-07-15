@@ -80,6 +80,14 @@
             </div>
 
             <br/>
+            <v-card>
+              <v-card-title>{{result[currentVariantIndex].variant}} - No. {{currentOptIndex + 1}}</v-card-title>
+              <v-card-text>
+                <v-btn @click="exploreMachine">Maschine untersuchen</v-btn>
+              </v-card-text>
+            </v-card>
+
+            <br/>
             <v-card v-if="result.length > 0 && result[currentVariantIndex].opts.length > 0 && requestData.process_profiles.length > 1">
               <v-card-title>Verbrauch pro Profil / kWh</v-card-title>
               <v-card-text>
@@ -288,6 +296,12 @@ export default {
   },
 
   methods: {
+    exploreMachine() {
+      this.$router.push({ name: 'MachineExploration', params: { api: this.process.api_name, processId: this.process.id,
+          variantId: this.result[this.currentVariantIndex].variant_id, variantName: this.result[this.currentVariantIndex].variant,
+          machineDefinition: {name: this.requestData.description + ' - No. ' + this.currentVariantIndex + 1,
+            components: this.result[this.currentVariantIndex].opts[this.currentOptIndex].indices} } });
+    },
     selectCell(row, col, costs) {
       if (costs) {
         this.currentCostsOptIndex = row;
@@ -336,13 +350,15 @@ export default {
       });
     },
     computeSankeyData(base) {
+      console.log('base');
+      console.log(base);
       let aggregateNames = [...new Set(Object.keys(base.partials).map(k => base.partials[k].aggregate))];
       let aggregates = {};
       aggregateNames.forEach(a =>
           aggregates[a] =
               Object.keys(base.partials).filter(k => base.partials[k].aggregate === a).map(k => base.partials[k].value).reduce((p, c) => p + c, 0));
       let n_agg = aggregateNames.length;
-      return {
+      let res = {
         nodes: [
           { node: 0, name: 'Total', id: 'total', color: 'gray' },
             ...aggregateNames.map((agg, p) => { return { node: p + 1, name: agg, id: 'agg' + p, color: 'gray' } }),
@@ -353,7 +369,10 @@ export default {
             ...Object.keys(base.partials).map(par => {
               return { source: base.partials[par].aggregate, target: par, value: base.partials[par].value, color: 'gray' } })
         ],
-      }
+      };
+      console.log('res');
+      console.log(res);
+      return res;
     },
     drawAmortization(data) {
       const id = 'svg_amort';
@@ -403,10 +422,12 @@ export default {
       });
     },
     drawSankey(data, update, id, parentId) {
+      console.log(update)
+      console.log(data)
       try {
         const nodeWidth = 120;
         const nodeHeight = 80;
-        const nodePadding = 60;
+        const nodePadding = 8;
 
         if (update) {
           d3.select('#' + id).remove();
