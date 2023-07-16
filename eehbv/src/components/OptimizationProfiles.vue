@@ -207,7 +207,7 @@ export default {
         if (typeof this.editedItem[param] === 'object') {
           this.editedItem[param] = this.editedItem[param].value;
         } else if (typeof this.editedItem[param] === 'string') {
-          this.editedItem[param] = parseInt(this.editedItem[param]);
+          this.editedItem[param] = parseFloat(this.editedItem[param]);
         }
       }
       if (this.editedIndex === -1) {

@@ -94,11 +94,22 @@
                     </v-expansion-panels>
                   </v-card>
                 </v-col>
-                <v-col cols="8">Ergebnisanzeige</v-col>
+                <v-col cols="8">
+                  <div>Ergebnisanzeige</div>
+                  <div v-if="!explorationResult">
+                    <span color="red">Parameter nicht möglich: </span>
+                    <span>{{failureMessage}}</span>
+                  </div>
+                  <div v-else>
+                    <span>Leistung Total [Watt]: </span>
+                    <span>{{explorationTotal}}</span>
+                  </div>
+                </v-col>
               </v-row>
             </v-tab-item>
 
             <v-tab-item></v-tab-item>
+
           </v-tabs>
         </v-col>
       </v-row>
@@ -109,6 +120,7 @@
 
 <script>
 import paramValues from "../mixins/paramValues";
+import {mapGetters} from "vuex";
 
 export default {
   name: "MachineExploration",
@@ -118,7 +130,11 @@ export default {
     return {
       variant: {},
       process: {},
-      parameters: {}
+      parameters: {},
+      explorationResult: true,
+      explorationTotal: 0,
+      explorationLosses: [],
+      failureMessage: ''
     }
   },
 
@@ -141,12 +157,22 @@ export default {
     }
   },
 
+  computed: {
+    ...mapGetters(['prop_values'])
+  },
+
   created() {
     this.initialize();
   },
 
   methods: {
     initialize() {
+      if (!this.machineDefinition) {
+        this.$router.push({ name: 'History' });
+      }
+      if (this.prop_values.length < 1) {
+        this.$store.dispatch('initProperties');
+      }
       this.$http.get('variants/' + this.variantId).
               then((response) => {
                   this.variant = Object.assign({}, response.data);
@@ -162,13 +188,47 @@ export default {
           });
     },
     explore() {
+      let params = JSON.parse(JSON.stringify(this.parameters));
+      Object.keys(params).forEach(key => {
+        if (typeof params[key] === 'object') {
+          params[key] = params[key].value;
+        } else if (typeof params[key] === 'string') {
+          params[key] = parseFloat(params[key]);
+        }
+        //params[key] = Number(params[key])
+      });
       let model = {
         variant: this.variantId,
         machine: this.machineDefinition.components,
-        parameters: this.parameters
+        parameters: params
       };
       this.$http.post('machines/' + this.variantId + '/explore', model).
-          then((response) => {})
+          then((response) => {
+            this.explorationResult = response.data.success;
+            if (this.explorationResult) {
+              this.explorationTotal = response.data.total;
+              this.explorationLosses = response.data.losses;
+            } else {
+              this.failureMessage = response.data.msg;
+            }
+      })
+    },
+    optimize() {
+/*      let params = JSON.parse(JSON.stringify(this.parameters));
+      Object.keys(params).forEach(key => params[key] = Number(params[key]));
+      let model = {
+        variant: this.variantId,
+        machine: this.machineDefinition.components,
+        parameters: params
+      };
+      this.$http.post('machines/' + this.variantId + '/explore', model).
+          then((response) => {
+            this.explorationResult = response.data.success;
+            if (this.explorationResult) {
+              this.explorationTotal = response.data.total;
+              this.explorationLosses = response.data.losses;
+            }
+      })*/
     }
   }
 }
