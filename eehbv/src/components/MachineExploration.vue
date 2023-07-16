@@ -108,7 +108,143 @@
               </v-row>
             </v-tab-item>
 
-            <v-tab-item></v-tab-item>
+            <v-tab-item>
+              <v-row>
+                <v-col cols="6">
+
+
+                  <v-card class="overflow-y-auto" max-height="400" v-scroll.self="none">
+                    <v-expansion-panels>
+                      <v-expansion-panel>
+                        <v-expansion-panel-header>Prozessparameter</v-expansion-panel-header>
+                        <v-expansion-panel-content>
+                          <div v-for="param in process.parameters" v-if="!param.general" :key="param.name">
+                            <v-row>
+                              <v-col cols="4">
+                                <v-switch v-model="ranges[param.variable_name].vary" label="Bereich"></v-switch>
+                              </v-col>
+                              <v-col cols="8">
+                              <v-combobox v-if="param.material_properties_id != null"
+                                          v-model="ranges[param.variable_name].min"
+                                          :items="parameterPropOptions(param.material_properties_id)"
+                                          :label="param.name + ' [' + param.unit + ']' + (ranges[param.variable_name].vary ? ' (min)' : '')"
+                                          type="text"
+                              ></v-combobox>
+                              <v-combobox v-else-if="param.defaults.includes(',')"
+                                          v-model="ranges[param.variable_name].min"
+                                          :items="parameterOptions(param.defaults)"
+                                          :label="param.name + ' [' + param.unit + ']' + (ranges[param.variable_name].vary ? ' (min)' : '')"
+                                          type="text"
+                              ></v-combobox>
+                              <v-text-field v-else
+                                            v-model="ranges[param.variable_name].min"
+                                            :label="param.name + ' [' + param.unit + ']' + (ranges[param.variable_name].vary ? ' (min)' : '')"
+                                            type="number"
+                              ></v-text-field>
+                              </v-col>
+                            </v-row>
+                            <v-row v-if="ranges[param.variable_name].vary">
+                              <v-col cols="4">
+                                <v-switch v-model="ranges[param.variable_name].discrete" label="diskret"></v-switch>
+                              </v-col>
+                              <v-col cols="8">
+                              <v-combobox v-if="param.material_properties_id != null"
+                                          v-model="ranges[param.variable_name].max"
+                                          :items="parameterPropOptions(param.material_properties_id)"
+                                          :label="param.name + ' [' + param.unit + ']' + (ranges[param.variable_name].vary ? ' (max)' : '')"
+                                          type="text"
+                              ></v-combobox>
+                              <v-combobox v-else-if="param.defaults.includes(',')"
+                                          v-model="ranges[param.variable_name].max"
+                                          :items="parameterOptions(param.defaults)"
+                                          :label="param.name + ' [' + param.unit + ']' + (ranges[param.variable_name].vary ? ' (max)' : '')"
+                                          type="text"
+                              ></v-combobox>
+                              <v-text-field v-else
+                                            v-model="ranges[param.variable_name].max"
+                                            :label="param.name + ' [' + param.unit + ']' + (ranges[param.variable_name].vary ? ' (max)' : '')"
+                                            type="number"
+                              ></v-text-field>
+                              </v-col>
+                            </v-row>
+                          </div>
+                        </v-expansion-panel-content>
+                      </v-expansion-panel>
+                      <v-expansion-panel>
+                        <v-expansion-panel-header>Generelle Prozessparameter</v-expansion-panel-header>
+                        <v-expansion-panel-content>
+                          <div v-for="param in process.parameters" v-if="param.general" :key="param.name">
+                            <v-row>
+                              <v-col cols="4">
+                                <v-switch v-model="ranges[param.variable_name].vary" label="Bereich"></v-switch>
+                              </v-col>
+                              <v-col cols="8">
+                              <v-combobox v-if="param.material_properties_id != null"
+                                          v-model="ranges[param.variable_name].min"
+                                          :items="parameterPropOptions(param.material_properties_id)"
+                                          :label="param.name + ' [' + param.unit + ']' + (ranges[param.variable_name].vary ? ' (min)' : '')"
+                                          type="text"
+                              ></v-combobox>
+                              <v-combobox v-else-if="param.defaults.includes(',')"
+                                          v-model="ranges[param.variable_name].min"
+                                          :items="parameterOptions(param.defaults)"
+                                          :label="param.name + ' [' + param.unit + ']' + (ranges[param.variable_name].vary ? ' (min)' : '')"
+                                          type="text"
+                              ></v-combobox>
+                              <v-text-field v-else
+                                            v-model="ranges[param.variable_name].min"
+                                            :label="param.name + ' [' + param.unit + ']' + (ranges[param.variable_name].vary ? ' (min)' : '')"
+                                            type="number"
+                              ></v-text-field>
+                              </v-col>
+                            </v-row>
+                            <v-row v-if="ranges[param.variable_name].vary">
+                              <v-col cols="4">
+                                <v-switch v-model="ranges[param.variable_name].discrete" label="diskret"></v-switch>
+                              </v-col>
+                              <v-col cols="8">
+                              <v-combobox v-if="param.material_properties_id != null"
+                                          v-model="ranges[param.variable_name].max"
+                                          :items="parameterPropOptions(param.material_properties_id)"
+                                          :label="param.name + ' [' + param.unit + ']' + (ranges[param.variable_name].vary ? ' (max)' : '')"
+                                          type="text"
+                              ></v-combobox>
+                              <v-combobox v-else-if="param.defaults.includes(',')"
+                                          v-model="ranges[param.variable_name].max"
+                                          :items="parameterOptions(param.defaults)"
+                                          :label="param.name + ' [' + param.unit + ']' + (ranges[param.variable_name].vary ? ' (max)' : '')"
+                                          type="text"
+                              ></v-combobox>
+                              <v-text-field v-else
+                                            v-model="ranges[param.variable_name].max"
+                                            :label="param.name + ' [' + param.unit + ']' + (ranges[param.variable_name].vary ? ' (max)' : '')"
+                                            type="number"
+                              ></v-text-field>
+                              </v-col>
+                            </v-row>
+                          </div>
+                        </v-expansion-panel-content>
+                      </v-expansion-panel>
+                    </v-expansion-panels>
+                  </v-card>
+
+                </v-col>
+                <v-col cols="6">
+                  <v-container>
+                    <v-rows>
+                      <v-row>
+                        <v-btn @click="optimize">Optimieren</v-btn>
+                      </v-row>
+                      <v-row></v-row>
+                      <v-row>
+                        <span>Ergebnisanzeige</span>
+                      </v-row>
+                      <v-row></v-row>
+                    </v-rows>
+                  </v-container>
+                </v-col>
+              </v-row>
+            </v-tab-item>
 
           </v-tabs>
         </v-col>
@@ -131,10 +267,12 @@ export default {
       variant: {},
       process: {},
       parameters: {},
+      ranges: {},
       explorationResult: true,
       explorationTotal: 0,
       explorationLosses: [],
-      failureMessage: ''
+      failureMessage: '',
+      optimalParameters: {}
     }
   },
 
@@ -181,10 +319,14 @@ export default {
               then((response) => {
                   this.process = Object.assign({}, response.data);
                   let defItem = {};
+                  let defRange = {};
                   this.process.parameters.forEach(p => {
-                    defItem[p.variable_name] = p.defaults === '' ? 0 : p.defaults.split(',')[0];
+                    let val = p.defaults === '' ? 0 : p.defaults.split(',')[0];
+                    defItem[p.variable_name] = val;
+                    defRange[p.variable_name] = { min: val, max: val, vary: false, discrete: false};
                   });
                   this.parameters = Object.assign({}, defItem);
+                  this.ranges = Object.assign({}, defRange);
           });
     },
     explore() {
@@ -195,7 +337,6 @@ export default {
         } else if (typeof params[key] === 'string') {
           params[key] = parseFloat(params[key]);
         }
-        //params[key] = Number(params[key])
       });
       let model = {
         variant: this.variantId,
@@ -214,21 +355,30 @@ export default {
       })
     },
     optimize() {
-/*      let params = JSON.parse(JSON.stringify(this.parameters));
-      Object.keys(params).forEach(key => params[key] = Number(params[key]));
+      let params = JSON.parse(JSON.stringify(this.ranges));
+      Object.keys(params).forEach(key => {
+        if (typeof params[key].min === 'object') {
+          params[key].min = params[key].min.value;
+        } else if (typeof params[key].min === 'string') {
+          params[key].min = parseFloat(params[key].min);
+        }
+        if (params[key].vary) {
+          if (typeof params[key].max === 'object') {
+            params[key].max = params[key].max.value;
+          } else if (typeof params[key].max === 'string') {
+            params[key].max = parseFloat(params[key].max);
+          }
+        }
+      });
       let model = {
         variant: this.variantId,
         machine: this.machineDefinition.components,
         parameters: params
       };
-      this.$http.post('machines/' + this.variantId + '/explore', model).
+      this.$http.post('machines/' + this.variantId + '/optimize', model).
           then((response) => {
-            this.explorationResult = response.data.success;
-            if (this.explorationResult) {
-              this.explorationTotal = response.data.total;
-              this.explorationLosses = response.data.losses;
-            }
-      })*/
+            this.optimalParameters = Object.assign({}, response.data.parameters);
+      })
     }
   }
 }
