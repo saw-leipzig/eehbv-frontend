@@ -239,7 +239,22 @@
                       <v-row>
                         <span>Ergebnisanzeige</span>
                       </v-row>
-                      <v-row></v-row>
+                      <div v-if="optRunning">
+                        <v-row>
+                          <v-progress-circular indeterminate color="green" size="70" width="7"></v-progress-circular>
+                        </v-row>
+                      </div>
+                      <div v-else>
+                        <v-row>{{optMessage}}</v-row>
+                        <v-row>
+                          <span>Bester Leistungswert [Watt]: </span>
+                          <span>{{bestValue}}</span>
+                        </v-row>
+                        <v-row v-for="param in process.parameters" v-if="ranges[param.variable_name].vary" :key="param.name">
+                          <span>{{param.name + ' [' + param.unit + ']: '}}</span>
+                          <span>{{optimalParameters[param.variable_name]}}</span>
+                        </v-row>
+                      </div>
                     </v-rows>
                   </v-container>
                 </v-col>
@@ -257,10 +272,11 @@
 <script>
 import paramValues from "../mixins/paramValues";
 import {mapGetters} from "vuex";
+import messageHandling from "../mixins/messageHandling";
 
 export default {
   name: "MachineExploration",
-  mixins: [ paramValues ],
+  mixins: [ paramValues, messageHandling ],
 
   data() {
     return {
@@ -272,7 +288,10 @@ export default {
       explorationTotal: 0,
       explorationLosses: [],
       failureMessage: '',
-      optimalParameters: {}
+      optimalParameters: {},
+      optRunning: false,
+      optMessage: '',
+      optHistory: []
     }
   },
 
@@ -296,7 +315,10 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['prop_values'])
+    ...mapGetters(['prop_values']),
+    bestValue() {
+      return this.optHistory.length > 0 ? this.optHistory[this.optHistory.length - 1] : '';
+    }
   },
 
   created() {
@@ -356,6 +378,7 @@ export default {
     },
     optimize() {
       let params = JSON.parse(JSON.stringify(this.ranges));
+      let breakMsg = '';
       Object.keys(params).forEach(key => {
         if (typeof params[key].min === 'object') {
           params[key].min = params[key].min.value;
@@ -369,16 +392,30 @@ export default {
             params[key].max = parseFloat(params[key].max);
           }
         }
+        if (params[key].vary && params[key].max < params[key].min) {
+          breakMsg = 'Min muss kleiner Max für Parameter ' + key;
+        }
       });
+      if (breakMsg !== '') {
+        this.notify(breakMsg);
+        return;
+      }
       let model = {
         variant: this.variantId,
         machine: this.machineDefinition.components,
         parameters: params
       };
+      this.optRunning = true;
+      this.optimalParameters = Object.assign({}, {});
       this.$http.post('machines/' + this.variantId + '/optimize', model).
           then((response) => {
             this.optimalParameters = Object.assign({}, response.data.parameters);
-      })
+            this.optMessage = response.data.msg;
+            this.optHistory = response.data.history;
+            this.optRunning = false;
+      }).catch(() => {
+        this.optRunning = false;
+      });
     }
   }
 }
