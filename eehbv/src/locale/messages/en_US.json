@@ -221,7 +221,10 @@
       "loss_function": "Loss function",
       "restrictions": "Restrictions",
       "restriction": "Restriction",
-      "aggregate_name": "Aggregate name"
+      "aggregate_name": "Aggregate name",
+      "edit_param": "Edit parameter",
+      "add_param": "Add parameter",
+      "edit_condition": "Edit condition"
     }
   },
   "variant_selection_definition": {
@@ -266,7 +269,8 @@
       "result_settings": "Result Presentation",
       "view_parameters": "View parameters",
       "costs_opt": "Cost optimization",
-      "energy_optimization": "Energy optimization"
+      "energy_optimization": "Energy optimization",
+      "expenditure_pp": "Expenditure per profile / kWh"
     },
     "labels": {
       "fraction": "Fraction [h/year]",
@@ -279,10 +283,38 @@
       "amortization_time": "Amortization time [years]",
       "assembly_costs": "Assembly costs [Euros]",
       "costs": "Acquisition/Energy Costs",
-      "costs_short": "Costs"
+      "costs_short": "Costs",
+      "explore_machine": "Maschine untersuchen",
+      "tee": "Total energy expenditure",
+      "profile": "Profile",
+      "exception": "An unexpected error occurred during the optimization computation. Either you made invalid inputs or the process model is faulty:"
     },
     "info": {
       "parameters": "<p>A set of <strong>Process parameters</strong> defines a profile of process usage.</p><p>Apply at least one set of process parameters with a fraction greater than zero.</p><p>Should the process be used with different profiles, each fraction gives the relative frequency of the prospective usage of the profile.</p><p>For a rough estimate of the absolute energy consumption it is necessary to provide here an estimate of hours per year the machine will run with this profile.</p><p>This is especially necessary if an amortisation calculation shall be conducted.</p><p>Process parameters which are irrelevant for some selected variants can have arbitrary values.</p>"
+    },
+    "rules": {
+      "positive_value": "positive value"
+    }
+  },
+  "machines": {
+    "titles": {
+      "exploration": "Machine exploration",
+      "parameter_ranges": "Parameter ranges",
+      "optimization": "Optimization"
+    },
+    "labels": {
+      "process_parameters": "Process parameters",
+      "general_parameters": "General process parameters",
+      "result": "Result",
+      "invalid_parameters": "Parameters don't fulfill conditions",
+      "total_energy": "Total energy [Wh]",
+      "range": "Range",
+      "discrete": "discrete",
+      "optimize": "Optimize",
+      "best_result": "Best Energy Value [Wh]"
+    },
+    "validation": {
+      "min_max": "Min muss kleiner Max für Parameter "
     }
   }
 }

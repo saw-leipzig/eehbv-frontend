@@ -172,7 +172,7 @@
                         @input="$v.currentFunction.variable_name.$touch" @blur="$v.currentFunction.variable_name.$touch"></v-text-field>
         </v-col>
         <v-col cols="4">
-          <v-btn color="green" @click="dialogEditParams = true" :disabled="disabledEditParams">Parameter bearbeiten</v-btn>
+          <v-btn color="green" @click="dialogEditParams = true" :disabled="disabledEditParams">{{$t('variants_definition.edit.edit_param')}}</v-btn>
         </v-col>
       </v-row>
       <v-row>
@@ -189,7 +189,7 @@
 
     <DialogDelete v-model="dialogDeleteFunction" @abort="closeDeleteFunction" @delete="deleteFunctionConfirm"></DialogDelete>
 
-    <DialogCardEditor v-model="dialogEditParams" title="Parameter bearbeiten" @save="setParams" @close="dismissParams">
+    <DialogCardEditor v-model="dialogEditParams" :title="$t('variants_definition.edit.edit_param')" @save="setParams" @close="dismissParams">
       <v-row>
         <v-col cols="12">
           <v-textarea rows="5" v-model="selectedFunctionDoc" :label="$t('variants_definition.labels.function_doc')" :disabled="true"></v-textarea>
@@ -197,7 +197,7 @@
       </v-row>
       <v-row>
         <v-col cols="3">
-          Parameter hinzufügen
+          {{ $t('variants_definition.edit.add_param') }}
         </v-col>
         <v-col cols="3">
           <ParameterButton :params="functionParams" :tick="true" @click="addParam"></ParameterButton>
@@ -233,7 +233,7 @@
           <v-select v-model="currentRestriction.eval_after_position" :items="evalAfterSelection" :label="$t('variants_definition.labels.eval_after')"></v-select>
         </v-col>
         <v-col cols="2">
-          <v-btn color="green" @click="dialogRestrictionFormula = true">Bedingung bearbeiten</v-btn>
+          <v-btn color="green" @click="dialogRestrictionFormula = true">{{ $t('variants_definition.labels.edit_condition') }}</v-btn>
         </v-col>
       </v-row>
       <v-row>

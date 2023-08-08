@@ -127,7 +127,7 @@ export default {
     },
     infoOverlay: false,
     rules: {
-      greaterZero: value => value > 0 || 'positiver Wert'
+      greaterZero: value => value > 0 || this.$t('optimization.rules.positive_value')
     }
   }),
 
@@ -153,8 +153,7 @@ export default {
   computed: {
     ...mapGetters(['prop_values']),
     formTitle () {
-      return this.editedIndex === -1 ? 'Neuer Eintrag' : 'Eintrag bearbeiten'
-      // ToDo: Mixin with ComponentOverview
+      return this.editedIndex === -1 ? this.$t('general.editing.new') : this.$t('general.editing.edit')
     },
     infoText() {
       return this.infoTexts.find(i => i.position === 3)['text'];

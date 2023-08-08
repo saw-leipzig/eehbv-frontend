@@ -29,7 +29,6 @@
 
             {{ JSON.stringify(requestData) }}
 
-
           </v-card-text>
         </v-card>
       </v-col>
@@ -45,9 +44,7 @@
               <v-progress-circular indeterminate color="green" size="70" width="7"></v-progress-circular>
             </div>
             <div v-else>
-              <div v-if="result[currentVariantIndex].opts.length === 0">
-                Bei der Optimierungsberechnung trat ein unerwarteter Fehler auf. Entweder haben Sie unzulässige Eingaben
-                gemacht oder das Prozessmodell ist fehlerhaft:
+              <div v-if="result[currentVariantIndex].opts.length === 0"><span>{{ $t('optimization.labels.exception') }}</span>
                 <br/>
                 {{result[currentVariantIndex].deepest_failed_restriction.restriction}}
               </div>
@@ -83,13 +80,13 @@
             <v-card>
               <v-card-title>{{result[currentVariantIndex].variant}} - No. {{currentOptIndex + 1}}</v-card-title>
               <v-card-text>
-                <v-btn @click="exploreMachine">Maschine untersuchen</v-btn>
+                <v-btn @click="exploreMachine">{{ $t('optimization.labels.explore_machine') }}</v-btn>
               </v-card-text>
             </v-card>
 
             <br/>
             <v-card v-if="result.length > 0 && result[currentVariantIndex].opts.length > 0 && requestData.process_profiles.length > 1">
-              <v-card-title>Verbrauch pro Profil / kWh</v-card-title>
+              <v-card-title>{{ $t('optimization.titles.expenditure_pp') }}</v-card-title>
               <v-card-text>
                 <v-simple-table dense>
                   <template v-slot:default>
@@ -97,7 +94,7 @@
                       <tr>
                         <th></th>
                         <th class="text-right" v-for="(k, index) in requestData.process_profiles" :key="index">
-                          Profil {{index + 1}} ({{k.portion}} h)
+                          {{ $t('optimization.labels.profile') }} {{index + 1}} ({{k.portion}} h)
                         </th>
                         <th class="text-right">Total</th>
                       </tr>
@@ -111,7 +108,7 @@
                         <td class="text-right">{{result[currentVariantIndex].opts[currentOptIndex].partials[k].value}}</td>
                       </tr>
                       <tr>
-                        <td>Gesamtenergieverbrauch</td>
+                        <td>{{ $t('optimization.labels.tee') }}</td>
                         <td class="text-right" v-for="(p, index) in requestData.process_profiles" :key="index">
                           {{energyPerProfile(index)}}
                         </td>
@@ -299,7 +296,7 @@ export default {
     exploreMachine() {
       this.$router.push({ name: 'MachineExploration', params: { api: this.process.api_name, processId: this.process.id,
           variantId: this.result[this.currentVariantIndex].variant_id, variantName: this.result[this.currentVariantIndex].variant,
-          machineDefinition: {name: this.requestData.description + ' - No. ' + this.currentVariantIndex + 1,
+          machineDefinition: {name: this.requestData.description + ' - No. ' + (this.currentOptIndex + 1),
             components: this.result[this.currentVariantIndex].opts[this.currentOptIndex].indices} } });
     },
     selectCell(row, col, costs) {
@@ -350,8 +347,6 @@ export default {
       });
     },
     computeSankeyData(base) {
-      console.log('base');
-      console.log(base);
       let aggregateNames = [...new Set(Object.keys(base.partials).map(k => base.partials[k].aggregate))];
       let aggregates = {};
       aggregateNames.forEach(a =>
@@ -370,8 +365,6 @@ export default {
               return { source: base.partials[par].aggregate, target: par, value: base.partials[par].value, color: 'gray' } })
         ],
       };
-      console.log('res');
-      console.log(res);
       return res;
     },
     drawAmortization(data) {
@@ -422,8 +415,6 @@ export default {
       });
     },
     drawSankey(data, update, id, parentId) {
-      console.log(update)
-      console.log(data)
       try {
         const nodeWidth = 120;
         const nodeHeight = 80;

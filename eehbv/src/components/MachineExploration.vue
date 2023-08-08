@@ -2,7 +2,7 @@
   <div>
     <v-container>
       <v-row>
-        <v-col cols="12"><h2 v-text="'Maschinenexploration ' + process.view_name + ' - ' + variant.name"></h2></v-col>
+        <v-col cols="12"><h2 v-text="$t('machines.titles.exploration') + ' ' + process.view_name + ' - ' + variant.name"></h2></v-col>
       </v-row>
 
       <v-row>
@@ -15,8 +15,8 @@
                   <v-expansion-panel v-for="comp in Object.keys(machineDefinition.components)" :key="comp">
                     <v-expansion-panel-header>{{ comp }}</v-expansion-panel-header>
                     <v-expansion-panel-content>
-                      <div><b>Hersteller: </b>{{ machineDefinition.components[comp].manufacturer }}</div>
-                      <div><b>Modell: </b> {{ machineDefinition.components[comp].name }}</div>
+                      <div><b>{{$t('components.domain.manufacturer')}}: </b>{{ machineDefinition.components[comp].manufacturer }}</div>
+                      <div><b>{{$t('components.domain.model')}}: </b> {{ machineDefinition.components[comp].name }}</div>
                     </v-expansion-panel-content>
                   </v-expansion-panel>
                 </v-expansion-panels>
@@ -29,8 +29,8 @@
       <v-row>
         <v-col cols="12">
           <v-tabs>
-            <v-tab>Parameterbereiche</v-tab>
-            <v-tab>Optimierung</v-tab>
+            <v-tab>{{$t('machines.titles.parameter_ranges')}}</v-tab>
+            <v-tab>{{$t('machines.titles.optimization')}}</v-tab>
 
             <v-tab-item>
               <v-row>
@@ -38,7 +38,7 @@
                   <v-card class="overflow-y-auto" max-height="400" v-scroll.self="none">
                     <v-expansion-panels>
                       <v-expansion-panel>
-                        <v-expansion-panel-header>Prozessparameter</v-expansion-panel-header>
+                        <v-expansion-panel-header>{{$t('machines.labels.process_parameters')}}</v-expansion-panel-header>
                         <v-expansion-panel-content>
                           <div v-for="param in process.parameters" v-if="!param.general" :key="param.name">
                             <v-combobox v-if="param.material_properties_id != null"
@@ -65,7 +65,7 @@
                         </v-expansion-panel-content>
                       </v-expansion-panel>
                       <v-expansion-panel>
-                        <v-expansion-panel-header>Generelle Prozessparameter</v-expansion-panel-header>
+                        <v-expansion-panel-header>{{$t('machines.labels.general_parameters')}}</v-expansion-panel-header>
                         <v-expansion-panel-content>
                           <div v-for="param in process.parameters" v-if="param.general" :key="param.name">
                             <v-combobox v-if="param.material_properties_id != null"
@@ -95,13 +95,13 @@
                   </v-card>
                 </v-col>
                 <v-col cols="8">
-                  <div>Ergebnisanzeige</div>
+                  <div>{{$t('machines.labels.result')}}: </div>
                   <div v-if="!explorationResult">
-                    <span color="red">Parameter nicht möglich: </span>
+                    <span color="red">{{$t('machines.labels.invalid_parameters')}}: </span>
                     <span>{{failureMessage}}</span>
                   </div>
                   <div v-else>
-                    <span>Leistung Total [Watt]: </span>
+                    <span>{{$t('machines.labels.total_energy')}}: </span>
                     <span>{{explorationTotal}}</span>
                   </div>
                 </v-col>
@@ -116,12 +116,12 @@
                   <v-card class="overflow-y-auto" max-height="400" v-scroll.self="none">
                     <v-expansion-panels>
                       <v-expansion-panel>
-                        <v-expansion-panel-header>Prozessparameter</v-expansion-panel-header>
+                        <v-expansion-panel-header>{{$t('machines.labels.process_parameters')}}</v-expansion-panel-header>
                         <v-expansion-panel-content>
-                          <div v-for="param in process.parameters" v-if="!param.general" :key="param.name">
+                          <div v-for="(param, index) in process.parameters" v-if="!param.general" :key="param.name" v-bind:class="{ 'bg-light': oddParam(false, index) }">
                             <v-row>
                               <v-col cols="4">
-                                <v-switch v-model="ranges[param.variable_name].vary" label="Bereich"></v-switch>
+                                <v-switch v-model="ranges[param.variable_name].vary" :label="$t('machines.labels.range')"></v-switch>
                               </v-col>
                               <v-col cols="8">
                               <v-combobox v-if="param.material_properties_id != null"
@@ -145,7 +145,7 @@
                             </v-row>
                             <v-row v-if="ranges[param.variable_name].vary">
                               <v-col cols="4">
-                                <v-switch v-model="ranges[param.variable_name].discrete" label="diskret"></v-switch>
+                                <v-switch v-model="ranges[param.variable_name].discrete" :label="$t('machines.labels.discrete')"></v-switch>
                               </v-col>
                               <v-col cols="8">
                               <v-combobox v-if="param.material_properties_id != null"
@@ -171,12 +171,12 @@
                         </v-expansion-panel-content>
                       </v-expansion-panel>
                       <v-expansion-panel>
-                        <v-expansion-panel-header>Generelle Prozessparameter</v-expansion-panel-header>
+                        <v-expansion-panel-header>{{$t('machines.labels.general_parameters')}}</v-expansion-panel-header>
                         <v-expansion-panel-content>
-                          <div v-for="param in process.parameters" v-if="param.general" :key="param.name">
+                          <div v-for="(param, index) in process.parameters" v-if="param.general" :key="param.name" v-bind:class="{ 'bg-light': oddParam(true, index) }">
                             <v-row>
                               <v-col cols="4">
-                                <v-switch v-model="ranges[param.variable_name].vary" label="Bereich"></v-switch>
+                                <v-switch v-model="ranges[param.variable_name].vary" :label="$t('machines.labels.range')"></v-switch>
                               </v-col>
                               <v-col cols="8">
                               <v-combobox v-if="param.material_properties_id != null"
@@ -200,7 +200,7 @@
                             </v-row>
                             <v-row v-if="ranges[param.variable_name].vary">
                               <v-col cols="4">
-                                <v-switch v-model="ranges[param.variable_name].discrete" label="diskret"></v-switch>
+                                <v-switch v-model="ranges[param.variable_name].discrete" :label="$t('machines.labels.discrete')"></v-switch>
                               </v-col>
                               <v-col cols="8">
                               <v-combobox v-if="param.material_properties_id != null"
@@ -233,11 +233,11 @@
                   <v-container>
                     <v-rows>
                       <v-row>
-                        <v-btn @click="optimize">Optimieren</v-btn>
+                        <v-btn @click="optimize">{{$t('machines.labels.optimize')}}</v-btn>
                       </v-row>
                       <v-row></v-row>
                       <v-row>
-                        <span>Ergebnisanzeige</span>
+                        <span>{{$t('machines.labels.result')}}</span>
                       </v-row>
                       <div v-if="optRunning">
                         <v-row>
@@ -247,7 +247,7 @@
                       <div v-else>
                         <v-row>{{optMessage}}</v-row>
                         <v-row>
-                          <span>Bester Leistungswert [Watt]: </span>
+                          <span>{{$t('machines.labels.best_result')}}: </span>
                           <span>{{bestValue}}</span>
                         </v-row>
                         <v-row v-for="param in process.parameters" v-if="ranges[param.variable_name].vary" :key="param.name">
@@ -318,6 +318,32 @@ export default {
     ...mapGetters(['prop_values']),
     bestValue() {
       return this.optHistory.length > 0 ? this.optHistory[this.optHistory.length - 1] : '';
+    },
+    generalOdds() {
+      let odds = [];
+      let c = 0;
+      for (let i = 0; i < this.process.parameters.length; i++) {
+        if (this.process.parameters[i].general) {
+          c++;
+          if (c % 2 === 0) {
+            odds.push(i);
+          }
+        }
+      }
+      return odds;
+    },
+    odds() {
+      let odds = [];
+      let c = 0;
+      for (let i = 0; i < this.process.parameters.length; i++) {
+        if (!this.process.parameters[i].general) {
+          c++;
+          if (c % 2 === 0) {
+            odds.push(i);
+          }
+        }
+      }
+      return odds;
     }
   },
 
@@ -393,7 +419,7 @@ export default {
           }
         }
         if (params[key].vary && params[key].max < params[key].min) {
-          breakMsg = 'Min muss kleiner Max für Parameter ' + key;
+          breakMsg = $t('machines.validation.min_max') + key;
         }
       });
       if (breakMsg !== '') {
@@ -416,11 +442,18 @@ export default {
       }).catch(() => {
         this.optRunning = false;
       });
+    },
+    oddParam(general, index) {
+      return (general)
+          ? this.generalOdds.includes(index)
+          : this.odds.includes(index);
     }
   }
 }
 </script>
 
 <style scoped>
-
+  .bg-light {
+    background-color: lightgrey;
+  }
 </style>

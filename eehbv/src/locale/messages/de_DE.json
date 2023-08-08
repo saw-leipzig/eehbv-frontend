@@ -221,7 +221,10 @@
       "loss_function": "Verlustfunktion",
       "restrictions": "Bedingungen",
       "restriction": "Bedingung",
-      "aggregate_name": "Aggregatname"
+      "aggregate_name": "Aggregatname",
+      "edit_param": "Parameter bearbeiten",
+      "add_param": "Parameter hinzufügen",
+      "edit_condition": "Bedingung bearbeiten"
     }
   },
   "variant_selection_definition": {
@@ -266,7 +269,8 @@
       "result_settings": "Ergebnisdarstellung",
       "view_parameters": "Anzeigeparameter",
       "costs_opt": "Kostenoptimierung",
-      "energy_optimization": "Energieoptimierung"
+      "energy_optimization": "Energieoptimierung",
+      "expenditure_pp": "Verbrauch pro Profil / kWh"
     },
     "labels": {
       "fraction": "Anteil [h/Jahr]",
@@ -279,10 +283,38 @@
       "amortization_time": "Amortisationszeit [Jahre]",
       "assembly_costs": "Montagepreis [Euro]",
       "costs": "Anschaffungs-/Energiekosten",
-      "costs_short": "Kosten"
+      "costs_short": "Kosten",
+      "explore_machine": "Maschine untersuchen",
+      "tee": "Gesamtenergieverbrauch",
+      "profile": "Profil",
+      "exception": "Bei der Optimierungsberechnung trat ein unerwarteter Fehler auf. Entweder haben Sie unzulässige Eingaben gemacht oder das Prozessmodell ist fehlerhaft:"
     },
     "info": {
       "parameters": "<p>Ein Satz von <strong>Prozessparametern</strong> definiert ein Nutzungsprofil des Prozesses.</p><p>Legen Sie mindestens einen Satz von Prozessparametern mit einem Anteil größer 0 an.</p><p>Soll der Prozess mit unterschiedlichen Profilen betrieben werden, gibt der Anteil jeweils die relative Häufigkeit an, mit der dieses Profil voraussichtlich genutzt werden wird.</p><p>Um nicht nur eine relative Vergleichbarkeit zwischen verschiedenen Auslegungen zu bekommen sondern eine grobe Schätzung des Gesamtenergieverbrauchs, muss an dieser Stelle die Anzahl der geschätzten Stunden pro Jahr angegeben werden, in denen die Maschine in diesem Betriebsprofil laufen wird.</p><p>Insbesondere ist eine Angabe in dieser Form notwendig, wenn eine Preisberechnung durchgeführt werden soll.<p><p>Prozessparameter, die für einzelne Varianten irrelevant sind, können beliebige Werte haben.</p>"
+    },
+    "rules": {
+      "positive_value": "positiver Wert"
+    }
+  },
+  "machines": {
+    "titles": {
+      "exploration": "Maschinenexploration",
+      "parameter_ranges": "Parameterbereiche",
+      "optimization": "Optimierung"
+    },
+    "labels": {
+      "process_parameters": "Prozessparameter",
+      "general_parameters": "Allgemeine Prozessparameter",
+      "result": "Ergebnisanzeige",
+      "invalid_parameters": "Parameter nicht möglich",
+      "total_energy": "Energie Total [Wh]",
+      "range": "Bereich",
+      "discrete": "diskret",
+      "optimize": "Optimieren",
+      "best_result": "Bester Energiewert [Wh]"
+    },
+    "validation": {
+      "min_max": "Min muss kleiner Max für Parameter "
     }
   }
 }
