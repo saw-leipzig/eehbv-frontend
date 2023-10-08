@@ -172,7 +172,7 @@
                         @input="$v.currentFunction.variable_name.$touch" @blur="$v.currentFunction.variable_name.$touch"></v-text-field>
         </v-col>
         <v-col cols="4">
-          <v-btn color="green" @click="dialogEditParams = true" :disabled="disabledEditParams">{{$t('variants_definition.edit.edit_param')}}</v-btn>
+          <v-btn color="green" @click="dialogEditParams = true" :disabled="disabledEditParams">{{$t('variants_definition.labels.edit_param')}}</v-btn>
         </v-col>
       </v-row>
       <v-row>
@@ -189,7 +189,7 @@
 
     <DialogDelete v-model="dialogDeleteFunction" @abort="closeDeleteFunction" @delete="deleteFunctionConfirm"></DialogDelete>
 
-    <DialogCardEditor v-model="dialogEditParams" :title="$t('variants_definition.edit.edit_param')" @save="setParams" @close="dismissParams">
+    <DialogCardEditor v-model="dialogEditParams" :title="$t('variants_definition.labels.edit_param')" @save="setParams" @close="dismissParams">
       <v-row>
         <v-col cols="12">
           <v-textarea rows="5" v-model="selectedFunctionDoc" :label="$t('variants_definition.labels.function_doc')" :disabled="true"></v-textarea>
@@ -197,7 +197,7 @@
       </v-row>
       <v-row>
         <v-col cols="3">
-          {{ $t('variants_definition.edit.add_param') }}
+          {{ $t('variants_definition.labels.add_param') }}
         </v-col>
         <v-col cols="3">
           <ParameterButton :params="functionParams" :tick="true" @click="addParam"></ParameterButton>

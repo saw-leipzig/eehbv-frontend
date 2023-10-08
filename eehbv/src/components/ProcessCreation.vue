@@ -110,6 +110,7 @@ import ParameterDependencyDefinition from "./ParameterDependencyDefinition";
 import FunctionsDefinition from "./FunctionsDefinition";
 import {mapGetters} from "vuex";
 import DialogDelete from "./DialogDelete";
+
 const snake = /^[a-z_]*$/;
 
 export default {
@@ -167,10 +168,11 @@ export default {
       this.processId = this.$route.params.id;
       this.$http.get('processes/' + this.processId + '/full').
               then((response) => {
+                console.log('FULL');
                 this.process = Object.assign({}, response.data.process);
                 this.functions.push(...response.data.functions);
                 this.variants.push(...response.data.variants);
-                this.variant_selection = Object.assign({}, response.data.variant_selection);
+                this.variant_selection = Object.assign({}, this.treeFromDbTree(response.data.variant_selection));
                 this.solver = Object.assign({}, response.data.solver);
                 this.infoTexts.splice(0, 2, ...response.data.infoTexts)
           }).catch(error => {});
@@ -761,6 +763,31 @@ export default {
         yes: node.answers.length < 1 ? null : this.treeQuestionBranch(node.answers[0]),
         no: node.answers.length < 1 ? null : this.treeQuestionBranch(node.answers[1])
       };
+    },
+    treeFromDbTree(variant_selection) {
+      let nodes = [ this.recursiveNodesFromTree(variant_selection.tree, 'root', this.variants.map(v => v.name)) ];
+      return {
+        list: variant_selection.list,
+        tree: nodes
+      };
+    },
+    recursiveNodesFromTree(tree, id, choices) {
+      let hasNoChildren = tree.question === null;
+      return {
+        id: id,
+        question: hasNoChildren ? '' : tree.question,
+        info: '',
+        excludes: typeof tree.excludes !== "undefined" ? [...tree.excludes] : [],
+        exclude_choices: [...choices],
+        answers: hasNoChildren ? [] :
+            [
+              { response: 'yes', ...this.recursiveNodesFromTree(tree.yes, id + '-y', this.childChoices(choices, tree.yes.excludes)) },
+              { response: 'no', ...this.recursiveNodesFromTree(tree.no, id + '-n', this.childChoices(choices, tree.no.excludes)) }
+            ]
+      };
+    },
+    childChoices(choices, excludes) {
+      return this.variants.filter(v => choices.includes(v.name)).filter(v => !excludes.includes(v.id)).map(v => v.name);
     }
   }
 }

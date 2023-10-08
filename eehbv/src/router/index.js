@@ -16,6 +16,7 @@ import ProcessCreation from "../components/ProcessCreation";
 import ProcessUpload from "../components/ProcessUpload";
 import OptimizationResult from "../components/OptimizationResult";
 import MachineExploration from "../views/pages/MachineExploration";
+import Documentation from "../views/pages/Documentation";
 
 Vue.use(VueRouter)
 
@@ -109,6 +110,11 @@ const routes = [
     path: '/glossary',
     name: 'Glossary',
     component: Glossary
+  },
+  {
+    path: '/documentation',
+    name: 'Documentation',
+    component: Documentation
   },
   {
     path: '/about',

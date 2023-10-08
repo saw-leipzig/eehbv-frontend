@@ -316,5 +316,17 @@
     "validation": {
       "min_max": "Min muss kleiner Max für Parameter "
     }
+  },
+  "documentation": {
+    "titles": "Documentation",
+    "labels": {
+      "manual": "Manual",
+      "openapi": "OpenAPI documentation",
+      "arc": "Architecture documentation (arc42)",
+      "license": "License",
+      "contributors": "contributors",
+      "source_frontend": "Source code frontend",
+      "source_backend": "Source code backend"
+    }
   }
 }

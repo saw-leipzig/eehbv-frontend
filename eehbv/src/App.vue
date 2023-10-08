@@ -26,6 +26,10 @@
           <v-list-item-icon><v-icon>mdi-folder-information-outline</v-icon></v-list-item-icon>
           <v-list-item-content><v-list-item-title>{{$t('glossary.titles')}}</v-list-item-title></v-list-item-content>
         </v-list-item>
+        <v-list-item link :to="{ name: 'Documentation' }">
+          <v-list-item-icon><v-icon>mdi-text-box-multiple-outline</v-icon></v-list-item-icon>
+          <v-list-item-content><v-list-item-title>{{$t('documentation.titles')}}</v-list-item-title></v-list-item-content>
+        </v-list-item>
 <!--        <v-list-item link :to="{ name: 'Home' }">
           <v-list-item-icon><v-icon>mdi-send</v-icon></v-list-item-icon>
           <v-list-item-content><v-list-item-title>Export</v-list-item-title></v-list-item-content>
