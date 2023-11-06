@@ -10,7 +10,7 @@ The software supports an optimization process of the energy efficiency of custom
 machines. Further information can be found in the accompanying manual.
 
 This repository contains the frontend for EEHBV, written with **Vue.js**, to be used 
-in combination with the backend in the repository **eehbv-backend-python**.
+in combination with the backend in the repository **eehbv-api**.
 
 ## Build docker image
 
